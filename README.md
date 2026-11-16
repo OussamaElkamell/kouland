@@ -1,6 +1,7 @@
 # Kouland
 
-Corporate website and CRM for Kouland Technology. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+Corporate website and CRM for Kouland Technology. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and
+[DEPLOY.md](DEPLOY.md).
 
 ## Requirements
 

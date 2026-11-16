@@ -7,6 +7,10 @@
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
+    "build:api": "turbo run build --filter=@kouland/api",
+    "build:web": "turbo run build --filter=@kouland/web",
+    "start:api": "pnpm --filter @kouland/api start:prod",
+    "start:web": "pnpm --filter @kouland/web start",
     "test": "turbo run test",
     "typecheck": "turbo run typecheck",
     "db:migrate": "pnpm --filter @kouland/api prisma:migrate",
