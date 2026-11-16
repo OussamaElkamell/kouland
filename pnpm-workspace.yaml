@@ -2,9 +2,15 @@ packages:
   - "apps/*"
   - "packages/*"
 
-# Packages allowed to run install scripts (Prisma client and engines, Nest core).
+# Every package with an install script must be listed, or a build server's `pnpm install` stops with
+# ERR_PNPM_IGNORED_BUILDS. true = run it, false = skip it.
 allowBuilds:
+  # Needed: they build the Prisma client and download its engines.
   "@nestjs/core": true
   "@prisma/client": true
   "@prisma/engines": true
   prisma: true
+  # Not needed: both come with next-intl's optional message extractor (unused here) and get their native
+  # binaries from platform packages, so their scripts only re-check what is already installed.
+  "@parcel/watcher": false
+  "@swc/core": false
