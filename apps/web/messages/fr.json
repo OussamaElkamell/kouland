@@ -1,0 +1,284 @@
+{
+  "meta": {
+    "title": "Kouland Technology, Inc. : des solutions technologiques pour les particuliers, les entreprises et un avenir plus intelligent.",
+    "description": "Kouland Technology réunit hébergement, transport, assistants IA, événements et services techniques à domicile au sein d'une seule entreprise connectée."
+  },
+  "company": {
+    "claim": "Des solutions technologiques pour les particuliers, les entreprises et un avenir plus intelligent.",
+    "pillars": {
+      "one": "Une entreprise",
+      "two": "Plusieurs solutions",
+      "three": "Une expérience connectée"
+    }
+  },
+  "values": {
+    "reliable": {
+      "title": "Fiables",
+      "body": "Vous pouvez compter sur nous. Nous faisons ce que nous avons promis, quand nous l'avons promis."
+    },
+    "innovative": {
+      "title": "Innovants",
+      "body": "Nous construisons pour l'avenir, avec des outils qui restent utiles à mesure que vous grandissez."
+    },
+    "customer": {
+      "title": "Centrés sur le client",
+      "body": "Votre réussite compte. Chaque service part de ce dont vous avez besoin."
+    }
+  },
+  "nav": {
+    "main": "Principal",
+    "home": "Accueil Kouland Technology",
+    "platforms": "Plateformes",
+    "services": "Services",
+    "about": "À propos",
+    "contact": "Contact",
+    "contactUs": "Nous contacter",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu",
+    "theme": "Basculer entre le thème sombre et le thème clair",
+    "language": "Langue"
+  },
+  "footer": {
+    "platforms": "Plateformes",
+    "company": "Entreprise",
+    "rights": "© {year} Kouland Technology, Inc. Tous droits réservés."
+  },
+  "platforms": {
+    "heroLabel": "Nos plateformes",
+    "visit": "Visiter {name}",
+    "host": {
+      "slogan": "Créez. Lancez. Grandissez.",
+      "summary": "Créez des sites web et des applications avec un hébergement fiable, l'enregistrement de domaines et le SSL.",
+      "description": "Tout ce qu'une entreprise doit avoir pour être en ligne et le rester : nous concevons et développons le site ou l'application, enregistrons le domaine, l'hébergeons et le sécurisons.",
+      "services": [
+        "Développement de sites web",
+        "Développement d'applications",
+        "Hébergement mutualisé",
+        "VPS / VDS",
+        "Domaines et SSL"
+      ]
+    },
+    "route": {
+      "slogan": "Relier les chargements, les chauffeurs et les opportunités.",
+      "summary": "Une place de marché du transport routier qui met les clients en relation avec des chauffeurs vérifiés.",
+      "description": "Publiez une demande de transport de véhicule, de bateau, d'équipement ou de fret et comparez les offres de transporteurs indépendants vérifiés. Le paiement est conservé en sécurité jusqu'à la confirmation de la livraison.",
+      "services": [
+        "Mise en relation des chargements",
+        "Fret et transport",
+        "Réseau de chauffeurs",
+        "Optimisation des itinéraires"
+      ]
+    },
+    "bot": {
+      "slogan": "Des conversations plus intelligentes. Une meilleure expérience client.",
+      "summary": "Chat alimenté par l'IA, assistance en direct et automatisation pour mieux servir vos clients.",
+      "description": "Répondez à vos clients à toute heure grâce à un assistant formé sur votre entreprise, et passez le relais à votre équipe quand une personne est nécessaire.",
+      "services": [
+        "Chat en direct",
+        "Assistants IA",
+        "Service client",
+        "Automatisation",
+        "Solutions intelligentes"
+      ]
+    },
+    "event": {
+      "slogan": "Rassembler les gens.",
+      "summary": "Des solutions pour la découverte, la promotion, l'inscription, la billetterie et l'animation de communauté autour de vos événements.",
+      "description": "Planifiez et promouvez un événement, vendez des billets, inscrivez les participants et gardez votre communauté engagée avant et après le jour J.",
+      "services": [
+        "Promotion d'événements",
+        "Inscriptions et billetterie",
+        "Agenda et découverte",
+        "Animation de communauté"
+      ]
+    },
+    "tech": {
+      "slogan": "Des services technologiques professionnels pour les particuliers et les entreprises.",
+      "summary": "Des services techniques fiables, sur place ou à distance, pour garder votre maison et votre entreprise connectées et sécurisées.",
+      "description": "Un technicien se déplace chez vous ou se connecte à distance pour installer, configurer et réparer la technologie dont vous dépendez au quotidien.",
+      "services": [
+        "Fixation de téléviseurs",
+        "Home cinéma",
+        "Installation domotique",
+        "Sonnettes vidéo",
+        "Systèmes de sécurité et alarmes",
+        "Support informatique"
+      ]
+    }
+  },
+  "home": {
+    "hero": {
+      "titleStart": "Une seule entreprise.",
+      "titleEnd": "Toute la technologie dont vous avez besoin.",
+      "subtitle": "Hébergement, transport, assistants IA, événements et services techniques à domicile, par une seule équipe joignable.",
+      "explore": "Découvrir nos plateformes",
+      "talk": "Parlons-en"
+    },
+    "guarantees": {
+      "trusted": {
+        "title": "Des techniciens de confiance",
+        "body": "Des techniciens sélectionnés qui expliquent ce qu'ils font et pourquoi."
+      },
+      "booking": {
+        "title": "Une réservation simple",
+        "body": "Choisissez le moment qui vous convient. Nous nous déplaçons ou intervenons à distance."
+      },
+      "guarantee": {
+        "title": "La garantie Kouland",
+        "body": "Si le travail n'est pas bien fait, nous revenons le corriger."
+      }
+    },
+    "intro": {
+      "eyebrow": "Qui sommes-nous",
+      "title": "Un service technique de qualité à un prix juste, depuis {year}",
+      "body1": "Kouland Technology a débuté comme entreprise d'assistance technique sur place et en ligne : installation, formation, configuration et réparation pour les particuliers et les entreprises. Nous avons grandi en comprenant les attentes de nos clients, puis en travaillant pour faire mieux.",
+      "body2": "Aujourd'hui, la même équipe gère cinq plateformes : une seule entreprise peut héberger votre site, transporter votre fret, répondre à vos clients, organiser votre événement et réparer votre Wi-Fi.",
+      "more": "En savoir plus sur nous",
+      "services": "Nos services"
+    },
+    "stats": {
+      "since": "Au service des clients depuis",
+      "customers": "Clients servis",
+      "members": "Membres",
+      "platforms": "Plateformes, une entreprise"
+    },
+    "platforms": {
+      "eyebrow": "Nos plateformes",
+      "title": "Cinq plateformes, une expérience connectée",
+      "subtitle": "Chaque plateforme fait bien une chose. Ensemble, elles permettent à un foyer ou à une entreprise d'être en ligne, de transporter des marchandises, de parler à ses clients, d'organiser des événements et de garder sa technologie en état de marche."
+    },
+    "popular": {
+      "eyebrow": "Services populaires",
+      "title": "Ce que nos clients réservent le plus",
+      "subtitle": "Des services sur place et à distance de KoulandTech, pour les particuliers et les entreprises.",
+      "all": "Voir tous les services",
+      "it": {
+        "title": "Support informatique",
+        "body": "Confiez-nous l'informatique quotidienne de votre entreprise et laissez votre équipe se concentrer sur ses clients."
+      },
+      "phone": {
+        "title": "Réparation de téléphones et tablettes",
+        "body": "Écrans, batteries, ports de charge et coques arrière, réparés là où vous êtes."
+      },
+      "security": {
+        "title": "Sécurité de la maison",
+        "body": "Alarmes, caméras et sonnettes vidéo, installées et configurées pour vous."
+      },
+      "tv": {
+        "title": "Fixation de TV et home cinéma",
+        "body": "Un technicien fixe le téléviseur et branche votre équipement audio et vidéo."
+      },
+      "wifi": {
+        "title": "Wi-Fi et réseau",
+        "body": "Internet lent ou instable réparé, et nouveaux réseaux bien configurés dès le départ."
+      },
+      "remote": {
+        "title": "Assistance à distance 24 h/24, 7 j/7",
+        "body": "L'aide d'un technicien à toute heure, sans attendre une visite."
+      }
+    },
+    "why": {
+      "eyebrow": "Pourquoi Kouland",
+      "title": "Fondés sur trois promesses"
+    },
+    "testimonials": {
+      "eyebrow": "Témoignages",
+      "title": "Ce que nos clients disent de nous",
+      "rating": "Noté 5 sur 5",
+      "paula": {
+        "quote": "Il était très aimable, il m'a expliqué ce qu'il faisait et s'est assuré que je comprenais. Je suis très satisfaite de lui et j'ai confiance en cette entreprise.",
+        "role": "Enseignante"
+      },
+      "jasmine": {
+        "quote": "Ils savaient ce qu'ils faisaient. Ils avaient leur propre aspirateur et s'en sont servi. Quand ils sont partis, il ne nous restait plus qu'à nous installer et regarder notre nouvelle télé.",
+        "role": "Designer"
+      },
+      "corey": {
+        "quote": "Rapide, avec une réparation d'excellente qualité. Il a réparé l'écran de l'iPhone de ma femme en moins de 15 minutes. Nous apprécions vraiment ce service.",
+        "role": "Organisateurs de fêtes"
+      }
+    },
+    "satisfaction": {
+      "eyebrow": "Satisfaction client",
+      "title": "Vous ne devriez jamais avoir à courir après les personnes que vous engagez",
+      "body": "Rien n'est plus frustrant qu'un prestataire impossible à joindre. Nous faisons en sorte que vous vous sentiez comme notre seul client, et nous vous épargnons le stress du premier appel à la dernière vérification."
+    }
+  },
+  "platformsPage": {
+    "title": "Plateformes",
+    "description": "KoulandHost, KoulandRoute, KoulandBot, KoulandEvent et KoulandTech : les plateformes de Kouland Technology.",
+    "eyebrow": "Plateformes",
+    "heading": "La famille Kouland",
+    "subtitle": "Une seule entreprise derrière chaque plateforme, pour que votre hébergement, votre transport, votre service client, vos événements et vos services techniques fonctionnent ensemble."
+  },
+  "servicesPage": {
+    "title": "Services",
+    "description": "Ce que fait Kouland Technology : hébergement et développement web, transport, assistants IA, gestion d'événements et services informatiques.",
+    "eyebrow": "Services",
+    "heading": "Ce que nous faisons",
+    "subtitle": "Chaque service est assuré par l'une de nos plateformes. Trouvez ce qu'il vous faut ci-dessous, ou demandez-nous et nous vous guiderons.",
+    "ask": "Demander un service"
+  },
+  "aboutPage": {
+    "title": "À propos",
+    "description": "Kouland Technology fournit des services technologiques depuis {year}. Découvrez qui nous sommes et comment nous travaillons.",
+    "eyebrow": "À propos",
+    "heading": "Une technologie qui fonctionne, par des gens que vous pouvez joindre",
+    "subtitle": "Kouland Technology, Inc. a démarré en {year} avec un objectif simple : un service technique de qualité à un prix juste.",
+    "storyTitle": "Notre histoire",
+    "story1": "Nous avons commencé comme entreprise d'assistance technique sur place et en ligne : installation, configuration, formation et réparation pour les particuliers et les entreprises. Nos clients nous en demandaient toujours plus, alors nous avons continué à construire.",
+    "story2": "Aujourd'hui, Kouland Technology gère plusieurs plateformes. KoulandHost met les entreprises en ligne. KoulandRoute transporte véhicules et marchandises. KoulandBot répond aux clients. KoulandEvent rassemble les gens. KoulandTech garde les maisons et les bureaux connectés.",
+    "story3": "Notre façon de travailler n'a pas changé. Nous écoutons vos besoins, nous vous disons clairement ce qu'il faut, et nous restons joignables une fois le travail terminé.",
+    "facts": {
+      "since": "Au service des clients depuis",
+      "platforms": "Plateformes au sein d'une entreprise",
+      "customers": "Nos clients",
+      "customersValue": "Particuliers et entreprises"
+    },
+    "valuesEyebrow": "Nos valeurs",
+    "valuesTitle": "Notre façon de travailler",
+    "cta": "Nous écrire"
+  },
+  "contactPage": {
+    "title": "Contact",
+    "description": "Contactez Kouland Technology pour l'hébergement, le transport, les assistants IA, les événements ou les services techniques.",
+    "eyebrow": "Contact",
+    "heading": "Dites-nous ce dont vous avez besoin",
+    "subtitle": "Envoyez-nous un message et la bonne personne chez Kouland vous répondra.",
+    "callTitle": "Vous préférez appeler ?",
+    "callBody": "Parlez directement avec notre équipe.",
+    "form": {
+      "name": "Votre nom",
+      "email": "E-mail",
+      "phone": "Téléphone",
+      "company": "Entreprise",
+      "subject": "Objet",
+      "message": "Comment pouvons-nous vous aider ?",
+      "optional": "(facultatif)",
+      "send": "Envoyer le message",
+      "sending": "Envoi en cours…",
+      "errors": {
+        "name": "Saisissez votre nom (au moins 2 caractères).",
+        "email": "Saisissez une adresse e-mail valide.",
+        "phone": "Ce numéro de téléphone est trop long.",
+        "company": "Ce nom d'entreprise est trop long.",
+        "subject": "Cet objet est trop long.",
+        "message": "Dites-nous-en un peu plus (au moins 10 caractères).",
+        "tooMany": "Trop de messages. Patientez une minute puis réessayez.",
+        "network": "Impossible de joindre le serveur. Vérifiez votre connexion et réessayez.",
+        "generic": "Une erreur est survenue. Veuillez réessayer."
+      },
+      "sent": {
+        "badge": "Message envoyé",
+        "title": "Merci. Nous avons bien reçu votre message.",
+        "body": "Notre équipe vous répondra à l'adresse e-mail que vous nous avez indiquée.",
+        "again": "Envoyer un autre message"
+      }
+    }
+  },
+  "notFound": {
+    "title": "Page introuvable",
+    "body": "Cette page n'existe pas ou a été déplacée.",
+    "home": "Retour à l'accueil"
+  }
+}

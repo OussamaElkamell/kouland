@@ -1,0 +1,6 @@
+/* Brand tokens and component classes come first, so Tailwind utilities can override them. */
+@import "@kouland/ui/styles.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

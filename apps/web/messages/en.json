@@ -1,0 +1,284 @@
+{
+  "meta": {
+    "title": "Kouland Technology, Inc.: Technology solutions for homes, businesses, and a smarter tomorrow.",
+    "description": "Kouland Technology brings hosting, transport, AI assistants, events and on-site tech services together in one connected company."
+  },
+  "company": {
+    "claim": "Technology solutions for homes, businesses, and a smarter tomorrow.",
+    "pillars": {
+      "one": "One company",
+      "two": "Multiple solutions",
+      "three": "A connected experience"
+    }
+  },
+  "values": {
+    "reliable": {
+      "title": "Reliable",
+      "body": "You can count on us. We do what we said, when we said."
+    },
+    "innovative": {
+      "title": "Innovative",
+      "body": "We build for what's next, with tools that stay useful as you grow."
+    },
+    "customer": {
+      "title": "Customer focused",
+      "body": "Your success matters. Every service starts from what you need."
+    }
+  },
+  "nav": {
+    "main": "Main",
+    "home": "Kouland Technology home",
+    "platforms": "Platforms",
+    "services": "Services",
+    "about": "About",
+    "contact": "Contact",
+    "contactUs": "Contact us",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "theme": "Switch between dark and light theme",
+    "language": "Language"
+  },
+  "footer": {
+    "platforms": "Platforms",
+    "company": "Company",
+    "rights": "© {year} Kouland Technology, Inc. All rights reserved."
+  },
+  "platforms": {
+    "heroLabel": "Our platforms",
+    "visit": "Visit {name}",
+    "host": {
+      "slogan": "Build. Launch. Grow.",
+      "summary": "Build websites and applications with reliable hosting, domain registration and SSL.",
+      "description": "Everything a business needs to get online and stay online: we design and build the website or application, register the domain, host it and keep it secure.",
+      "services": [
+        "Website development",
+        "Application development",
+        "Shared hosting",
+        "VPS / VDS",
+        "Domains & SSL"
+      ]
+    },
+    "route": {
+      "slogan": "Connecting loads, drivers and opportunities.",
+      "summary": "A ground transportation marketplace that connects customers with verified drivers.",
+      "description": "Post a vehicle, boat, equipment or freight job and compare bids from verified independent carriers. Payment is held securely until delivery is confirmed.",
+      "services": [
+        "Load matching",
+        "Freight & transport",
+        "Driver network",
+        "Route optimization"
+      ]
+    },
+    "bot": {
+      "slogan": "Smarter conversations. Better customer experiences.",
+      "summary": "AI-powered chat, live support and automation that help your business serve customers.",
+      "description": "Answer customers at any hour with an assistant trained on your business, and hand over to your team when a person is needed.",
+      "services": [
+        "Live chat",
+        "AI assistants",
+        "Customer support",
+        "Automation",
+        "Smart solutions"
+      ]
+    },
+    "event": {
+      "slogan": "Bring people together.",
+      "summary": "Event solutions for discovery, promotion, registration, ticketing and community engagement.",
+      "description": "Plan and promote an event, sell tickets, register guests and keep your community engaged before and after the day.",
+      "services": [
+        "Event promotion",
+        "Registration & tickets",
+        "Calendar & discovery",
+        "Community engagement"
+      ]
+    },
+    "tech": {
+      "slogan": "Professional technology services for homes & businesses.",
+      "summary": "Reliable on-site and remote tech services that keep your home and business connected and secure.",
+      "description": "A technician comes to you or connects remotely to install, set up and repair the technology you rely on every day.",
+      "services": [
+        "TV mounting",
+        "Home theater",
+        "Smart home installation",
+        "Video doorbells",
+        "Security systems & alarms",
+        "IT support"
+      ]
+    }
+  },
+  "home": {
+    "hero": {
+      "titleStart": "One company.",
+      "titleEnd": "Every technology you need.",
+      "subtitle": "Hosting, transport, AI assistants, events and on-site tech services, from one team you can reach.",
+      "explore": "Explore our platforms",
+      "talk": "Talk to us"
+    },
+    "guarantees": {
+      "trusted": {
+        "title": "Trusted techs",
+        "body": "Vetted technicians who explain what they are doing and why."
+      },
+      "booking": {
+        "title": "Convenient booking",
+        "body": "Pick a time that suits you. We come to you or connect remotely."
+      },
+      "guarantee": {
+        "title": "The Kouland guarantee",
+        "body": "If the job is not right, we come back and make it right."
+      }
+    },
+    "intro": {
+      "eyebrow": "Who we are",
+      "title": "Quality tech service at a fair price, since {year}",
+      "body1": "Kouland Technology started as an on-site and online tech support company: installation, training, setup and repair for homes and businesses. We grew by understanding what our customers expect, then working to do better than that.",
+      "body2": "Today the same team runs five platforms, so one company can host your website, move your freight, answer your customers, run your event and fix your Wi-Fi.",
+      "more": "More about us",
+      "services": "Our services"
+    },
+    "stats": {
+      "since": "Serving customers since",
+      "customers": "Customers served",
+      "members": "Members",
+      "platforms": "Platforms, one company"
+    },
+    "platforms": {
+      "eyebrow": "Our platforms",
+      "title": "Five platforms, one connected experience",
+      "subtitle": "Each platform solves one job well. Together they cover how a home or a business gets online, moves goods, talks to customers, runs events and keeps its technology working."
+    },
+    "popular": {
+      "eyebrow": "Popular services",
+      "title": "What customers book most",
+      "subtitle": "On-site and remote services from KoulandTech, for homes and businesses.",
+      "all": "See all services",
+      "it": {
+        "title": "IT support",
+        "body": "Hand over the day-to-day IT of your business and keep your team focused on customers."
+      },
+      "phone": {
+        "title": "Phone & tablet repair",
+        "body": "Screens, batteries, charging ports and back covers, repaired wherever you are."
+      },
+      "security": {
+        "title": "Home security",
+        "body": "Alarms, cameras and video doorbells, installed and set up for you."
+      },
+      "tv": {
+        "title": "TV mounting & home theater",
+        "body": "A technician mounts the TV and connects your audio and video equipment."
+      },
+      "wifi": {
+        "title": "Wi-Fi & network",
+        "body": "Slow or patchy internet fixed, and new networks set up properly from the start."
+      },
+      "remote": {
+        "title": "24/7 remote support",
+        "body": "Help from a technician at any hour, without waiting for a visit."
+      }
+    },
+    "why": {
+      "eyebrow": "Why Kouland",
+      "title": "Built on three promises"
+    },
+    "testimonials": {
+      "eyebrow": "Testimonials",
+      "title": "What customers say about us",
+      "rating": "Rated 5 out of 5",
+      "paula": {
+        "quote": "He was very friendly and he explained what he was doing and made sure I understood what he was saying. I am very pleased with him and I feel good about that company.",
+        "role": "Teacher"
+      },
+      "jasmine": {
+        "quote": "These guys knew what they were doing. They had their own vac and used it. When they walked out the door all we had to do was sit back and watch our new TV.",
+        "role": "Designer"
+      },
+      "corey": {
+        "quote": "Quick, with amazing quality on the repair. He fixed my wife's iPhone screen in under 15 minutes. We really like this service.",
+        "role": "Party planners"
+      }
+    },
+    "satisfaction": {
+      "eyebrow": "Customer satisfaction",
+      "title": "You should never have to chase the people you hired",
+      "body": "Nothing is more frustrating than a contractor you can never reach. We work so that you feel like our only customer, and we take the stress out of the job from the first call to the last check."
+    }
+  },
+  "platformsPage": {
+    "title": "Platforms",
+    "description": "KoulandHost, KoulandRoute, KoulandBot, KoulandEvent and KoulandTech: the platforms of Kouland Technology.",
+    "eyebrow": "Platforms",
+    "heading": "The Kouland family",
+    "subtitle": "One company behind every platform, so your hosting, transport, customer support, events and tech services work with each other."
+  },
+  "servicesPage": {
+    "title": "Services",
+    "description": "What Kouland Technology does: web hosting and development, transport, AI assistants, event management and IT services.",
+    "eyebrow": "Services",
+    "heading": "What we do",
+    "subtitle": "Every service is delivered through one of our platforms. Find what you need below, or ask us and we will guide you.",
+    "ask": "Ask about a service"
+  },
+  "aboutPage": {
+    "title": "About us",
+    "description": "Kouland Technology has provided technology services since {year}. Learn who we are and how we work.",
+    "eyebrow": "About us",
+    "heading": "Technology that works, from people you can reach",
+    "subtitle": "Kouland Technology, Inc. started in {year} with a simple goal: quality tech service at a fair price.",
+    "storyTitle": "Our story",
+    "story1": "We began as an on-site and online tech support company: installing, setting up, training and repairing technology for homes and businesses. Our customers kept asking for more, so we kept building.",
+    "story2": "Today Kouland Technology runs several platforms. KoulandHost puts businesses online. KoulandRoute moves vehicles and freight. KoulandBot answers customers. KoulandEvent brings people together. KoulandTech keeps homes and offices connected.",
+    "story3": "What has not changed is how we work. We listen to what you need, we tell you plainly what it takes, and we stay reachable after the job is done.",
+    "facts": {
+      "since": "Serving customers since",
+      "platforms": "Platforms under one company",
+      "customers": "Customers we serve",
+      "customersValue": "Home & business"
+    },
+    "valuesEyebrow": "Our values",
+    "valuesTitle": "How we work",
+    "cta": "Get in touch"
+  },
+  "contactPage": {
+    "title": "Contact",
+    "description": "Contact Kouland Technology about hosting, transport, AI assistants, events or tech services.",
+    "eyebrow": "Contact",
+    "heading": "Tell us what you need",
+    "subtitle": "Send us a message and the right person at Kouland will get back to you.",
+    "callTitle": "Prefer to call?",
+    "callBody": "Speak with our team directly.",
+    "form": {
+      "name": "Your name",
+      "email": "Email",
+      "phone": "Phone",
+      "company": "Company",
+      "subject": "Subject",
+      "message": "How can we help?",
+      "optional": "(optional)",
+      "send": "Send message",
+      "sending": "Sending…",
+      "errors": {
+        "name": "Enter your name (at least 2 characters).",
+        "email": "Enter a valid email address.",
+        "phone": "This phone number is too long.",
+        "company": "This company name is too long.",
+        "subject": "This subject is too long.",
+        "message": "Tell us a little more (at least 10 characters).",
+        "tooMany": "Too many messages. Please wait a minute and try again.",
+        "network": "Could not reach the server. Check your connection and try again.",
+        "generic": "Something went wrong. Please try again."
+      },
+      "sent": {
+        "badge": "Message sent",
+        "title": "Thank you. We have your message.",
+        "body": "Our team will reply to the email address you gave us.",
+        "again": "Send another message"
+      }
+    }
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "This page does not exist or has moved.",
+    "home": "Back to the home page"
+  }
+}

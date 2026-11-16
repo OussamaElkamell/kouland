@@ -1,0 +1,10 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+
+# Packages allowed to run install scripts (Prisma client and engines, Nest core).
+allowBuilds:
+  "@nestjs/core": true
+  "@prisma/client": true
+  "@prisma/engines": true
+  prisma: true

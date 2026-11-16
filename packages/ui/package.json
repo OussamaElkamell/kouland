@@ -1,0 +1,24 @@
+{
+  "name": "@kouland/ui",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shared Kouland UI: brand tokens, component classes and React components. Consumed as source (see transpilePackages in apps/web).",
+  "exports": {
+    ".": "./src/index.ts",
+    "./styles.css": "./src/styles.css",
+    "./tailwind-preset": "./src/tailwind-preset.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "peerDependencies": {
+    "react": "^18.3.1"
+  },
+  "devDependencies": {
+    "@kouland/config": "workspace:*",
+    "@types/react": "^18.3.11",
+    "react": "^18.3.1",
+    "tailwindcss": "^3.4.13",
+    "typescript": "^5.6.3"
+  }
+}
