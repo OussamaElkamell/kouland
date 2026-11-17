@@ -5,11 +5,13 @@ packages:
 # Every package with an install script must be listed, or a build server's `pnpm install` stops with
 # ERR_PNPM_IGNORED_BUILDS. true = run it, false = skip it.
 allowBuilds:
-  # Needed: they build the Prisma client and download its engines.
+  # Needed: they download the Prisma engines used by `prisma generate` and `prisma migrate deploy`.
   "@nestjs/core": true
-  "@prisma/client": true
   "@prisma/engines": true
   prisma: true
+  # Not needed: its script only tries to run `prisma generate` from the repository root, where there is no
+  # schema. The API build runs `prisma generate` itself. It was also the step where Railway's install failed.
+  "@prisma/client": false
   # Not needed: both come with next-intl's optional message extractor (unused here) and get their native
   # binaries from platform packages, so their scripts only re-check what is already installed.
   "@parcel/watcher": false
