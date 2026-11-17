@@ -18,7 +18,9 @@ Create both services from the same GitHub repository and give each one these set
 | Config file path (Settings → Config-as-code) | `/apps/api/railway.json` | `/apps/web/railway.json` |
 
 The config files set the builder, build and start commands, the health check and which file changes trigger a
-redeploy. Keep the root directory empty: both apps need the shared packages in `packages/` and the lockfile at
+redeploy. If a service has its own Build Command in Railway's settings, that one wins over the config file; the
+equivalent `pnpm --filter @kouland/web build` / `pnpm --filter @kouland/api build` also work, because each app's
+`build` script first builds the shared packages it imports (`packages/contracts`, `packages/api-client`). Keep the root directory empty: both apps need the shared packages in `packages/` and the lockfile at
 the root.
 
 Do **not** set `NODE_ENV`. Railway passes service variables to the build too, and with `NODE_ENV=production` pnpm

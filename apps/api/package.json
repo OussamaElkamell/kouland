@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "nest start --watch",
-    "build": "prisma generate && nest build",
+    "build": "pnpm --filter \"@kouland/api^...\" run build && prisma generate && nest build",
     "start": "node dist/main.js",
     "start:prod": "prisma migrate deploy && node dist/main.js",
     "typecheck": "prisma generate && tsc -p tsconfig.json --noEmit",
