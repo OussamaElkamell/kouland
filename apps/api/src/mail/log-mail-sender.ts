@@ -7,6 +7,7 @@ export class LogMailSender extends MailSender {
 
   async send(mail: OutgoingMail): Promise<void> {
     const to = mail.to.map((address) => address.email).join(", ");
-    this.logger.log(`[mail not sent: set BREVO_API_KEY] ${mail.tag} to ${to}: ${mail.subject}`);
+    const files = mail.attachments?.length ? ` (+${mail.attachments.map((file) => file.name).join(", ")})` : "";
+    this.logger.log(`[mail not sent: set BREVO_API_KEY] ${mail.tag} to ${to}: ${mail.subject}${files}`);
   }
 }

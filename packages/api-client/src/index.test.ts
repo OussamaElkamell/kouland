@@ -35,6 +35,26 @@ test("turns a validation response into an ApiError with field errors", async () 
   });
 });
 
+test("sends a job application as a multipart form with the CV", async () => {
+  let sent: RequestInit | undefined;
+  const client = createApiClient({
+    baseUrl: "http://api.test/api",
+    fetch: async (_url, init) => {
+      sent = init;
+      return json(201, { id: "app_1", createdAt: "2026-11-17T10:00:00.000Z" });
+    },
+  });
+  const cv = new Blob(["%PDF-1.7"], { type: "application/pdf" });
+  const receipt = await client.careers.apply({ fullName: "Awa" } as never, cv, "cv.pdf", "fr");
+  assert.equal(receipt.id, "app_1");
+  assert.ok(sent?.body instanceof FormData);
+  const form = sent.body as FormData;
+  assert.equal(form.get("locale"), "fr");
+  assert.equal(JSON.parse(String(form.get("application"))).fullName, "Awa");
+  assert.equal((form.get("cv") as File).name, "cv.pdf");
+  assert.equal(sent.headers, undefined, "the browser must set the multipart Content-Type itself");
+});
+
 test("reports a network failure as status 0", async () => {
   const client = createApiClient({
     baseUrl: "http://api.test/api",

@@ -32,6 +32,15 @@ describe("BrevoMailSender", () => {
     });
   });
 
+  it("sends attachments base64-encoded", async () => {
+    const fetchMock = jest.fn().mockResolvedValue(new Response("{}", { status: 201 }));
+    const sender = new BrevoMailSender({ apiKey: "k", from: { email: "noreply@kouland.com" } }, fetchMock);
+
+    await sender.send({ ...mail, attachments: [{ name: "cv.pdf", content: Buffer.from("%PDF-1.7") }] });
+
+    expect(JSON.parse(fetchMock.mock.calls[0][1].body).attachment).toEqual([{ name: "cv.pdf", content: Buffer.from("%PDF-1.7").toString("base64") }]);
+  });
+
   it("throws with Brevo's error code when the request is refused", async () => {
     const fetchMock = jest
       .fn()

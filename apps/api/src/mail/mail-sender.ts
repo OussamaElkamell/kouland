@@ -3,6 +3,12 @@ export interface MailAddress {
   name?: string;
 }
 
+export interface MailAttachment {
+  /** File name shown to the recipient, with its extension (e.g. "cv.pdf"). */
+  name: string;
+  content: Buffer;
+}
+
 export interface OutgoingMail {
   to: MailAddress[];
   /** Where replies go, e.g. the visitor who filled in the contact form. */
@@ -12,6 +18,7 @@ export interface OutgoingMail {
   text: string;
   /** Short label for the provider's logs and statistics, e.g. "contact-message". */
   tag: string;
+  attachments?: MailAttachment[];
 }
 
 /**

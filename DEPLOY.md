@@ -46,6 +46,7 @@ Both services listen on the port Railway gives them (`PORT`).
 | `MAIL_FROM_EMAIL` | `noreply@kouland.com` (kouland.com must be verified in Brevo) |
 | `MAIL_FROM_NAME` | `Kouland Technology` |
 | `CONTACT_INBOX_EMAIL` | `contact@kouland.com` |
+| `CAREERS_INBOX_EMAIL` | Optional. Inbox for job applications (CV attached). Defaults to `CONTACT_INBOX_EMAIL` |
 | `TRUST_PROXY` | `1` (Railway's proxy). Use `2` if Cloudflare is also in front. Needed so rate limits count each visitor separately |
 
 `start:api` runs `prisma migrate deploy` before starting, so the tables are created and updated on every deploy.

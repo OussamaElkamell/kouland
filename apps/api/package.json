@@ -32,6 +32,7 @@
     "@nestjs/testing": "^10.4.4",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.13",
+    "@types/multer": "^2.3.0",
     "@types/node": "^20.16.10",
     "@types/supertest": "^6.0.2",
     "jest": "^29.7.0",
@@ -43,8 +44,23 @@
   "jest": {
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
-    "moduleFileExtensions": ["ts", "js", "json"],
-    "transform": { "^.+\\.ts$": ["ts-jest", { "diagnostics": { "ignoreCodes": ["TS151001"] } }] },
+    "moduleFileExtensions": [
+      "ts",
+      "js",
+      "json"
+    ],
+    "transform": {
+      "^.+\\.ts$": [
+        "ts-jest",
+        {
+          "diagnostics": {
+            "ignoreCodes": [
+              "TS151001"
+            ]
+          }
+        }
+      ]
+    },
     "testEnvironment": "node"
   }
 }

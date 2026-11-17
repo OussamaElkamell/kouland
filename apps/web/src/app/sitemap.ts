@@ -3,7 +3,7 @@ import { COMPANY } from "@/content/company";
 import { LOCALES } from "@/i18n/routing";
 import { languageAlternates, localizedPath } from "@/lib/seo";
 
-const PAGES = ["", "/platforms", "/services", "/about", "/contact"];
+const PAGES = ["", "/platforms", "/services", "/about", "/careers", "/contact"];
 const absolute = (path: string) => `${COMPANY.siteUrl}${path}`;
 
 /** One entry per page per language, each listing the same page in the other languages. */

@@ -36,7 +36,8 @@
     "openMenu": "Ouvrir le menu",
     "closeMenu": "Fermer le menu",
     "theme": "Basculer entre le thème sombre et le thème clair",
-    "language": "Langue"
+    "language": "Langue",
+    "careers": "Carrières"
   },
   "footer": {
     "platforms": "Plateformes",
@@ -280,5 +281,200 @@
     "title": "Page introuvable",
     "body": "Cette page n'existe pas ou a été déplacée.",
     "home": "Retour à l'accueil"
+  },
+  "careers": {
+    "home": {
+      "eyebrow": "Carrières",
+      "badge": "Nous recrutons",
+      "title": "Rejoignez notre équipe",
+      "body": "Nous grandissons sur cinq plateformes et cherchons des personnes qui aiment résoudre de vrais problèmes pour les particuliers et les entreprises. Dites-nous ce que vous faites le mieux et où vous voulez travailler.",
+      "points": {
+        "platforms": "Des postes dans l'hébergement, le transport, l'IA, l'événementiel et les services techniques",
+        "growth": "De quoi apprendre et prendre plus de responsabilités",
+        "flexible": "Des postes sur site, à distance et hybrides"
+      },
+      "apply": "Postuler",
+      "learnMore": "Travailler chez Kouland"
+    },
+    "page": {
+      "title": "Carrières",
+      "description": "Rejoignez Kouland Technology. Postulez sur KoulandHost, KoulandRoute, KoulandBot, KoulandEvent, KoulandTech ou dans nos équipes de l'entreprise.",
+      "eyebrow": "Carrières",
+      "heading": "Construisez l'avenir avec nous",
+      "subtitle": "Techniciens, développeurs, agents de support, organisateurs d'événements et plus encore : chaque plateforme Kouland est portée par des gens attentifs au client en face d'eux.",
+      "introTitle": "Une entreprise, de nombreuses façons d'évoluer",
+      "introBody": "Travailler chez Kouland, c'est voir un même client sous plusieurs angles : le site que nous hébergeons, le camion qui transporte ses marchandises, l'assistant qui répond à ses clients et le technicien à sa porte. Dites-nous où vous vous voyez et nous nous occupons du reste.",
+      "apply": "Commencer ma candidature",
+      "whyEyebrow": "Pourquoi Kouland",
+      "whyTitle": "Ce que vous trouvez en nous rejoignant",
+      "benefits": {
+        "impact": {
+          "title": "Un impact réel",
+          "body": "Votre travail touche directement les clients, et vous en voyez le résultat."
+        },
+        "growth": {
+          "title": "De quoi évoluer",
+          "body": "Cinq plateformes, ce sont de nouvelles compétences et de nouvelles responsabilités quand vous êtes prêt."
+        },
+        "team": {
+          "title": "Une équipe connectée",
+          "body": "Travaillez avec des gens de l'hébergement, de la logistique, de l'IA, de l'événementiel et du terrain."
+        },
+        "flexible": {
+          "title": "Un travail flexible",
+          "body": "Des postes sur site, à distance ou hybrides, selon le métier."
+        }
+      },
+      "teamsEyebrow": "Où vous pourriez travailler",
+      "teamsTitle": "Nos plateformes et nos équipes",
+      "teamsSubtitle": "Choisissez la plateforme ou l'équipe qui vous intéresse en postulant. Vous hésitez ? Choisissez les équipes de l'entreprise et parlez-nous de vous.",
+      "processEyebrow": "Comment ça se passe",
+      "processTitle": "De la candidature au premier jour",
+      "process": {
+        "apply": {
+          "title": "Postulez en ligne",
+          "body": "Cinq étapes courtes et votre CV. Comptez environ dix minutes."
+        },
+        "review": {
+          "title": "Nous étudions",
+          "body": "L'équipe du poste choisi lit chaque candidature."
+        },
+        "interview": {
+          "title": "Nous échangeons",
+          "body": "Si votre profil correspond, nous vous contactons pour un entretien."
+        },
+        "welcome": {
+          "title": "Bienvenue à bord",
+          "body": "Nous fixons une date de début et vous aidons à prendre vos marques."
+        }
+      },
+      "ctaTitle": "Prêt à postuler ?",
+      "ctaBody": "Préparez votre CV (PDF ou Word, 5 Mo maximum) et quelques mots sur votre envie de rejoindre Kouland."
+    },
+    "apply": {
+      "title": "Postuler",
+      "description": "Postulez chez Kouland Technology en cinq étapes courtes.",
+      "eyebrow": "Carrières",
+      "heading": "Postuler chez Kouland",
+      "subtitle": "Cinq étapes courtes. Vos réponses sont gardées dans cet onglet jusqu'à leur envoi.",
+      "progress": "Avancement de la candidature",
+      "stepOf": "Étape {current} sur {total}",
+      "steps": {
+        "profile": "Vous",
+        "role": "Le poste",
+        "experience": "Votre expérience",
+        "availability": "Disponibilité",
+        "review": "Vérifier et envoyer"
+      },
+      "stepIntro": {
+        "profile": "Comment vous joindre.",
+        "role": "Où et comment vous souhaitez travailler.",
+        "experience": "Ce que vous apportez, et votre CV.",
+        "availability": "Quand vous pouvez commencer.",
+        "review": "Vérifiez vos réponses, puis envoyez votre candidature."
+      },
+      "back": "Retour",
+      "next": "Continuer",
+      "edit": "Modifier",
+      "submit": "Envoyer ma candidature",
+      "submitting": "Envoi en cours…",
+      "optional": "(facultatif)",
+      "fields": {
+        "fullName": "Nom complet",
+        "email": "E-mail",
+        "phone": "Téléphone",
+        "city": "Ville",
+        "country": "Pays",
+        "area": "Plateforme ou équipe",
+        "position": "Poste visé",
+        "positionHint": "Par exemple : technicien terrain, développeur web, agent de support, coordinateur d'événements.",
+        "employmentType": "Type de poste",
+        "workMode": "Où souhaitez-vous travailler ?",
+        "experienceLevel": "Expérience dans ce type de poste",
+        "skills": "Compétences principales",
+        "skillsHint": "Quelques compétences séparées par des virgules.",
+        "motivation": "Pourquoi souhaitez-vous rejoindre Kouland ?",
+        "motivationHint": "Au moins 50 caractères. Parlez-nous de votre expérience et de ce que vous apporteriez.",
+        "linkedinUrl": "Profil LinkedIn",
+        "portfolioUrl": "Portfolio ou site web",
+        "cv": "CV",
+        "cvHint": "PDF ou Word, 5 Mo maximum.",
+        "cvChoose": "Choisir un fichier",
+        "cvReplace": "Remplacer",
+        "availableFrom": "Disponible à partir du",
+        "salaryExpectation": "Prétentions salariales",
+        "consent": "J'accepte que Kouland Technology conserve et utilise les informations et le CV que j'envoie pour étudier ma candidature."
+      },
+      "options": {
+        "area": {
+          "host": "KoulandHost",
+          "route": "KoulandRoute",
+          "bot": "KoulandBot",
+          "event": "KoulandEvent",
+          "tech": "KoulandTech",
+          "company": "Équipes de l'entreprise"
+        },
+        "areaHint": {
+          "host": "Développement web, hébergement et domaines",
+          "route": "Transport, logistique et chauffeurs",
+          "bot": "Assistants IA et service client",
+          "event": "Organisation et promotion d'événements",
+          "tech": "Services techniques sur place et à distance",
+          "company": "Ventes, marketing, finance, opérations"
+        },
+        "employmentType": {
+          "fullTime": "Temps plein",
+          "partTime": "Temps partiel",
+          "contract": "Contrat / freelance",
+          "internship": "Stage"
+        },
+        "workMode": {
+          "onSite": "Sur site",
+          "remote": "À distance",
+          "hybrid": "Hybride"
+        },
+        "experienceLevel": {
+          "lessThan1": "Moins d'un an",
+          "1to3": "1 à 3 ans",
+          "3to5": "3 à 5 ans",
+          "moreThan5": "Plus de 5 ans"
+        }
+      },
+      "errors": {
+        "fullName": "Saisissez votre nom complet.",
+        "email": "Saisissez une adresse e-mail valide.",
+        "phone": "Saisissez un numéro de téléphone où vous joindre.",
+        "city": "Saisissez votre ville.",
+        "country": "Saisissez votre pays.",
+        "area": "Choisissez une plateforme ou une équipe.",
+        "position": "Saisissez le poste visé.",
+        "employmentType": "Choisissez un type de poste.",
+        "workMode": "Choisissez où vous souhaitez travailler.",
+        "experienceLevel": "Choisissez votre niveau d'expérience.",
+        "skills": "Indiquez au moins une compétence.",
+        "motivation": "Dites-nous-en un peu plus (au moins 50 caractères).",
+        "linkedinUrl": "Saisissez le lien complet, commençant par https://",
+        "portfolioUrl": "Saisissez le lien complet, commençant par https://",
+        "availableFrom": "Choisissez aujourd'hui ou une date ultérieure.",
+        "salaryExpectation": "Cette réponse est trop longue.",
+        "consent": "Merci d'accepter pour que nous puissions étudier votre candidature.",
+        "cvMissing": "Joignez votre CV.",
+        "cvTooLarge": "Votre CV ne doit pas dépasser 5 Mo.",
+        "cvWrongType": "Votre CV doit être un fichier PDF ou Word.",
+        "tooMany": "Trop de candidatures depuis cette connexion. Patientez une minute puis réessayez.",
+        "network": "Impossible de joindre le serveur. Vérifiez votre connexion et réessayez.",
+        "generic": "Une erreur est survenue. Veuillez réessayer."
+      },
+      "review": {
+        "notProvided": "Non renseigné"
+      },
+      "done": {
+        "badge": "Candidature envoyée",
+        "title": "Merci. Nous avons bien reçu votre candidature.",
+        "body": "Notre équipe va l'étudier et vous contactera par e-mail ou par téléphone si votre profil correspond à un poste.",
+        "home": "Retour à l'accueil",
+        "careers": "Carrières"
+      }
+    }
   }
 }

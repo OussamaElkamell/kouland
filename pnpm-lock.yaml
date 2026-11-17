@@ -211,7 +211,7 @@ importers:
         version: link:../../packages/config
       '@nestjs/cli':
         specifier: ^10.4.5
-        version: 10.4.9(postcss@8.5.33)(uglify-js@3.19.3)
+        version: 10.4.9(@swc/core@1.16.22)(postcss@8.5.33)(uglify-js@3.19.3)
       '@nestjs/schematics':
         specifier: ^10.2.3
         version: 10.2.3(chokidar@3.6.0)(typescript@5.9.3)
@@ -224,6 +224,9 @@ importers:
       '@types/jest':
         specifier: ^29.5.13
         version: 29.5.14
+      '@types/multer':
+        specifier: ^2.3.0
+        version: 2.3.0
       '@types/node':
         specifier: ^20.16.10
         version: 20.19.43
@@ -1320,6 +1323,9 @@ packages:
 
   '@types/mime@1.3.5':
     resolution: {integrity: sha512-/pyBZWSLD2n0dcHE3hq8s8ZvcETHtEuF+3E7XVt0Ig2nvsVQXdghHVcEkIWjy9A0wKfTn97a/PSDYohKIlnP/w==}
+
+  '@types/multer@2.3.0':
+    resolution: {integrity: sha512-i7STIm9V4K2MPH4ZYMtrZAwNxs3kglk2LgleaTuB9pUXgADBcQYQuYMd7+6xgTIxfoggIkFA/DkkvycdZpIARA==}
 
   '@types/node@20.19.43':
     resolution: {integrity: sha512-6oYBAi5ikg4Pl+kGsoYtawUMBT2zZMCvPNF7pVLnHZfd1zf38DRiWn/gT01RYCdUqkv7Fhr+C9ot4/tb+2sVvA==}
@@ -4219,7 +4225,7 @@ snapshots:
 
   '@lukeed/csprng@1.1.0': {}
 
-  '@nestjs/cli@10.4.9(postcss@8.5.33)(uglify-js@3.19.3)':
+  '@nestjs/cli@10.4.9(@swc/core@1.16.22)(postcss@8.5.33)(uglify-js@3.19.3)':
     dependencies:
       '@angular-devkit/core': 17.3.11(chokidar@3.6.0)
       '@angular-devkit/schematics': 17.3.11(chokidar@3.6.0)
@@ -4229,7 +4235,7 @@ snapshots:
       chokidar: 3.6.0
       cli-table3: 0.6.5
       commander: 4.1.1
-      fork-ts-checker-webpack-plugin: 9.0.2(typescript@5.7.2)(webpack@5.97.1(postcss@8.5.33)(uglify-js@3.19.3))
+      fork-ts-checker-webpack-plugin: 9.0.2(typescript@5.7.2)(webpack@5.97.1(@swc/core@1.16.22)(postcss@8.5.33)(uglify-js@3.19.3))
       glob: 10.4.5
       inquirer: 8.2.6
       node-emoji: 1.11.0
@@ -4238,8 +4244,10 @@ snapshots:
       tsconfig-paths: 4.2.0
       tsconfig-paths-webpack-plugin: 4.2.0
       typescript: 5.7.2
-      webpack: 5.97.1(postcss@8.5.33)(uglify-js@3.19.3)
+      webpack: 5.97.1(@swc/core@1.16.22)(postcss@8.5.33)(uglify-js@3.19.3)
       webpack-node-externals: 3.0.0
+    optionalDependencies:
+      '@swc/core': 1.16.22
     transitivePeerDependencies:
       - '@minify-html/node'
       - '@swc/css'
@@ -4673,6 +4681,10 @@ snapshots:
   '@types/methods@1.1.4': {}
 
   '@types/mime@1.3.5': {}
+
+  '@types/multer@2.3.0':
+    dependencies:
+      '@types/express': 4.17.25
 
   '@types/node@20.19.43':
     dependencies:
@@ -5520,7 +5532,7 @@ snapshots:
       cross-spawn: 7.0.6
       signal-exit: 4.1.0
 
-  fork-ts-checker-webpack-plugin@9.0.2(typescript@5.7.2)(webpack@5.97.1(postcss@8.5.33)(uglify-js@3.19.3)):
+  fork-ts-checker-webpack-plugin@9.0.2(typescript@5.7.2)(webpack@5.97.1(@swc/core@1.16.22)(postcss@8.5.33)(uglify-js@3.19.3)):
     dependencies:
       '@babel/code-frame': 7.29.7
       chalk: 4.1.2
@@ -5535,7 +5547,7 @@ snapshots:
       semver: 7.8.6
       tapable: 2.3.4
       typescript: 5.7.2
-      webpack: 5.97.1(postcss@8.5.33)(uglify-js@3.19.3)
+      webpack: 5.97.1(@swc/core@1.16.22)(postcss@8.5.33)(uglify-js@3.19.3)
 
   form-data@4.0.6:
     dependencies:
@@ -6681,14 +6693,14 @@ snapshots:
       ajv: 6.15.0
       ajv-keywords: 3.5.2(ajv@6.15.0)
 
-  schema-utils@4.8.3(webpack@5.97.1(postcss@8.5.33)(uglify-js@3.19.3)):
+  schema-utils@4.8.3(webpack@5.97.1(@swc/core@1.16.22)(postcss@8.5.33)(uglify-js@3.19.3)):
     dependencies:
       '@types/json-schema': 7.0.15
       ajv: 8.20.0
       ajv-formats: 3.0.1
       ajv-keywords: 5.1.0(ajv@8.20.0)
     optionalDependencies:
-      webpack: 5.97.1(postcss@8.5.33)(uglify-js@3.19.3)
+      webpack: 5.97.1(@swc/core@1.16.22)(postcss@8.5.33)(uglify-js@3.19.3)
 
   semver@6.3.2: {}
 
@@ -6956,14 +6968,15 @@ snapshots:
 
   tapable@2.3.4: {}
 
-  terser-webpack-plugin@5.6.1(postcss@8.5.33)(uglify-js@3.19.3)(webpack@5.97.1(postcss@8.5.33)(uglify-js@3.19.3)):
+  terser-webpack-plugin@5.6.1(@swc/core@1.16.22)(postcss@8.5.33)(uglify-js@3.19.3)(webpack@5.97.1(@swc/core@1.16.22)(postcss@8.5.33)(uglify-js@3.19.3)):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       jest-worker: 27.5.1
-      schema-utils: 4.8.3(webpack@5.97.1(postcss@8.5.33)(uglify-js@3.19.3))
+      schema-utils: 4.8.3(webpack@5.97.1(@swc/core@1.16.22)(postcss@8.5.33)(uglify-js@3.19.3))
       terser: 5.51.2
-      webpack: 5.97.1(postcss@8.5.33)(uglify-js@3.19.3)
+      webpack: 5.97.1(@swc/core@1.16.22)(postcss@8.5.33)(uglify-js@3.19.3)
     optionalDependencies:
+      '@swc/core': 1.16.22
       postcss: 8.5.33
       uglify-js: 3.19.3
 
@@ -7149,7 +7162,7 @@ snapshots:
 
   webpack-sources@3.7.0: {}
 
-  webpack@5.97.1(postcss@8.5.33)(uglify-js@3.19.3):
+  webpack@5.97.1(@swc/core@1.16.22)(postcss@8.5.33)(uglify-js@3.19.3):
     dependencies:
       '@types/eslint-scope': 3.7.7
       '@types/estree': 1.0.10
@@ -7171,7 +7184,7 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 3.3.0
       tapable: 2.3.4
-      terser-webpack-plugin: 5.6.1(postcss@8.5.33)(uglify-js@3.19.3)(webpack@5.97.1(postcss@8.5.33)(uglify-js@3.19.3))
+      terser-webpack-plugin: 5.6.1(@swc/core@1.16.22)(postcss@8.5.33)(uglify-js@3.19.3)(webpack@5.97.1(@swc/core@1.16.22)(postcss@8.5.33)(uglify-js@3.19.3))
       watchpack: 2.6.4
       webpack-sources: 3.7.0
     transitivePeerDependencies:

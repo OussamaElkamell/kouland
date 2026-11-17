@@ -46,6 +46,7 @@ Build order is handled by Turborepo (`dependsOn: ["^build"]`): contracts → api
 | 9 | Public write routes are rate limited (`@nestjs/throttler`) | The contact form is public and writes to the database. |
 | 10 | No `packages/utils` yet | Nothing is shared by two apps yet. |
 | 11 | Ports 3100 (web) and 4100 (api) in development | Avoids clashing with KoulandRoute's 3000/4000 on the same machine. |
+| 12 | Careers: a general application (no job listings yet) in five steps, with the step in the URL (`/careers/apply?step=profile`). CVs (PDF or Word, max 5 MB, checked by their content) are stored in the database and emailed to `CAREERS_INBOX_EMAIL` | Requested on 2026-11-17, outside the original documents. Database storage because the host's disk is wiped on every deploy. Job listings and reviewing applications belong in the CRM. |
 
 ## Languages
 

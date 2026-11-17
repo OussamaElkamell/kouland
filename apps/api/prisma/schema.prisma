@@ -21,3 +21,40 @@ model ContactMessage {
   @@index([createdAt])
   @@map("contact_messages")
 }
+
+/// A job application sent through the website's "Join our team" form. The CV is stored here (not on disk),
+/// because the hosting disk is wiped on every deploy.
+model JobApplication {
+  id                String   @id @default(cuid())
+  fullName          String
+  email             String
+  phone             String
+  city              String
+  country           String
+  /// Platform or team applied for: host, route, bot, event, tech or company.
+  area              String
+  position          String
+  employmentType    String
+  workMode          String
+  experienceLevel   String
+  skills            String
+  motivation        String
+  linkedinUrl       String?
+  portfolioUrl      String?
+  /// Calendar date the applicant can start, YYYY-MM-DD.
+  availableFrom     String
+  salaryExpectation String?
+  /// The applicant agreed that Kouland may store and use their data to review the application.
+  consentAt         DateTime
+  /// Language of the website when the application was sent: en, fr or es.
+  locale            String
+  cvFileName        String
+  cvMimeType        String
+  cvSize            Int
+  cvData            Bytes
+  createdAt         DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([email])
+  @@map("job_applications")
+}

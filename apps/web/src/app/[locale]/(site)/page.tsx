@@ -36,6 +36,7 @@ export default function HomePage({ params }: { params: Promise<{ locale: string 
       <PopularServices />
       <Values />
       <Testimonials />
+      <JoinTeam />
       <SatisfactionBand />
     </>
   );
@@ -262,6 +263,47 @@ function Testimonials() {
             </figcaption>
           </figure>
         ))}
+      </div>
+    </Section>
+  );
+}
+
+/** Invitation to apply: links to the careers page and straight to the application. */
+function JoinTeam() {
+  const t = useTranslations("careers.home");
+  const points = ["platforms", "growth", "flexible"] as const;
+  return (
+    <Section>
+      <div className="grid items-center gap-10 md:grid-cols-2">
+        <div className="relative aspect-[4/3] w-full max-w-[32rem] justify-self-center overflow-hidden rounded-xl border shadow-lift md:order-2">
+          <Image src={photo("technician", 800, 600)} alt="" fill sizes="(min-width: 768px) 512px, 100vw" className="object-cover" />
+          <span className="absolute left-4 top-4 flex items-center gap-2 rounded-full border border-white/15 bg-black/50 px-3 py-1.5 text-xs font-bold text-white backdrop-blur">
+            <Icon name="briefcase" className="h-4 w-4" />
+            {t("badge")}
+          </span>
+        </div>
+        <div className="max-w-2xl">
+          <p className="eyebrow mb-3">{t("eyebrow")}</p>
+          <h2 className="font-display text-3xl font-extrabold tracking-tight text-balance sm:text-4xl">{t("title")}</h2>
+          <p className="mt-4 text-text-muted text-pretty">{t("body")}</p>
+          <ul className="mt-5 flex flex-col gap-2 text-sm">
+            {points.map((point) => (
+              <li key={point} className="flex items-center gap-2">
+                <Icon name="check" className="h-4 w-4 flex-none text-brand" strokeWidth={2.6} />
+                {t(`points.${point}`)}
+              </li>
+            ))}
+          </ul>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Link href="/careers/apply" className="btn btn-primary">
+              {t("apply")}
+              <Icon name="arrow" className="h-4 w-4" />
+            </Link>
+            <Link href="/careers" className="btn btn-outline">
+              {t("learnMore")}
+            </Link>
+          </div>
+        </div>
       </div>
     </Section>
   );
