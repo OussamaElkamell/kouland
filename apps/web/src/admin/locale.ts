@@ -18,3 +18,6 @@ export const LOCALE_NAMES: Record<CrmLocale, string> = { en: "English", fr: "Fra
 
 /** Intl locale for dates and money. */
 export const INTL_LOCALE: Record<CrmLocale, string> = { en: "en-US", fr: "fr-FR", es: "es-ES" };
+
+/** Intl locale for dates: day/month/year in every language (English uses the British order, "20 Nov 2026"). */
+export const DATE_LOCALE: Record<CrmLocale, string> = { en: "en-GB", fr: "fr-FR", es: "es-ES" };

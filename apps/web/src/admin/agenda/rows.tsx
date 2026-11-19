@@ -72,7 +72,7 @@ export function AppointmentRow({ appointment, onOpen, href }: { appointment: App
   return (
     <div className="flex items-start gap-3">
       <span className="flex w-14 flex-none flex-col items-center rounded-lg border bg-surface-2 py-1 text-center leading-tight">
-        <span className="text-[0.65rem] font-bold uppercase text-text-muted">{start.toLocaleDateString(undefined, { month: "short" })}</span>
+        <span className="text-[0.65rem] font-bold uppercase text-text-muted">{format.month(appointment.startsAt)}</span>
         <span className="font-display text-lg font-extrabold">{start.getDate()}</span>
       </span>
       <div className="min-w-0 flex-1">
@@ -87,7 +87,7 @@ export function AppointmentRow({ appointment, onOpen, href }: { appointment: App
         )}
         <p className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-text-muted">
           <span>
-            {format.dateTime(appointment.startsAt)} – {new Date(appointment.endsAt).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}
+            {format.dateTime(appointment.startsAt)} – {format.time(appointment.endsAt)}
           </span>
           {appointment.location && <span>{appointment.location}</span>}
           {appointment.assignee && <span>{appointment.assignee.name}</span>}

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { ApiError } from "@kouland/api-client";
-import { INTL_LOCALE, toCrmLocale } from "./locale";
+import { DATE_LOCALE, INTL_LOCALE, toCrmLocale } from "./locale";
 
 /** Loads data for a screen and reloads it when `deps` change. Errors are kept to show, not thrown. */
 export function useLoad<T>(load: () => Promise<T>, deps: unknown[]) {
@@ -94,12 +94,16 @@ export function useSubmit() {
 
 /** Dates and money in the CRM language. */
 export function useFormat() {
-  const locale = INTL_LOCALE[toCrmLocale(useLocale())];
+  const crmLocale = toCrmLocale(useLocale());
+  const locale = INTL_LOCALE[crmLocale];
+  const dateLocale = DATE_LOCALE[crmLocale];
   return {
     date: (value: string | null | undefined) =>
-      value ? new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeZone: value.length === 10 ? "UTC" : undefined }).format(new Date(value)) : "—",
+      value ? new Intl.DateTimeFormat(dateLocale, { dateStyle: "medium", timeZone: value.length === 10 ? "UTC" : undefined }).format(new Date(value)) : "—",
     dateTime: (value: string | null | undefined) =>
-      value ? new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeStyle: "short" }).format(new Date(value)) : "—",
+      value ? new Intl.DateTimeFormat(dateLocale, { dateStyle: "medium", timeStyle: "short" }).format(new Date(value)) : "—",
+    time: (value: string) => new Intl.DateTimeFormat(dateLocale, { timeStyle: "short" }).format(new Date(value)),
+    month: (value: string) => new Intl.DateTimeFormat(dateLocale, { month: "short" }).format(new Date(value)),
     money: (value: number | null | undefined, currency = "USD") =>
       value === null || value === undefined
         ? "—"

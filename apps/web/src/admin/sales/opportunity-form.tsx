@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { OPPORTUNITY_SOURCES, OPPORTUNITY_STATUSES, type OpportunitySource, type OpportunityStatus } from "@kouland/contracts";
 import { Field, Input, Textarea } from "@kouland/ui";
+import { DateInput } from "@/admin/date-input";
 import { CustomerFields, EMPTY_CUSTOMER, toCustomerInput } from "@/admin/customers/customer-fields";
 import { useLoad, useSubmit } from "@/admin/hooks";
 import { useCan, useSession } from "@/admin/session";
@@ -179,13 +180,7 @@ export function OpportunityForm({
           </Field>
         </div>
         <Field htmlFor="expectedCloseDate" label={t("form.closeDate")} optionalLabel={tc("optional")} error={errorFor("expectedCloseDate")}>
-          <Input
-            id="expectedCloseDate"
-            type="date"
-            value={values.expectedCloseDate}
-            onChange={(e) => set("expectedCloseDate", e.target.value)}
-            invalid={!!errorFor("expectedCloseDate")}
-          />
+          <DateInput id="expectedCloseDate" value={values.expectedCloseDate} onChange={(v) => set("expectedCloseDate", v)} invalid={!!errorFor("expectedCloseDate")} />
         </Field>
         <div className="sm:col-span-2">
           <Field htmlFor="request" label={t("form.request")} optionalLabel={tc("optional")} hint={t("form.requestHint")} error={errorFor("request")}>

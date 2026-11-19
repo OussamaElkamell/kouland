@@ -4,6 +4,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { useTranslations } from "next-intl";
 import type { Task, TaskPriority } from "@kouland/contracts";
 import { Field, Input, Textarea } from "@kouland/ui";
+import { DateInput } from "@/admin/date-input";
 import { fromLocalInput, toLocalInput } from "@/admin/datetime";
 import { useLoad, useSubmit } from "@/admin/hooks";
 import { CustomerPicker } from "@/admin/sales/customer-picker";
@@ -122,10 +123,10 @@ export function TaskModal({
         </Field>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field htmlFor="task-due" label={t("fields.dueAt")} optionalLabel={tc("optional")} error={errorFor("dueAt")}>
-            <Input id="task-due" type="datetime-local" value={values.dueAt} onChange={(e) => set("dueAt", e.target.value)} />
+            <DateInput id="task-due" withTime value={values.dueAt} onChange={(v) => set("dueAt", v)} />
           </Field>
           <Field htmlFor="task-remind" label={t("fields.remindAt")} optionalLabel={tc("optional")} hint={t("fields.remindHint")} error={errorFor("remindAt")}>
-            <Input id="task-remind" type="datetime-local" value={values.remindAt} onChange={(e) => set("remindAt", e.target.value)} invalid={!!errorFor("remindAt")} />
+            <DateInput id="task-remind" withTime value={values.remindAt} onChange={(v) => set("remindAt", v)} invalid={!!errorFor("remindAt")} />
           </Field>
           <Field htmlFor="task-assignee" label={t("fields.assignee")} error={errorFor("assigneeId")}>
             <Select id="task-assignee" value={values.assigneeId} onChange={(value) => set("assigneeId", value)} invalid={!!errorFor("assigneeId")}>

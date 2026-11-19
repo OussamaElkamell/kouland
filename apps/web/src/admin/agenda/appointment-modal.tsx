@@ -4,6 +4,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { useTranslations } from "next-intl";
 import { APPOINTMENT_STATUSES, type Appointment, type AppointmentStatus } from "@kouland/contracts";
 import { Field, Input, Textarea } from "@kouland/ui";
+import { DateInput } from "@/admin/date-input";
 import { fromLocalInput, localInputIn, toLocalInput } from "@/admin/datetime";
 import { useLoad, useSubmit } from "@/admin/hooks";
 import { CustomerPicker } from "@/admin/sales/customer-picker";
@@ -121,16 +122,16 @@ export function AppointmentModal({
         </Field>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field htmlFor="appt-start" label={t("fields.startsAt")} error={errorFor("startsAt")}>
-            <Input id="appt-start" type="datetime-local" value={values.startsAt} onChange={(e) => setStart(e.target.value)} invalid={!!errorFor("startsAt")} />
+            <DateInput id="appt-start" withTime value={values.startsAt} onChange={setStart} invalid={!!errorFor("startsAt")} />
           </Field>
           <Field htmlFor="appt-end" label={t("fields.endsAt")} error={errorFor("endsAt")}>
-            <Input id="appt-end" type="datetime-local" value={values.endsAt} onChange={(e) => set("endsAt", e.target.value)} invalid={!!errorFor("endsAt")} />
+            <DateInput id="appt-end" withTime value={values.endsAt} onChange={(v) => set("endsAt", v)} invalid={!!errorFor("endsAt")} />
           </Field>
           <Field htmlFor="appt-location" label={t("fields.location")} optionalLabel={tc("optional")}>
             <Input id="appt-location" value={values.location} onChange={(e) => set("location", e.target.value)} />
           </Field>
           <Field htmlFor="appt-remind" label={t("fields.remindAt")} optionalLabel={tc("optional")} error={errorFor("remindAt")}>
-            <Input id="appt-remind" type="datetime-local" value={values.remindAt} onChange={(e) => set("remindAt", e.target.value)} invalid={!!errorFor("remindAt")} />
+            <DateInput id="appt-remind" withTime value={values.remindAt} onChange={(v) => set("remindAt", v)} invalid={!!errorFor("remindAt")} />
           </Field>
           <Field htmlFor="appt-assignee" label={t("fields.assignee")} error={errorFor("assigneeId")}>
             <Select id="appt-assignee" value={values.assigneeId} onChange={(value) => set("assigneeId", value)} invalid={!!errorFor("assigneeId")}>

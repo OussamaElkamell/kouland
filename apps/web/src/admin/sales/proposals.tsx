@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import { useTranslations } from "next-intl";
 import { PROPOSAL_STATUSES, type Proposal, type ProposalStatus } from "@kouland/contracts";
 import { Field, Icon, Input, Textarea } from "@kouland/ui";
+import { DateInput } from "@/admin/date-input";
 import { useFormat, useSubmit } from "@/admin/hooks";
 import { PROPOSAL_TONE } from "@/admin/labels";
 import { Badge, ConfirmDialog, FormError, Modal, Select } from "@/admin/ui";
@@ -170,7 +171,7 @@ export function Proposals({
             </Field>
           </div>
           <Field htmlFor="proposal-valid" label={t("validUntilLabel")} optionalLabel={tc("optional")} error={form.errorFor("validUntil")}>
-            <Input id="proposal-valid" type="date" value={values.validUntil} onChange={(e) => set("validUntil", e.target.value)} />
+            <DateInput id="proposal-valid" value={values.validUntil} onChange={(v) => set("validUntil", v)} />
           </Field>
           <Field htmlFor="proposal-details" label={t("details")} optionalLabel={tc("optional")} error={form.errorFor("details")}>
             <Textarea id="proposal-details" rows={4} value={values.details} onChange={(e) => set("details", e.target.value)} />
