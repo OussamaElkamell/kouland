@@ -65,13 +65,13 @@ service's console in Railway (not the web one: only the api has `apps/api/dist`)
 Node is under `/mise/installs/node/<version>/bin/node`:
 
 ```sh
-cd /app/apps/api && /mise/installs/node/*/bin/node dist/cli/create-admin.js
+cd /app/apps/api && $(ls -d /mise/installs/node/*/bin/node | tail -1) dist/cli/create-admin.js
 ```
 
 If it says a table does not exist, the database has no tables yet; create them, then run it again:
 
 ```sh
-cd /app/apps/api && /mise/installs/node/*/bin/node node_modules/prisma/build/index.js migrate deploy
+cd /app/apps/api && $(ls -d /mise/installs/node/*/bin/node | tail -1) node_modules/prisma/build/index.js migrate deploy
 ```
 
 On your own computer, `pnpm --filter @kouland/api create-admin` does the same with the `DATABASE_URL` in
@@ -133,7 +133,7 @@ and sign in at `<web address>/admin`.
 Check the forwarding from the **web** service's console; it should print the address, then `{"status":"ok"}`:
 
 ```sh
-echo $API_PROXY_TARGET; /mise/installs/node/*/bin/node -e "fetch(process.env.API_PROXY_TARGET+'/api/health').then(r=>r.text()).then(console.log,e=>console.error(e.cause||e))"
+echo $API_PROXY_TARGET; $(ls -d /mise/installs/node/*/bin/node | tail -1) -e "fetch(process.env.API_PROXY_TARGET+'/api/health').then(r=>r.text()).then(console.log,e=>console.error(e.cause||e))"
 ```
 
 `http://:` or `undefined` means `API_PROXY_TARGET` is empty; `ENOTFOUND` a wrong private domain; `ECONNREFUSED`
