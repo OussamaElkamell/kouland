@@ -45,7 +45,7 @@ Both services listen on the port Railway gives them (`PORT`).
 | `BREVO_API_KEY` | Brevo API key |
 | `MAIL_FROM_EMAIL` | `noreply@kouland.com` (kouland.com must be verified in Brevo) |
 | `MAIL_FROM_NAME` | `Kouland Technology` |
-| `CONTACT_INBOX_EMAIL` | `contact@kouland.com` |
+| `CONTACT_INBOX_EMAIL` | `contact@koulandtechnology.com` |
 | `CAREERS_INBOX_EMAIL` | Optional. Inbox for job applications (CV attached). Defaults to `CONTACT_INBOX_EMAIL` |
 | `TRUST_PROXY` | `1` (Railway's proxy). Use `2` if Cloudflare is also in front. Needed so rate limits count each visitor separately |
 
@@ -64,4 +64,4 @@ These are written into the site when it is built: after changing one, redeploy (
 
 1. `https://api.kouland.com/api/health` answers `{"status":"ok"}` (this also checks the database connection).
 2. `https://kouland.com` redirects to `/en` and shows the site.
-3. Send a message from the contact page and check that it reaches `contact@kouland.com`.
+3. Send a message from the contact page and check that it reaches `contact@koulandtechnology.com`.

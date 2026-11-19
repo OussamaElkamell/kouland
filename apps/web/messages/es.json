@@ -42,7 +42,9 @@
   "footer": {
     "platforms": "Plataformas",
     "company": "Empresa",
-    "rights": "© {year} Kouland Technology, Inc. Todos los derechos reservados."
+    "rights": "© {year} Kouland Technology, Inc. Todos los derechos reservados.",
+    "legal": "Legal",
+    "address": "Dirección"
   },
   "platforms": {
     "heroLabel": "Nuestras plataformas",
@@ -275,7 +277,10 @@
         "body": "Nuestro equipo le responderá al correo electrónico que nos indicó.",
         "again": "Enviar otro mensaje"
       }
-    }
+    },
+    "visitTitle": "Visítenos",
+    "emailTitle": "Escríbanos",
+    "emailBody": "Escríbanos en cualquier momento."
   },
   "notFound": {
     "title": "Página no encontrada",
@@ -475,6 +480,31 @@
         "home": "Volver al inicio",
         "careers": "Empleo"
       }
+    }
+  },
+  "legal": {
+    "eyebrow": "Legal",
+    "onThisPage": "En esta página",
+    "englishOnly": "Este documento solo está disponible en inglés.",
+    "contactTitle": "¿Preguntas sobre esta política?",
+    "contactBody": "Contacte a Kouland Technology, Inc. y con gusto le ayudaremos.",
+    "address": "Dirección",
+    "email": "Correo electrónico",
+    "phone": "Teléfono",
+    "privacy": {
+      "title": "Política de privacidad",
+      "subtitle": "Cómo Kouland Technology recopila, usa y protege su información personal.",
+      "description": "La política de privacidad de Kouland Technology, Inc.: qué información recopilamos y cómo la usamos y protegemos."
+    },
+    "terms": {
+      "title": "Términos del servicio",
+      "subtitle": "Los términos que se aplican cuando usa nuestro sitio web y nuestros servicios.",
+      "description": "Los términos y condiciones de uso del sitio web y los servicios de Kouland Technology, Inc."
+    },
+    "cancellation": {
+      "title": "Política de cancelación",
+      "subtitle": "Cómo cancelar o reprogramar una cita y las tarifas que se aplican.",
+      "description": "La política de cancelación y reprogramación de citas de Kouland Technology, Inc."
     }
   }
 }

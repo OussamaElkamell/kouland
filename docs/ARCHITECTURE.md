@@ -40,7 +40,7 @@ Build order is handled by Turborepo (`dependsOn: ["^build"]`): contracts → api
 | 3 | No workflow automation in v1 | Excluded by the brief and the Technical document. Only sync and basic notifications. |
 | 4 | Roles: Admin and Manager | The Requirements name only these two. A third role needs confirmation. |
 | 5 | Website platform showcase is static content (`apps/web/src/content/platforms.ts`) | The five names are predefined for the website. The CRM reads platforms from the database and never uses this file. |
-| 6 | Contact form messages are stored in `contact_messages`, then emailed to `CONTACT_INBOX_EMAIL` (contact@kouland.com) through Brevo, with the visitor as reply-to | Requested on 2026-11-16. Saved first, so an email failure never loses a message. Brevo sits behind the `MailSender` adapter (`apps/api/src/mail/`); without `BREVO_API_KEY` emails are only logged. |
+| 6 | Contact form messages are stored in `contact_messages`, then emailed to `CONTACT_INBOX_EMAIL` (contact@koulandtechnology.com) through Brevo, with the visitor as reply-to | Requested on 2026-11-16. Saved first, so an email failure never loses a message. Brevo sits behind the `MailSender` adapter (`apps/api/src/mail/`); without `BREVO_API_KEY` emails are only logged. |
 | 7 | Website in English, French and Spanish, with the language in every address (/en, /fr, /es) | Requested on 2026-11-16. Uses `next-intl`. `/` redirects by browser language. Hreflang links and a per-language sitemap for search engines. |
 | 8 | Zod contracts instead of class-validator DTOs | Lets the web app and the API share the same rules and types. |
 | 9 | Public write routes are rate limited (`@nestjs/throttler`) | The contact form is public and writes to the database. |

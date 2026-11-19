@@ -25,7 +25,7 @@ describe("POST /api/contact", () => {
   let app: INestApplication;
 
   beforeEach(async () => {
-    process.env.CONTACT_INBOX_EMAIL = "contact@kouland.com";
+    process.env.CONTACT_INBOX_EMAIL = "contact@koulandtechnology.com";
     create.mockReset().mockResolvedValue({ id: "msg_1", createdAt: new Date("2026-11-14T10:00:00.000Z") });
     send.mockReset().mockResolvedValue(undefined);
     const moduleRef = await Test.createTestingModule({
@@ -55,7 +55,7 @@ describe("POST /api/contact", () => {
     await request(app.getHttpServer()).post("/api/contact").send(valid).expect(201);
     expect(send).toHaveBeenCalledTimes(1);
     const mail = send.mock.calls[0][0];
-    expect(mail.to).toEqual([{ email: "contact@kouland.com", name: "Kouland Technology" }]);
+    expect(mail.to).toEqual([{ email: "contact@koulandtechnology.com", name: "Kouland Technology" }]);
     expect(mail.replyTo).toEqual({ email: "awa@example.com", name: "Awa Diallo" });
     expect(mail.subject).toBe("Website message from Awa Diallo");
     expect(mail.text).toContain("I need hosting for my shop.");

@@ -1,7 +1,7 @@
 import { BREVO_URL, BrevoMailSender } from "./brevo-mail-sender";
 
 const mail = {
-  to: [{ email: "contact@kouland.com", name: "Kouland Technology" }],
+  to: [{ email: "contact@koulandtechnology.com", name: "Kouland Technology" }],
   replyTo: { email: "awa@example.com", name: "Awa Diallo" },
   subject: "Website message from Awa Diallo",
   html: "<p>Hello</p>",
@@ -23,7 +23,7 @@ describe("BrevoMailSender", () => {
     expect(init.headers["api-key"]).toBe("test-key");
     expect(JSON.parse(init.body)).toEqual({
       sender: { email: "no-reply@kouland.com", name: "Kouland" },
-      to: [{ email: "contact@kouland.com", name: "Kouland Technology" }],
+      to: [{ email: "contact@koulandtechnology.com", name: "Kouland Technology" }],
       replyTo: { email: "awa@example.com", name: "Awa Diallo" },
       subject: "Website message from Awa Diallo",
       htmlContent: "<p>Hello</p>",

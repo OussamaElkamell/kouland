@@ -9,6 +9,12 @@ export const COMPANY = {
   shortName: "Kouland",
   foundedYear: 2015,
   phone: { display: "1 (918) 704-7676", href: "tel:+19187047676" },
+  email: { display: "contact@koulandtechnology.com", href: "mailto:contact@koulandtechnology.com" },
+  address: {
+    street: "9717 E 42nd St Suite 136",
+    locality: "Tulsa, OK 74146",
+    mapHref: "https://www.google.com/maps/search/?api=1&query=9717+E+42nd+St+Suite+136%2C+Tulsa%2C+OK+74146",
+  },
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3100",
 } as const;
 

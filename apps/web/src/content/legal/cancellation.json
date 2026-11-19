@@ -1,0 +1,44 @@
+{
+  "source": "https://koulandtechnology.com/cancellation-policy/",
+  "importedOn": "2026-11-19",
+  "sections": [
+    {
+      "blocks": [
+        {
+          "type": "p",
+          "text": "We understand that schedules can change on short notice as do our customers’ needs. We try to be as flexible as possible, but this can cause our technicians to lose valuable jobs. We often pay our technicians for appointments that are cancelled or rescheduled with short notice, so we appreciate your understanding. Fees apply to in-home services only."
+        }
+      ]
+    },
+    {
+      "heading": "Cancellation",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "You may cancel a confirmed appointment up to 24 hours prior to the appointment time at no charge.",
+            "A $25 cancellation fee will be applied to cancellations within 24 hours of a confirmed appointment.",
+            "If you fail to cancel at least 3 hours prior to the confirmed appointment time, you will be charged in full for your scheduled service."
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "Rescheduling",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "You may reschedule a confirmed appointment up to 3 hours prior to the appointment time at no charge.",
+            "A $25 service fee will be applied to appointments rescheduled within 3 hours of the appointment time."
+          ]
+        },
+        {
+          "type": "p",
+          "text": "If you need to cancel or reschedule your appointment, please call Support at 918-704-7676 to ensure prompt attention."
+        }
+      ]
+    }
+  ],
+  "effective": null
+}

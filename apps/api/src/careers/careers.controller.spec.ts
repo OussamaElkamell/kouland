@@ -48,7 +48,7 @@ describe("POST /api/careers/applications", () => {
   };
 
   beforeEach(async () => {
-    process.env.CONTACT_INBOX_EMAIL = "contact@kouland.com";
+    process.env.CONTACT_INBOX_EMAIL = "contact@koulandtechnology.com";
     delete process.env.CAREERS_INBOX_EMAIL;
     create.mockReset().mockResolvedValue({ id: "app_1", createdAt: new Date("2026-11-17T10:00:00.000Z") });
     send.mockReset().mockResolvedValue(undefined);
@@ -79,7 +79,7 @@ describe("POST /api/careers/applications", () => {
   it("emails the application with the CV attached and the applicant as reply-to", async () => {
     await submit().expect(201);
     const mail = send.mock.calls[0][0];
-    expect(mail.to).toEqual([{ email: "contact@kouland.com", name: "Kouland Technology" }]);
+    expect(mail.to).toEqual([{ email: "contact@koulandtechnology.com", name: "Kouland Technology" }]);
     expect(mail.replyTo).toEqual({ email: "awa@example.com", name: "Awa Diallo" });
     expect(mail.subject).toBe("Job application: Field technician (KoulandTech) from Awa Diallo");
     expect(mail.attachments).toHaveLength(1);

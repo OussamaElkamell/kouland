@@ -42,7 +42,9 @@
   "footer": {
     "platforms": "Platforms",
     "company": "Company",
-    "rights": "© {year} Kouland Technology, Inc. All rights reserved."
+    "rights": "© {year} Kouland Technology, Inc. All rights reserved.",
+    "legal": "Legal",
+    "address": "Address"
   },
   "platforms": {
     "heroLabel": "Our platforms",
@@ -275,7 +277,10 @@
         "body": "Our team will reply to the email address you gave us.",
         "again": "Send another message"
       }
-    }
+    },
+    "visitTitle": "Visit us",
+    "emailTitle": "Email us",
+    "emailBody": "Write to us any time."
   },
   "notFound": {
     "title": "Page not found",
@@ -475,6 +480,31 @@
         "home": "Back to the home page",
         "careers": "Careers"
       }
+    }
+  },
+  "legal": {
+    "eyebrow": "Legal",
+    "onThisPage": "On this page",
+    "englishOnly": "This document is only available in English.",
+    "contactTitle": "Questions about this policy?",
+    "contactBody": "Contact Kouland Technology, Inc. and we will be glad to help.",
+    "address": "Address",
+    "email": "Email",
+    "phone": "Phone",
+    "privacy": {
+      "title": "Privacy Policy",
+      "subtitle": "How Kouland Technology collects, uses and protects your personal information.",
+      "description": "The Kouland Technology, Inc. privacy policy: what information we collect and how we use and protect it."
+    },
+    "terms": {
+      "title": "Terms of Service",
+      "subtitle": "The terms that apply when you use our website and services.",
+      "description": "The terms and conditions for using the Kouland Technology, Inc. website and services."
+    },
+    "cancellation": {
+      "title": "Cancellation Policy",
+      "subtitle": "How to cancel or reschedule an appointment, and the fees that apply.",
+      "description": "The Kouland Technology, Inc. cancellation and rescheduling policy for appointments."
     }
   }
 }

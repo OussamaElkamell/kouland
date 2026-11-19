@@ -42,7 +42,9 @@
   "footer": {
     "platforms": "Plateformes",
     "company": "Entreprise",
-    "rights": "© {year} Kouland Technology, Inc. Tous droits réservés."
+    "rights": "© {year} Kouland Technology, Inc. Tous droits réservés.",
+    "legal": "Mentions légales",
+    "address": "Adresse"
   },
   "platforms": {
     "heroLabel": "Nos plateformes",
@@ -275,7 +277,10 @@
         "body": "Notre équipe vous répondra à l'adresse e-mail que vous nous avez indiquée.",
         "again": "Envoyer un autre message"
       }
-    }
+    },
+    "visitTitle": "Nous rendre visite",
+    "emailTitle": "Écrivez-nous",
+    "emailBody": "Écrivez-nous à tout moment."
   },
   "notFound": {
     "title": "Page introuvable",
@@ -475,6 +480,31 @@
         "home": "Retour à l'accueil",
         "careers": "Carrières"
       }
+    }
+  },
+  "legal": {
+    "eyebrow": "Mentions légales",
+    "onThisPage": "Sur cette page",
+    "englishOnly": "Ce document n'est disponible qu'en anglais.",
+    "contactTitle": "Des questions sur cette politique ?",
+    "contactBody": "Contactez Kouland Technology, Inc. et nous serons ravis de vous aider.",
+    "address": "Adresse",
+    "email": "E-mail",
+    "phone": "Téléphone",
+    "privacy": {
+      "title": "Politique de confidentialité",
+      "subtitle": "Comment Kouland Technology collecte, utilise et protège vos informations personnelles.",
+      "description": "La politique de confidentialité de Kouland Technology, Inc. : les informations que nous collectons et comment nous les utilisons et les protégeons."
+    },
+    "terms": {
+      "title": "Conditions d'utilisation",
+      "subtitle": "Les conditions qui s'appliquent lorsque vous utilisez notre site et nos services.",
+      "description": "Les conditions générales d'utilisation du site et des services de Kouland Technology, Inc."
+    },
+    "cancellation": {
+      "title": "Politique d'annulation",
+      "subtitle": "Comment annuler ou reporter un rendez-vous, et les frais applicables.",
+      "description": "La politique d'annulation et de report des rendez-vous de Kouland Technology, Inc."
     }
   }
 }
