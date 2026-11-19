@@ -56,14 +56,23 @@ Both services listen on the port Railway gives them (`PORT`).
 
 ## First CRM administrator
 
-The CRM (`https://kouland.com/admin`) has no sign-up page. Create the first administrator once, from a shell with
-the production `DATABASE_URL` (Railway: `railway ssh` into the api service, or `railway run` locally):
+The CRM (`https://kouland.com/admin`) has no sign-up page. Create the first administrator once, from the **api**
+service's console in Railway (not the web one: only the api has `apps/api/dist`). Check first with
+`echo $RAILWAY_SERVICE_NAME $RAILWAY_ENVIRONMENT_NAME`. The container has neither `pnpm` nor `node` on its PATH;
+Node is under `/mise/installs/node/<version>/bin/node`:
 
 ```sh
-pnpm --filter @kouland/api create-admin
+cd /app/apps/api && /mise/installs/node/*/bin/node dist/cli/create-admin.js
 ```
 
-It asks for the email, name and password (at least 10 characters). On a server without a terminal, pass
+If it says a table does not exist, the database has no tables yet; create them, then run it again:
+
+```sh
+cd /app/apps/api && /mise/installs/node/*/bin/node node_modules/prisma/build/index.js migrate deploy
+```
+
+On your own computer, `pnpm --filter @kouland/api create-admin` does the same with the `DATABASE_URL` in
+`apps/api/.env`. It asks for the email, name and password (at least 10 characters). On a server without a terminal, pass
 `--email` and `--name` and put the password in `ADMIN_PASSWORD` for that one command. Running it again for the
 same email resets that account's password and makes it an administrator. Every other account is then created in
 the CRM under **Settings → Accounts**.
@@ -101,7 +110,7 @@ CRM sign-in cookie set by the api's address would never be sent. On staging the 
 
 | Service | Variable | Value |
 |---|---|---|
-| web | `API_PROXY_TARGET` | `http://${{api.RAILWAY_PRIVATE_DOMAIN}}:${{api.PORT}}` (the api's private address; no `/api`) |
+| web | `API_PROXY_TARGET` | `http://<api private domain>:8080`, e.g. `http://koulandapi.railway.internal:8080` (no `/api`). Get the domain with `echo $RAILWAY_PRIVATE_DOMAIN` in the api's console, or from its Settings → Networking. Type it in: a `${{service.VAR}}` reference resolves to nothing when the service name does not match exactly |
 | web | `NEXT_PUBLIC_API_URL` | `/backend/api` |
 | web | `NEXT_PUBLIC_SITE_URL` | the web service's `https://….up.railway.app` address |
 | api | `DATABASE_URL` | the staging database's `DATABASE_URL` |
@@ -111,6 +120,16 @@ CRM sign-in cookie set by the api's address would never be sent. On staging the 
 | api | `CORS_ORIGINS` | the web address (not used by the forwarding, but keeps direct calls working) |
 | api | `BREVO_API_KEY` | leave empty: staging only logs emails instead of sending them |
 
-All `web` values are read during the build: change them, then redeploy. When staging runs, create its first
-administrator against the staging database (`railway run --environment staging --service api pnpm --filter
-@kouland/api create-admin`) and sign in at `<web address>/admin`.
+All `web` values are read during the build: change them, then redeploy. The api's start command must stay
+`pnpm run start:api` (Settings → Deploy → Custom Start Command empty or set to that): it creates the tables before
+starting. Then create the first administrator from the **api** service's console (see "First CRM administrator")
+and sign in at `<web address>/admin`.
+
+Check the forwarding from the **web** service's console; it should print the address, then `{"status":"ok"}`:
+
+```sh
+echo $API_PROXY_TARGET; /mise/installs/node/*/bin/node -e "fetch(process.env.API_PROXY_TARGET+'/api/health').then(r=>r.text()).then(console.log,e=>console.error(e.cause||e))"
+```
+
+`http://:` or `undefined` means `API_PROXY_TARGET` is empty; `ENOTFOUND` a wrong private domain; `ECONNREFUSED`
+that the api is not running on that port.
