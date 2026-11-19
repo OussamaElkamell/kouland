@@ -265,6 +265,13 @@ h1, h2, h3, h4, .font-display {
   --gradient-brand: linear-gradient(135deg, rgb(var(--brand-g1)) 0%, rgb(var(--brand-g2)) 50%, rgb(var(--brand-g3)) 100%);
 }
 
+/* Exception: the product word of a wordmark (Host, Route…) keeps the platform colour at rest, as plain text in the
+   readable brand-text tone; on hover it takes the full gradient like the rest of the card. */
+[data-platform].brand-on-hover:not(:hover):not(:focus-within) .wordmark-product {
+  background: none;
+  color: rgb(var(--color-brand-text));
+}
+
 /* ==========================================================================
    Interactive cards (HoverCard): the card lifts and leans toward the pointer, and a soft spotlight in the
    card's brand colour follows the cursor. Children opt in to their own reaction:

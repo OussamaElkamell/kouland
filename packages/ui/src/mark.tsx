@@ -87,7 +87,7 @@ export function KoulandMark({ monogram, size = 40, glow = false, className = "" 
 export function Wordmark({ product, className = "" }: { product: string; className?: string }) {
   return (
     <span className={`font-display font-extrabold tracking-tight ${className}`}>
-      Kouland<span className="gradient-text-brand">{product}</span>
+      Kouland<span className="wordmark-product gradient-text-brand">{product}</span>
     </span>
   );
 }
