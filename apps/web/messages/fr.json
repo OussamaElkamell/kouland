@@ -37,7 +37,8 @@
     "closeMenu": "Fermer le menu",
     "theme": "Basculer entre le thème sombre et le thème clair",
     "language": "Langue",
-    "careers": "Carrières"
+    "careers": "Carrières",
+    "support": "Signaler un problème"
   },
   "footer": {
     "platforms": "Plateformes",
@@ -505,6 +506,48 @@
       "title": "Politique d'annulation",
       "subtitle": "Comment annuler ou reporter un rendez-vous, et les frais applicables.",
       "description": "La politique d'annulation et de report des rendez-vous de Kouland Technology, Inc."
+    }
+  },
+  "supportPage": {
+    "title": "Signaler un problème",
+    "description": "Signalez un problème avec un service de Kouland Technology. Notre équipe d'assistance s'en occupe.",
+    "eyebrow": "Assistance",
+    "heading": "Signaler un problème",
+    "subtitle": "Dites-nous ce qui ne fonctionne pas. Votre demande arrive directement à notre équipe d'assistance.",
+    "whatNextTitle": "Et ensuite ?",
+    "whatNextBody": "Vous recevez un numéro de ticket. Notre équipe l'examine et vous contacte par e-mail ou par téléphone jusqu'à la résolution.",
+    "urgentTitle": "C'est urgent ?",
+    "urgentBody": "Si un service est en panne pour votre activité, appelez-nous aussi.",
+    "form": {
+      "name": "Votre nom",
+      "email": "E-mail",
+      "emailHint": "Utilisez l'e-mail que vous nous avez donné en tant que client, pour que nous retrouvions votre compte.",
+      "phone": "Téléphone",
+      "platform": "Quel service ?",
+      "platformUnsure": "Je ne sais pas",
+      "subject": "Objet",
+      "description": "Que se passe-t-il ?",
+      "descriptionHint": "Ce que vous voyez, depuis quand, et ce que vous avez déjà essayé.",
+      "optional": "(facultatif)",
+      "send": "Envoyer",
+      "sending": "Envoi en cours…",
+      "errors": {
+        "name": "Saisissez votre nom (au moins 2 caractères).",
+        "email": "Saisissez une adresse e-mail valide.",
+        "phone": "Ce numéro de téléphone est trop long.",
+        "platformId": "Choisissez un service dans la liste.",
+        "subject": "Donnez un court objet à votre demande.",
+        "description": "Dites-nous-en un peu plus (au moins 10 caractères).",
+        "tooMany": "Trop de demandes. Patientez une minute puis réessayez.",
+        "network": "Impossible de joindre le serveur. Vérifiez votre connexion et réessayez.",
+        "generic": "Une erreur est survenue. Veuillez réessayer."
+      },
+      "sent": {
+        "badge": "Ticket n° {number}",
+        "title": "Merci. Nous avons bien reçu votre demande.",
+        "body": "Votre numéro de ticket est le {number}. Indiquez-le si vous nous contactez à ce sujet.",
+        "again": "Signaler un autre problème"
+      }
     }
   }
 }

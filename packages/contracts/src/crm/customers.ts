@@ -124,6 +124,11 @@ export const ACTIVITY_TYPES = [
   "OPPORTUNITY_STATUS",
   "PROPOSAL_CREATED",
   "PROPOSAL_STATUS",
+  "TICKET_CREATED",
+  "TICKET_STATUS",
+  "TASK_CREATED",
+  "TASK_COMPLETED",
+  "APPOINTMENT_SCHEDULED",
 ] as const;
 export const activityTypeSchema = z.enum(ACTIVITY_TYPES);
 export type ActivityType = z.infer<typeof activityTypeSchema>;
@@ -140,6 +145,7 @@ export const activitySchema = z.object({
   data: z.record(z.string(), z.unknown()).nullable(),
   user: refSchema.nullable(),
   opportunity: z.object({ id: z.string(), title: z.string() }).nullable(),
+  ticket: z.object({ id: z.string(), number: z.number().int(), subject: z.string() }).nullable(),
   createdAt: z.string(),
 });
 export type Activity = z.infer<typeof activitySchema>;

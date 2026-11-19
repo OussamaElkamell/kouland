@@ -3,3 +3,7 @@ export * from "./auth";
 export * from "./platforms";
 export * from "./customers";
 export * from "./sales";
+export * from "./tickets";
+export * from "./agenda";
+export * from "./notifications";
+export * from "./dashboard";

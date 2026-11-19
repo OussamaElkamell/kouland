@@ -71,10 +71,12 @@ enum UserRole {
   EMPLOYEE
 }
 
-/// A part of the CRM that access is granted to. Milestone 3 adds tickets and tasks.
+/// A part of the CRM that access is granted to. TASKS covers tasks and appointments.
 enum PermissionArea {
   CUSTOMERS
   SALES
+  TICKETS
+  TASKS
 }
 
 /// VIEW: read. EDIT: also create and update. MANAGE: also delete.
@@ -108,6 +110,14 @@ model User {
   tokens             UserToken[]      @relation("TokenUser")
   issuedTokens       UserToken[]      @relation("TokenIssuer")
   activities         Activity[]
+  assignedTickets    Ticket[]         @relation("TicketAssignee")
+  createdTickets     Ticket[]         @relation("TicketCreatedBy")
+  ticketUpdates      TicketUpdate[]
+  assignedTasks      Task[]           @relation("TaskAssignee")
+  createdTasks       Task[]           @relation("TaskCreatedBy")
+  assignedAppts      Appointment[]    @relation("AppointmentAssignee")
+  createdAppts       Appointment[]    @relation("AppointmentCreatedBy")
+  notifications      Notification[]
   ownedOpportunities Opportunity[]    @relation("OpportunityOwner")
   createdCustomers   Customer[]       @relation("CustomerCreatedBy")
   createdProposals   Proposal[]       @relation("ProposalCreatedBy")
@@ -195,6 +205,9 @@ model Platform {
   users         UserPlatform[]
   customers     CustomerPlatform[]
   opportunities Opportunity[]
+  tickets       Ticket[]
+  tasks         Task[]
+  appointments  Appointment[]
 
   @@map("platforms")
 }
@@ -239,6 +252,9 @@ model Customer {
   platforms     CustomerPlatform[]
   opportunities Opportunity[]
   activities    Activity[]
+  tickets       Ticket[]
+  tasks         Task[]
+  appointments  Appointment[]
 
   @@index([displayName])
   @@index([email])
@@ -323,6 +339,7 @@ model Opportunity {
   owner      User?      @relation("OpportunityOwner", fields: [ownerId], references: [id], onDelete: SetNull)
   proposals  Proposal[]
   activities Activity[]
+  tasks      Task[]
 
   @@index([status])
   @@index([platformId])
@@ -373,6 +390,11 @@ enum ActivityType {
   OPPORTUNITY_STATUS
   PROPOSAL_CREATED
   PROPOSAL_STATUS
+  TICKET_CREATED
+  TICKET_STATUS
+  TASK_CREATED
+  TASK_COMPLETED
+  APPOINTMENT_SCHEDULED
 }
 
 /// One event in a customer's history: a note written by staff, or a change recorded by the CRM.
@@ -381,6 +403,7 @@ model Activity {
   id            String       @id @default(cuid())
   customerId    String
   opportunityId String?
+  ticketId      String?
   type          ActivityType
   body          String?
   data          Json?
@@ -389,8 +412,221 @@ model Activity {
 
   customer    Customer     @relation(fields: [customerId], references: [id], onDelete: Cascade)
   opportunity Opportunity? @relation(fields: [opportunityId], references: [id], onDelete: SetNull)
+  ticket      Ticket?      @relation(fields: [ticketId], references: [id], onDelete: SetNull)
   user        User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@index([customerId, createdAt])
   @@map("activities")
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// Milestone 3: support tickets, tasks and appointments, notifications.
+// ---------------------------------------------------------------------------------------------------------------
+
+/// A team a ticket can be assigned to. Managed by administrators; deactivated, never deleted.
+model Department {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  tickets     Ticket[]
+
+  @@map("departments")
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  WAITING_ON_CUSTOMER
+  RESOLVED
+  CLOSED
+}
+
+/// HIGH and URGENT are "high priority" in the requirements.
+enum TicketPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum TicketSource {
+  STAFF
+  WEBSITE
+}
+
+/// A customer support request, followed until it is resolved.
+model Ticket {
+  id             String         @id @default(cuid())
+  /// Short number shown to people, e.g. #1001.
+  number         Int            @unique @default(autoincrement())
+  subject        String
+  description    String
+  status         TicketStatus   @default(OPEN)
+  priority       TicketPriority @default(NORMAL)
+  source         TicketSource   @default(STAFF)
+  customerId     String?
+  /// The affected service.
+  platformId     String?
+  departmentId   String?
+  assigneeId     String?
+  createdById    String?
+  /// Who reported it, when it came from the website form (kept even when it was matched to a customer).
+  requesterName  String?
+  requesterEmail String?
+  requesterPhone String?
+  resolvedAt     DateTime?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  customer   Customer?      @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  platform   Platform?      @relation(fields: [platformId], references: [id], onDelete: Restrict)
+  department Department?    @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  assignee   User?          @relation("TicketAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
+  createdBy  User?          @relation("TicketCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  updates    TicketUpdate[]
+  tasks      Task[]
+  activities Activity[]
+
+  @@index([status])
+  @@index([priority])
+  @@index([platformId])
+  @@index([assigneeId])
+  @@index([customerId])
+  @@map("tickets")
+}
+
+enum TicketUpdateType {
+  COMMENT
+  STATUS
+  PRIORITY
+  ASSIGNED
+  DEPARTMENT
+}
+
+/// The ticket's progress: comments by staff and changes recorded by the CRM. `data` holds old and new values.
+model TicketUpdate {
+  id        String           @id @default(cuid())
+  ticketId  String
+  type      TicketUpdateType
+  body      String?
+  data      Json?
+  userId    String?
+  createdAt DateTime         @default(now())
+  ticket    Ticket           @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  user      User?            @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([ticketId, createdAt])
+  @@map("ticket_updates")
+}
+
+enum TaskStatus {
+  PENDING
+  COMPLETED
+}
+
+enum TaskPriority {
+  NORMAL
+  HIGH
+}
+
+/// Something to do, optionally by a date, for someone, about a customer, opportunity or ticket.
+model Task {
+  id             String       @id @default(cuid())
+  title          String
+  description    String?
+  status         TaskStatus   @default(PENDING)
+  priority       TaskPriority @default(NORMAL)
+  dueAt          DateTime?
+  /// When to remind the assignee (a notification and an email).
+  remindAt       DateTime?
+  reminderSentAt DateTime?
+  completedAt    DateTime?
+  assigneeId     String?
+  createdById    String?
+  customerId     String?
+  opportunityId  String?
+  ticketId       String?
+  platformId     String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  assignee    User?        @relation("TaskAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
+  createdBy   User?        @relation("TaskCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  customer    Customer?    @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  opportunity Opportunity? @relation(fields: [opportunityId], references: [id], onDelete: SetNull)
+  ticket      Ticket?      @relation(fields: [ticketId], references: [id], onDelete: SetNull)
+  platform    Platform?    @relation(fields: [platformId], references: [id], onDelete: Restrict)
+
+  @@index([status, dueAt])
+  @@index([assigneeId])
+  @@index([remindAt])
+  @@map("tasks")
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
+/// A meeting or visit at a set time.
+model Appointment {
+  id             String            @id @default(cuid())
+  title          String
+  description    String?
+  location       String?
+  startsAt       DateTime
+  endsAt         DateTime
+  status         AppointmentStatus @default(SCHEDULED)
+  /// When to remind the assignee.
+  remindAt       DateTime?
+  reminderSentAt DateTime?
+  assigneeId     String?
+  createdById    String?
+  customerId     String?
+  platformId     String?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  assignee  User?     @relation("AppointmentAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
+  createdBy User?     @relation("AppointmentCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  customer  Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  platform  Platform? @relation(fields: [platformId], references: [id], onDelete: Restrict)
+
+  @@index([startsAt])
+  @@index([assigneeId])
+  @@index([remindAt])
+  @@map("appointments")
+}
+
+enum NotificationType {
+  NEW_LEAD
+  NEW_TICKET
+  TICKET_ASSIGNED
+  TICKET_STATUS
+  TASK_ASSIGNED
+  TASK_REMINDER
+  APPOINTMENT_ASSIGNED
+  APPOINTMENT_REMINDER
+  OPPORTUNITY_STATUS
+}
+
+/// A message for one person in the CRM's bell. `data` holds what the screen needs to word it in their language.
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  data      Json
+  /// CRM address to open, e.g. /admin/tickets/<id>.
+  link      String
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readAt, createdAt])
+  @@map("notifications")
 }

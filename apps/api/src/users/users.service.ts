@@ -1,10 +1,12 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import type { Prisma } from "@prisma/client";
 import {
+  noAccess,
   PERMISSION_AREAS,
   type AccessMap,
   type ApiErrorBody,
   type InvitedUser,
+  type PermissionArea,
   type LinkReceipt,
   type Ref,
   type User,
@@ -37,7 +39,7 @@ type Row = Prisma.UserGetPayload<{ select: typeof SELECT }>;
 
 /** The password hash never leaves this function: only whether one exists. */
 function toUser({ permissions, platforms, lastLoginAt, createdAt, locale, passwordHash, ...row }: Row): User {
-  const access: AccessMap = { CUSTOMERS: null, SALES: null };
+  const access: AccessMap = noAccess();
   for (const permission of permissions) access[permission.area] = permission.level;
   return {
     ...row,
@@ -73,11 +75,11 @@ export class UsersService {
   }
 
   /** Active accounts that can work on sales, for the "owner" of an opportunity. */
-  async assignable(): Promise<Ref[]> {
+  async assignable(area: PermissionArea): Promise<Ref[]> {
     return this.prisma.user.findMany({
       where: {
         isActive: true,
-        OR: [{ role: "ADMIN" }, { permissions: { some: { area: "SALES", level: { in: ["EDIT", "MANAGE"] } } } }],
+        OR: [{ role: "ADMIN" }, { permissions: { some: { area, level: { in: ["EDIT", "MANAGE"] } } } }],
       },
       orderBy: { name: "asc" },
       select: { id: true, name: true },

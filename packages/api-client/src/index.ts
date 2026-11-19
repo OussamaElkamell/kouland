@@ -1,6 +1,16 @@
 import {
   activitySchema,
   apiErrorSchema,
+  appointmentSchema,
+  dashboardSchema,
+  departmentSchema,
+  notificationListSchema,
+  supportPlatformsSchema,
+  supportReceiptSchema,
+  taskSchema,
+  ticketDetailSchema,
+  ticketSummarySchema,
+  ticketUpdateSchema,
   APPLICATION_FORM_FIELDS,
   assignableUsersSchema,
   contactMessageReceiptSchema,
@@ -18,7 +28,17 @@ import {
   proposalSchema,
   sessionUserSchema,
   userSchema,
+  type AppointmentInput,
+  type AppointmentListQuery,
   type ChangePasswordInput,
+  type CreateTicketInput,
+  type DepartmentInput,
+  type PermissionArea,
+  type SupportRequestInput,
+  type TaskInput,
+  type TaskListQuery,
+  type TicketListQuery,
+  type UpdateTicketInput,
   type ContactInput,
   type ContactMessageReceipt,
   type CreateContactMessageInput,
@@ -140,7 +160,8 @@ export function createApiClient({ baseUrl, fetch: fetchImpl = fetch }: ApiClient
     },
     users: {
       list: () => request("GET", "/users", z.array(userSchema)),
-      assignable: () => request("GET", "/users/assignable", assignableUsersSchema),
+      /** People who can be given work in an area (opportunities, tickets or tasks). */
+      assignable: (area: PermissionArea = "SALES") => request("GET", `/users/assignable?area=${area}`, assignableUsersSchema),
       /** Creates the account and emails the invitation. */
       create: (input: CreateUserInput) => request("POST", "/users", invitedUserSchema, { json: input }),
       update: (id: string, input: UpdateUserInput) => request("PATCH", `/users/${id}`, userSchema, { json: input }),
@@ -165,6 +186,46 @@ export function createApiClient({ baseUrl, fetch: fetchImpl = fetch }: ApiClient
         request("PUT", `/customers/${id}/contacts/${contactId}`, contactSchema, { json: input }),
       removeContact: (id: string, contactId: string) => request("DELETE", `/customers/${id}/contacts/${contactId}`, noContent),
       addNote: (id: string, input: NoteInput) => request("POST", `/customers/${id}/notes`, activitySchema, { json: input }),
+    },
+    departments: {
+      /** `all`: include inactive departments (administrators). */
+      list: (all = false) => request("GET", `/departments${all ? "?all=1" : ""}`, z.array(departmentSchema)),
+      create: (input: DepartmentInput) => request("POST", "/departments", departmentSchema, { json: input }),
+      update: (id: string, input: DepartmentInput) => request("PATCH", `/departments/${id}`, departmentSchema, { json: input }),
+    },
+    tickets: {
+      list: (query?: TicketListQuery) => request("GET", `/tickets${queryString(query)}`, pageOf(ticketSummarySchema)),
+      get: (id: string) => request("GET", `/tickets/${id}`, ticketDetailSchema),
+      create: (input: CreateTicketInput) => request("POST", "/tickets", idReceipt, { json: input }),
+      update: (id: string, input: UpdateTicketInput) => request("PATCH", `/tickets/${id}`, idReceipt, { json: input }),
+      comment: (id: string, body: string) => request("POST", `/tickets/${id}/comments`, ticketUpdateSchema, { json: { body } }),
+      remove: (id: string) => request("DELETE", `/tickets/${id}`, noContent),
+    },
+    /** Public: the "Report an issue" form on the website. */
+    support: {
+      platforms: () => request("GET", "/support/platforms", supportPlatformsSchema),
+      send: (input: SupportRequestInput) => request("POST", "/support/tickets", supportReceiptSchema, { json: input }),
+    },
+    tasks: {
+      list: (query?: TaskListQuery) => request("GET", `/tasks${queryString(query)}`, pageOf(taskSchema)),
+      create: (input: TaskInput) => request("POST", "/tasks", taskSchema, { json: input }),
+      update: (id: string, input: TaskInput) => request("PUT", `/tasks/${id}`, taskSchema, { json: input }),
+      setStatus: (id: string, status: "PENDING" | "COMPLETED") => request("PATCH", `/tasks/${id}/status`, taskSchema, { json: { status } }),
+      remove: (id: string) => request("DELETE", `/tasks/${id}`, noContent),
+    },
+    appointments: {
+      list: (query?: AppointmentListQuery) => request("GET", `/appointments${queryString(query)}`, pageOf(appointmentSchema)),
+      create: (input: AppointmentInput) => request("POST", "/appointments", appointmentSchema, { json: input }),
+      update: (id: string, input: AppointmentInput) => request("PUT", `/appointments/${id}`, appointmentSchema, { json: input }),
+      remove: (id: string) => request("DELETE", `/appointments/${id}`, noContent),
+    },
+    notifications: {
+      list: () => request("GET", "/notifications", notificationListSchema),
+      read: (id: string) => request("POST", `/notifications/${id}/read`, noContent),
+      readAll: () => request("POST", "/notifications/read-all", noContent),
+    },
+    dashboard: {
+      get: (platformId?: string) => request("GET", `/dashboard${queryString({ platformId })}`, dashboardSchema),
     },
     opportunities: {
       list: (query?: OpportunityListQuery) => request("GET", `/opportunities${queryString(query)}`, pageOf(opportunitySummarySchema)),

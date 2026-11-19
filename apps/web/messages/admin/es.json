@@ -38,7 +38,10 @@
       "duplicate": "Ya existe un cliente con este correo. Búsquelo en su lugar.",
       "wrongPassword": "Esta contraseña no es correcta.",
       "ownAccount": "No puede quitarse su propio acceso de administrador.",
-      "lastAdmin": "El CRM necesita al menos un administrador activo."
+      "lastAdmin": "El CRM necesita al menos un administrador activo.",
+      "remindAfterDue": "El recordatorio debe ser antes de la fecha límite.",
+      "endBeforeStart": "El final debe ser después del inicio.",
+      "remindAfterStart": "El recordatorio debe ser antes del inicio."
     }
   },
   "nav": {
@@ -59,7 +62,11 @@
       "ADMIN": "Administrador",
       "MANAGER": "Gerente",
       "EMPLOYEE": "Empleado"
-    }
+    },
+    "dashboard": "Panel",
+    "tickets": "Tickets",
+    "agenda": "Tareas y citas",
+    "departments": "Departamentos"
   },
   "login": {
     "title": "Iniciar sesión en Kouland CRM",
@@ -149,7 +156,10 @@
     "contacts": "Contactos",
     "otherContacts": "Otros contactos",
     "deleteTitle": "¿Eliminar este cliente?",
-    "deleteBody": "{name} se eliminará con sus contactos, oportunidades, propuestas e historial. Esta acción no se puede deshacer."
+    "deleteBody": "{name} se eliminará con sus contactos, oportunidades, propuestas e historial. Esta acción no se puede deshacer.",
+    "tickets": "Tickets",
+    "newTicket": "Nuevo ticket",
+    "newTask": "Nueva tarea"
   },
   "contacts": {
     "empty": "Aún no hay contactos.",
@@ -183,7 +193,13 @@
     "OPPORTUNITY_CREATED": "Nueva oportunidad: {title}",
     "OPPORTUNITY_STATUS": "{title} pasó a: {to}",
     "PROPOSAL_CREATED": "Propuesta {title} por {amount}",
-    "PROPOSAL_STATUS": "Propuesta {title}: {to}"
+    "PROPOSAL_STATUS": "Propuesta {title}: {to}",
+    "TICKET_CREATED": "Ticket n.º {number} abierto: {title}",
+    "TICKET_CREATED_WEBSITE": "Ticket n.º {number} enviado desde el sitio web: {title}",
+    "TICKET_STATUS": "Ticket n.º {number} ahora: {to}",
+    "TASK_CREATED": "Tarea agregada: {title}",
+    "TASK_COMPLETED": "Tarea terminada: {title}",
+    "APPOINTMENT_SCHEDULED": "Cita {title} el {when}"
   },
   "status": {
     "opportunity": {
@@ -200,6 +216,19 @@
       "SENT": "Enviada",
       "ACCEPTED": "Aceptada",
       "REJECTED": "Rechazada"
+    },
+    "ticket": {
+      "OPEN": "Abierto",
+      "IN_PROGRESS": "En curso",
+      "WAITING_ON_CUSTOMER": "Esperando al cliente",
+      "RESOLVED": "Resuelto",
+      "CLOSED": "Cerrado"
+    },
+    "priority": {
+      "LOW": "Baja",
+      "NORMAL": "Normal",
+      "HIGH": "Alta",
+      "URGENT": "Urgente"
     }
   },
   "sales": {
@@ -300,7 +329,8 @@
     "opportunities": "Oportunidades",
     "notFoundTitle": "Plataforma no encontrada",
     "notFound": "Esta plataforma no existe, está desactivada o no tiene acceso a ella.",
-    "noAccess": "No tiene acceso a clientes ni a ventas."
+    "noAccess": "No tiene acceso a clientes ni a ventas.",
+    "tickets": "Tickets"
   },
   "platformSettings": {
     "title": "Plataformas",
@@ -347,7 +377,9 @@
     "access": "Acceso",
     "area": {
       "CUSTOMERS": "Clientes",
-      "SALES": "Ventas"
+      "SALES": "Ventas",
+      "TICKETS": "Tickets",
+      "TASKS": "Tareas y citas"
     },
     "level": {
       "NONE": "Sin acceso",
@@ -408,5 +440,207 @@
     "mismatch": "Las dos contraseñas no coinciden.",
     "expired": "Este enlace ha caducado o ya se usó. Pida a su administrador que le envíe uno nuevo.",
     "toLogin": "Ir a iniciar sesión"
+  },
+  "tickets": {
+    "title": "Tickets",
+    "subtitle": "Solicitudes de soporte de los clientes, con seguimiento hasta su resolución.",
+    "add": "Nuevo ticket",
+    "create": "Crear ticket",
+    "views": {
+      "active": "Activos",
+      "mine": "Asignados a mí",
+      "urgent": "Alta prioridad",
+      "unassigned": "Sin asignar",
+      "done": "Resueltos o cerrados",
+      "all": "Todos"
+    },
+    "searchPlaceholder": "Buscar por número, asunto o cliente",
+    "anyStatus": "Cualquier estado",
+    "anyPriority": "Cualquier prioridad",
+    "anyDepartment": "Cualquier departamento",
+    "noneForCustomer": "Aún no hay tickets.",
+    "empty": "No hay tickets aquí",
+    "emptyBody": "Aquí aparecen los tickets creados por el equipo o enviados desde el sitio web.",
+    "unassigned": "Sin asignar",
+    "notFound": "Este ticket no existe o no tiene acceso a él.",
+    "fromWebsite": "Desde el sitio web",
+    "addTask": "Agregar tarea",
+    "progress": "Seguimiento",
+    "opened": "Abierto por {name}",
+    "openedWebsite": "Enviado desde el sitio web por {name}",
+    "commentPlaceholder": "Escriba un comentario o una actualización…",
+    "addComment": "Agregar comentario",
+    "handling": "Gestión",
+    "reporter": "Cliente",
+    "requester": "Reportado por",
+    "email": "Correo electrónico",
+    "phone": "Teléfono",
+    "created": "Abierto",
+    "resolved": "Resuelto",
+    "deleteTitle": "¿Eliminar este ticket?",
+    "deleteBody": "El ticket n.º {number} se eliminará con su seguimiento. Esta acción no se puede deshacer.",
+    "form": {
+      "subject": "Asunto",
+      "description": "Descripción",
+      "descriptionHint": "Qué pasó, qué ve el cliente y qué se ha intentado ya.",
+      "customer": "Cliente",
+      "platform": "Servicio afectado",
+      "noPlatform": "Sin plataforma",
+      "priority": "Prioridad",
+      "department": "Departamento",
+      "noDepartment": "Sin departamento",
+      "assignee": "Asignado a",
+      "status": "Estado"
+    },
+    "updates": {
+      "STATUS": "Estado cambiado a {to}",
+      "PRIORITY": "Prioridad cambiada a {to}",
+      "DEPARTMENT": "Enviado a {to}",
+      "DEPARTMENT_NONE": "Departamento quitado",
+      "ASSIGNED": "Asignado a {to}",
+      "UNASSIGNED": "Ya no está asignado"
+    }
+  },
+  "agenda": {
+    "title": "Tareas y citas",
+    "subtitle": "Qué hacer y cuándo: sus tareas, recordatorios y reuniones.",
+    "newTask": "Nueva tarea",
+    "newAppointment": "Nueva cita",
+    "editTask": "Editar tarea",
+    "editAppointment": "Editar cita",
+    "tabs": {
+      "tasks": "Tareas",
+      "appointments": "Citas"
+    },
+    "views": {
+      "mine": "Mías",
+      "all": "Todas",
+      "overdue": "Atrasadas",
+      "completed": "Terminadas"
+    },
+    "noTasks": "No hay tareas aquí",
+    "noTasksBody": {
+      "mine": "No tiene nada asignado pendiente.",
+      "all": "No hay tareas pendientes.",
+      "overdue": "Nada está atrasado.",
+      "completed": "Aún no hay tareas terminadas."
+    },
+    "noAppointments": "No hay citas próximas",
+    "noAppointmentsBody": "Aquí aparecen las reuniones y visitas programadas.",
+    "deleteTaskTitle": "¿Eliminar esta tarea?",
+    "deleteAppointmentTitle": "¿Eliminar esta cita?",
+    "deleteBody": "{title} se eliminará. Esta acción no se puede deshacer.",
+    "nobody": "Nadie",
+    "noPlatform": "Sin plataforma",
+    "priority": {
+      "NORMAL": "Normal",
+      "HIGH": "Alta prioridad"
+    },
+    "linkedTicket": "Sobre el ticket {label}",
+    "linkedOpportunity": "Sobre la oportunidad {label}",
+    "appointmentStatus": {
+      "SCHEDULED": "Programada",
+      "COMPLETED": "Realizada",
+      "CANCELLED": "Cancelada"
+    },
+    "markDone": "Marcar {title} como terminada",
+    "markPending": "Marcar {title} como no terminada",
+    "overdueSince": "Atrasada desde el {date}",
+    "fields": {
+      "title": "Título",
+      "description": "Detalles",
+      "dueAt": "Fecha límite",
+      "remindAt": "Recordatorio",
+      "remindHint": "Una notificación y un correo a la persona, a esta hora.",
+      "assignee": "Para",
+      "priority": "Prioridad",
+      "platform": "Plataforma",
+      "customer": "Cliente",
+      "startsAt": "Inicio",
+      "endsAt": "Fin",
+      "location": "Lugar",
+      "status": "Estado"
+    }
+  },
+  "notifications": {
+    "label": "Notificaciones",
+    "labelUnread": "Notificaciones, {count} sin leer",
+    "readAll": "Marcar todo como leído",
+    "empty": "Nada nuevo.",
+    "NEW_LEAD": "Nuevo prospecto en {platform}: {title}",
+    "NEW_TICKET": "Nuevo ticket n.º {number}: {title}",
+    "TICKET_ASSIGNED": "{by} le asignó el ticket n.º {number}: {title}",
+    "TICKET_STATUS": "Ticket n.º {number} ahora: {status}",
+    "TASK_ASSIGNED": "{by} le asignó una tarea: {title}",
+    "TASK_REMINDER": "Recordatorio: {title}",
+    "APPOINTMENT_ASSIGNED": "{by} programó {title} para usted el {when}",
+    "APPOINTMENT_REMINDER": "Recordatorio: {title} el {when}",
+    "OPPORTUNITY_STATUS": "{title}: {status}"
+  },
+  "departments": {
+    "title": "Departamentos",
+    "subtitle": "Los equipos a los que se asignan los tickets.",
+    "adminOnly": "Solo los administradores pueden cambiar los departamentos.",
+    "add": "Agregar departamento",
+    "edit": "Editar departamento",
+    "inactive": "Desactivado",
+    "openTickets": "{count, plural, =0 {Sin tickets abiertos} one {# ticket abierto} other {# tickets abiertos}}",
+    "deactivate": "Desactivar",
+    "activate": "Reactivar",
+    "name": "Nombre",
+    "description": "Descripción",
+    "sortOrder": "Orden",
+    "active": "Activo"
+  },
+  "dashboard": {
+    "title": "Bienvenido, {name}",
+    "subtitle": "Su resumen de Kouland Technology.",
+    "stats": {
+      "customers": "Clientes",
+      "prospects": "{count, plural, =0 {Sin prospectos} one {# prospecto} other {# prospectos}}",
+      "openDeals": "Oportunidades abiertas",
+      "wonThisMonth": "{count} ganadas este mes",
+      "activeTickets": "Tickets activos",
+      "urgentTickets": "{count, plural, =0 {Ninguno urgente} one {# urgente} other {# urgentes}}",
+      "pendingTasks": "Tareas pendientes",
+      "overdue": "{count, plural, =0 {Ninguna atrasada} one {# atrasada} other {# atrasadas}}"
+    },
+    "urgentTickets": "Tickets de alta prioridad",
+    "allTickets": "Todos los tickets",
+    "unassigned": "Sin asignar",
+    "noUrgentTickets": "No hay tickets de alta prioridad.",
+    "urgentTasks": "Tareas urgentes",
+    "allTasks": "Todas las tareas",
+    "noUrgentTasks": "Nada atrasado ni próximo a vencer.",
+    "upcoming": "Próximos 7 días",
+    "allAppointments": "Todas las citas",
+    "noUpcoming": "No hay citas en los próximos 7 días.",
+    "recentActivity": "Actividad reciente",
+    "noActivity": "Nada todavía.",
+    "activity": {
+      "NOTE": "Nota",
+      "CUSTOMER_CREATED": "Cliente agregado",
+      "CUSTOMER_UPDATED": "Datos modificados",
+      "STAGE_CHANGED": "Etapa cambiada",
+      "CONTACT_ADDED": "Contacto agregado",
+      "PLATFORM_LINKED": "Plataforma vinculada",
+      "PLATFORM_UNLINKED": "Plataforma quitada",
+      "OPPORTUNITY_CREATED": "Nueva oportunidad",
+      "OPPORTUNITY_STATUS": "Oportunidad avanzada",
+      "PROPOSAL_CREATED": "Propuesta agregada",
+      "PROPOSAL_STATUS": "Propuesta actualizada",
+      "TICKET_CREATED": "Ticket abierto",
+      "TICKET_STATUS": "Ticket actualizado",
+      "TASK_CREATED": "Tarea agregada",
+      "TASK_COMPLETED": "Tarea terminada",
+      "APPOINTMENT_SCHEDULED": "Cita programada"
+    },
+    "noAccess": "Aún no hay nada que mostrar",
+    "noAccessBody": "Su administrador aún no le ha dado acceso a ninguna área.",
+    "platformsTitle": "Secciones de plataformas",
+    "platformCounts": "{customers} clientes · {opportunities} oportunidades",
+    "noPlatforms": "Aún no hay plataformas",
+    "noPlatformsAdmin": "Agregue las plataformas de la empresa. Cada una tendrá su propia sección.",
+    "addPlatform": "Agregar una plataforma"
   }
 }

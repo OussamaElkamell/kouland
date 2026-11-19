@@ -5,8 +5,8 @@ export const USER_ROLES = ["ADMIN", "MANAGER", "EMPLOYEE"] as const;
 export const userRoleSchema = z.enum(USER_ROLES);
 export type UserRole = z.infer<typeof userRoleSchema>;
 
-/** Parts of the CRM that access is granted to. Milestone 3 adds tickets and tasks. */
-export const PERMISSION_AREAS = ["CUSTOMERS", "SALES"] as const;
+/** Parts of the CRM that access is granted to. TASKS covers tasks and appointments. */
+export const PERMISSION_AREAS = ["CUSTOMERS", "SALES", "TICKETS", "TASKS"] as const;
 export const permissionAreaSchema = z.enum(PERMISSION_AREAS);
 export type PermissionArea = z.infer<typeof permissionAreaSchema>;
 
@@ -24,8 +24,16 @@ export function levelAllows(granted: AccessLevel | null | undefined, required: A
 }
 
 /** Access per area; null means no access. */
-export const accessMapSchema = z.object({ CUSTOMERS: accessLevelSchema.nullable(), SALES: accessLevelSchema.nullable() });
-export type AccessMap = z.infer<typeof accessMapSchema>;
+export const accessMapSchema = z.object({
+  CUSTOMERS: accessLevelSchema.nullable().default(null),
+  SALES: accessLevelSchema.nullable().default(null),
+  TICKETS: accessLevelSchema.nullable().default(null),
+  TASKS: accessLevelSchema.nullable().default(null),
+});
+export type AccessMap = z.output<typeof accessMapSchema>;
+
+/** An access map with no area granted. */
+export const noAccess = (): AccessMap => ({ CUSTOMERS: null, SALES: null, TICKETS: null, TASKS: null });
 
 export const PASSWORD_MIN = 10;
 export const passwordSchema = z

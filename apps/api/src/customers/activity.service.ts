@@ -13,6 +13,7 @@ export const ACTIVITY_SELECT = {
   createdAt: true,
   user: { select: { id: true, name: true } },
   opportunity: { select: { id: true, title: true } },
+  ticket: { select: { id: true, number: true, subject: true } },
 } satisfies Prisma.ActivitySelect;
 
 export function toActivity(row: Prisma.ActivityGetPayload<{ select: typeof ACTIVITY_SELECT }>): Activity {
@@ -32,8 +33,10 @@ export class ActivityService {
     event: {
       customerId: string;
       type: ActivityType;
-      userId: string;
+      /** Who did it; left out for events from the website. */
+      userId?: string | null;
       opportunityId?: string;
+      ticketId?: string;
       body?: string;
       data?: Prisma.InputJsonObject;
     },

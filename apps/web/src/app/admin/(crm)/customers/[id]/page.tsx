@@ -10,6 +10,7 @@ import { History } from "@/admin/customers/history";
 import { useFormat, useLoad, useSubmit } from "@/admin/hooks";
 import { STAGE_TONE } from "@/admin/labels";
 import { OpportunityTable } from "@/admin/sales/opportunity-table";
+import { TicketTable } from "@/admin/tickets/ticket-table";
 import { useCan } from "@/admin/session";
 import { Badge, ConfirmDialog, DetailList, ErrorNotice, LoadingRows, PageHeader, PlatformChip } from "@/admin/ui";
 import { api } from "@/lib/api";
@@ -76,6 +77,12 @@ export default function CustomerPage() {
                 {t("newOpportunity")}
               </Link>
             )}
+            {can("TASKS", "EDIT") && (
+              <Link href={`/admin/agenda?new=task&customer=${c.id}`} className="btn btn-outline btn-sm">
+                <Icon name="check" className="h-4 w-4" />
+                {t("newTask")}
+              </Link>
+            )}
             {canEdit && (
               <>
                 <button type="button" className="btn btn-outline btn-sm" onClick={() => void changeStage()} disabled={action.pending}>
@@ -137,6 +144,21 @@ export default function CustomerPage() {
             <section className="card p-5 sm:p-6">
               <h2 className="mb-4 font-display text-lg font-bold">{t("opportunities")}</h2>
               <OpportunityTable customerId={c.id} compact />
+            </section>
+          )}
+
+          {can("TICKETS", "VIEW") && (
+            <section className="card p-5 sm:p-6">
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <h2 className="font-display text-lg font-bold">{t("tickets")}</h2>
+                {can("TICKETS", "EDIT") && (
+                  <Link href={`/admin/tickets/new?customer=${c.id}`} className="btn btn-outline btn-sm">
+                    <Icon name="plus" className="h-4 w-4" />
+                    {t("newTicket")}
+                  </Link>
+                )}
+              </div>
+              <TicketTable customerId={c.id} compact />
             </section>
           )}
 

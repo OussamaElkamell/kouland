@@ -40,7 +40,7 @@ const EMPTY: Values = {
   email: "",
   role: "MANAGER",
   locale: "en",
-  access: { CUSTOMERS: "EDIT", SALES: "EDIT" },
+  access: { CUSTOMERS: "EDIT", SALES: "EDIT", TICKETS: "EDIT", TASKS: "EDIT" },
   allPlatforms: false,
   platformIds: [],
   isActive: true,

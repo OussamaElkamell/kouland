@@ -20,6 +20,7 @@ import { notFound } from "../common/prisma-errors";
 import { ActivityService } from "../customers/activity.service";
 import { CustomerAccess } from "../customers/customer-access";
 import { CustomersService } from "../customers/customers.service";
+import { NotificationsService } from "../notifications/notifications.service";
 import { PrismaService } from "../prisma/prisma.service";
 
 const SUMMARY_SELECT = {
@@ -92,6 +93,7 @@ export class OpportunitiesService {
     private readonly access: CustomerAccess,
     private readonly customers: CustomersService,
     private readonly activity: ActivityService,
+    private readonly notifications: NotificationsService,
   ) {}
 
   /** Opportunities of the account's platforms. */
@@ -166,7 +168,7 @@ export class OpportunitiesService {
     if (input.newCustomer) await this.customers.rejectDuplicate(input.newCustomer.email, undefined, "newCustomer.email");
     const platform = await this.prisma.platform.findUniqueOrThrow({ where: { id: platformId }, select: { name: true } });
 
-    return this.prisma.$transaction(async (tx) => {
+    const created = await this.prisma.$transaction(async (tx) => {
       const customerId = input.customerId ?? (await this.customers.createWith(tx, user, input.newCustomer!, [platformId])).id;
       const linked = await tx.customerPlatform.findUnique({ where: { customerId_platformId: { customerId, platformId } } });
       if (!linked) {
@@ -197,6 +199,16 @@ export class OpportunitiesService {
       if (input.status === "WON") await this.markCustomer(tx, user, customerId);
       return opportunity;
     });
+    // New lead: the people working on sales for this platform, and its owner.
+    const sales = await this.notifications.peopleWithAccess("SALES", "EDIT", platformId);
+    await this.notifications.notify({
+      userIds: [...sales, input.ownerId],
+      type: "NEW_LEAD",
+      data: { title: input.title, platform: platform.name, by: user.name },
+      link: `/admin/sales/${created.id}`,
+      actorId: user.id,
+    });
+    return created;
   }
 
   async update(user: AuthUser, id: string, input: z.output<typeof updateOpportunitySchema>): Promise<{ id: string }> {
@@ -221,6 +233,7 @@ export class OpportunitiesService {
       });
       await this.recordStatus(tx, user, current, input.status);
     });
+    await this.announceClosed(user, current, input.status);
     return { id };
   }
 
@@ -238,6 +251,7 @@ export class OpportunitiesService {
       });
       await this.recordStatus(tx, user, current, status);
     });
+    await this.announceClosed(user, current, status);
   }
 
   async remove(user: AuthUser, id: string): Promise<void> {
@@ -297,12 +311,24 @@ export class OpportunitiesService {
     await this.prisma.proposal.delete({ where: { id: proposalId } });
   }
 
+  /** Important status update: the owner hears when their opportunity is won or lost by someone else. */
+  private async announceClosed(user: AuthUser, current: { id: string; title: string; status: string; ownerId: string | null }, status: OpportunityStatus) {
+    if (status === current.status || !CLOSED_STATUSES.includes(status)) return;
+    await this.notifications.notify({
+      userIds: [current.ownerId],
+      type: "OPPORTUNITY_STATUS",
+      data: { title: current.title, status, by: user.name },
+      link: `/admin/sales/${current.id}`,
+      actorId: user.id,
+    });
+  }
+
   // ---- Helpers ----
 
   private async visible(user: AuthUser, id: string) {
     const opportunity = await this.prisma.opportunity.findFirst({
       where: { id, ...this.scopeWhere(user) },
-      select: { id: true, title: true, status: true, customerId: true, platformId: true, closedAt: true, lostReason: true },
+      select: { id: true, title: true, status: true, customerId: true, platformId: true, closedAt: true, lostReason: true, ownerId: true },
     });
     if (!opportunity) throw notFound("Opportunity");
     return opportunity;

@@ -54,6 +54,13 @@ Build order is handled by Turborepo (`dependsOn: ["^build"]`): contracts → api
 | 17 | Platforms are rows (`platforms`), added, edited and deactivated by administrators; never deleted. The sidebar, the platform sections (`/admin/p/<slug>`), filters and account permissions all read them | Requirements §3 "Global and Platform Management"; no platform name in CRM code. |
 | 18 | The first administrator is created with `pnpm --filter @kouland/api create-admin` | Confirmed on 2026-11-19. No public sign-up. |
 | 19 | Other accounts are invited by email: the administrator creates the account without a password, the person opens a one-time link (`/admin/link`, 7 days) and chooses it. Administrators can resend the invitation or send a password link (24 hours); they never see or set passwords. Links are stored hashed (`user_tokens`), a new one replaces the older ones, and using one ends the person's other sessions | Requested on 2026-11-19 ("invite managers", Requirements §4). Without an email provider the administrator gets the link to pass on. |
+| 20 | Tickets: statuses Open → In progress → Waiting on customer → Resolved → Closed; priorities Low, Normal, High, Urgent (High and Urgent = "high priority"). Numbers start at #1001. Every change and comment is kept in the ticket's progress | Confirmed on 2026-11-19. |
+| 21 | Departments are rows managed by administrators (seeded with Technical support, Billing, Sales); deactivated, never deleted | Confirmed on 2026-11-19. |
+| 22 | Customers report issues on kouland.com/<lang>/support; the ticket is linked to the customer whose email (or contact's email) matches. Limited to 5 requests a minute per IP | Confirmed on 2026-11-19 ("employees or customers" create tickets). No customer accounts. |
+| 23 | Notifications: in the CRM (bell, polled every minute) for new leads, new tickets, assignments, reminders and won/lost/resolved changes; assignments and reminders are also emailed through Brevo in the person's language | Confirmed on 2026-11-19. Requirements §5.2. |
+| 24 | Reminders: a worker in the API checks every minute for task and appointment reminders that are due, claims each with a conditional update (sent once even with several instances) and notifies the assignee. `REMINDERS=off` disables it | No extra scheduler service for v1. |
+| 25 | Access areas are Customers, Sales, Tickets and Tasks (tasks and appointments). Tickets, tasks and appointments follow the platform scope; tasks and appointments assigned to or created by a person are always theirs to see | Same model as Milestone 2. |
+| 26 | The general rate limit is 600 requests a minute per IP (an office behind one connection shares it); public forms and sign-in keep strict limits | Found while testing on 2026-11-19. |
 
 ## Languages
 
@@ -86,13 +93,11 @@ The header and footer show the official Kouland Technology logo exactly as on ko
 - `apps/web/src/app/admin`: its own root layout. `login/` is public; `(crm)/` needs a session and shows the sidebar.
   Screens are rendered in the browser after `GET /api/auth/me`.
 - `apps/web/src/admin`: CRM components (session, shell, forms, tables).
-- API modules: `auth` (sign-in, sessions, guard), `users`, `platforms`, `customers` (contacts, notes, history),
-  `sales` (opportunities, proposals).
+- API modules: `auth` (sign-in, sessions, guard, invitation links), `users`, `platforms`, `customers` (contacts, notes,
+  history), `sales` (opportunities, proposals), `tickets` (tickets, departments, website form), `agenda` (tasks,
+  appointments, reminder worker), `notifications`, `dashboard`.
 
 ## Open decisions
-
-Before Milestone 3: ticket statuses, priorities, departments; public ticket form or staff
-only; in-app or email notifications.
 
 Before Milestone 4: which platforms sync first and their API access; the email provider; the Twilio
 account, numbers and call routing; hosting and domain.

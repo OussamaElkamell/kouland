@@ -50,6 +50,8 @@ Both services listen on the port Railway gives them (`PORT`).
 | `TRUST_PROXY` | `1` (Railway's proxy). Use `2` if Cloudflare is also in front. Needed so rate limits count each visitor separately |
 
 | `COOKIE_SECURE` | Optional. The CRM session cookie is HTTPS-only when the request came over HTTPS (needs `TRUST_PROXY`); `true` forces it |
+| `CRM_TIME_ZONE` | Optional. Time zone used to word dates in notification emails. Default `America/Chicago` |
+| `REMINDERS` | Optional. `off` stops the task and appointment reminder worker on this instance |
 | `APP_URL` | The website's address, e.g. `https://kouland.com`: invitation and password emails link to `APP_URL/admin/link`. Defaults to the first `CORS_ORIGINS` entry |
 | `COOKIE_DOMAIN` | Optional. Leave empty; `kouland.com` would also send the CRM cookie to the website |
 

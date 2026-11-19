@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { createHash, randomBytes } from "node:crypto";
 import type { CookieOptions, Request, Response } from "express";
-import type { AccessMap } from "@kouland/contracts";
+import { noAccess, PERMISSION_AREAS, type AccessMap } from "@kouland/contracts";
 import { PrismaService } from "../prisma/prisma.service";
 import type { AuthUser } from "./auth-user";
 
@@ -65,12 +65,9 @@ export class SessionService {
       await this.prisma.session.update({ where: { id: session.id }, data: { lastSeenAt: new Date() } });
     }
     const { user } = session;
-    const access: AccessMap = { CUSTOMERS: null, SALES: null };
+    const access: AccessMap = noAccess();
     for (const permission of user.permissions) access[permission.area] = permission.level;
-    if (user.role === "ADMIN") {
-      access.CUSTOMERS = "MANAGE";
-      access.SALES = "MANAGE";
-    }
+    if (user.role === "ADMIN") for (const area of PERMISSION_AREAS) access[area] = "MANAGE";
     return {
       id: user.id,
       email: user.email,

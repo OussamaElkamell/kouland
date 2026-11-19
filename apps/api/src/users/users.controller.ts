@@ -1,9 +1,9 @@
-import { Body, Controller, Get, HttpCode, Param, Patch, Post } from "@nestjs/common";
+import { Body, Controller, ForbiddenException, Get, HttpCode, Param, Patch, Post, Query } from "@nestjs/common";
 import { Throttle } from "@nestjs/throttler";
-import { createUserSchema, updateUserSchema, type InvitedUser, type LinkReceipt, type Ref, type User } from "@kouland/contracts";
+import { createUserSchema, levelAllows, permissionAreaSchema, updateUserSchema, type InvitedUser, type LinkReceipt, type Ref, type User } from "@kouland/contracts";
 import type { z } from "zod";
 import { CurrentUser, type AuthUser } from "../auth/auth-user";
-import { AdminOnly, Crm, RequireAccess } from "../auth/crm.guard";
+import { AdminOnly, Crm } from "../auth/crm.guard";
 import { ZodValidationPipe } from "../common/zod-validation.pipe";
 import { UsersService } from "./users.service";
 
@@ -18,11 +18,12 @@ export class UsersController {
     return this.users.list();
   }
 
-  /** Names of the people an opportunity can be assigned to. */
+  /** Names of the people who can be given work in an area (opportunities, tickets, tasks): ?area=SALES|TICKETS|TASKS. */
   @Get("assignable")
-  @RequireAccess("SALES", "VIEW")
-  assignable(): Promise<Ref[]> {
-    return this.users.assignable();
+  assignable(@CurrentUser() user: AuthUser, @Query("area") area?: string): Promise<Ref[]> {
+    const parsed = permissionAreaSchema.catch("SALES").parse(area);
+    if (!levelAllows(user.access[parsed], "VIEW")) throw new ForbiddenException("You do not have access to this.");
+    return this.users.assignable(parsed);
   }
 
   @Post()

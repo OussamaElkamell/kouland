@@ -38,7 +38,10 @@
       "duplicate": "Un client avec cette adresse e-mail existe déjà. Recherchez-le plutôt.",
       "wrongPassword": "Ce mot de passe n'est pas correct.",
       "ownAccount": "Vous ne pouvez pas retirer vos propres droits d'administrateur.",
-      "lastAdmin": "Le CRM doit garder au moins un administrateur actif."
+      "lastAdmin": "Le CRM doit garder au moins un administrateur actif.",
+      "remindAfterDue": "Le rappel doit être avant l'échéance.",
+      "endBeforeStart": "La fin doit être après le début.",
+      "remindAfterStart": "Le rappel doit être avant le début."
     }
   },
   "nav": {
@@ -59,7 +62,11 @@
       "ADMIN": "Administrateur",
       "MANAGER": "Responsable",
       "EMPLOYEE": "Employé"
-    }
+    },
+    "dashboard": "Tableau de bord",
+    "tickets": "Tickets",
+    "agenda": "Tâches et rendez-vous",
+    "departments": "Services"
   },
   "login": {
     "title": "Connexion à Kouland CRM",
@@ -149,7 +156,10 @@
     "contacts": "Contacts",
     "otherContacts": "Autres contacts",
     "deleteTitle": "Supprimer ce client ?",
-    "deleteBody": "{name} sera supprimé avec ses contacts, opportunités, propositions et son historique. Cette action est définitive."
+    "deleteBody": "{name} sera supprimé avec ses contacts, opportunités, propositions et son historique. Cette action est définitive.",
+    "tickets": "Tickets",
+    "newTicket": "Nouveau ticket",
+    "newTask": "Nouvelle tâche"
   },
   "contacts": {
     "empty": "Aucun contact pour l'instant.",
@@ -183,7 +193,13 @@
     "OPPORTUNITY_CREATED": "Nouvelle opportunité : {title}",
     "OPPORTUNITY_STATUS": "{title} passée à : {to}",
     "PROPOSAL_CREATED": "Proposition {title} de {amount}",
-    "PROPOSAL_STATUS": "Proposition {title} : {to}"
+    "PROPOSAL_STATUS": "Proposition {title} : {to}",
+    "TICKET_CREATED": "Ticket n° {number} ouvert : {title}",
+    "TICKET_CREATED_WEBSITE": "Ticket n° {number} envoyé depuis le site : {title}",
+    "TICKET_STATUS": "Ticket n° {number} désormais : {to}",
+    "TASK_CREATED": "Tâche ajoutée : {title}",
+    "TASK_COMPLETED": "Tâche terminée : {title}",
+    "APPOINTMENT_SCHEDULED": "Rendez-vous {title} le {when}"
   },
   "status": {
     "opportunity": {
@@ -200,6 +216,19 @@
       "SENT": "Envoyée",
       "ACCEPTED": "Acceptée",
       "REJECTED": "Refusée"
+    },
+    "ticket": {
+      "OPEN": "Ouvert",
+      "IN_PROGRESS": "En cours",
+      "WAITING_ON_CUSTOMER": "En attente du client",
+      "RESOLVED": "Résolu",
+      "CLOSED": "Fermé"
+    },
+    "priority": {
+      "LOW": "Basse",
+      "NORMAL": "Normale",
+      "HIGH": "Haute",
+      "URGENT": "Urgente"
     }
   },
   "sales": {
@@ -300,7 +329,8 @@
     "opportunities": "Opportunités",
     "notFoundTitle": "Plateforme introuvable",
     "notFound": "Cette plateforme n'existe pas, est désactivée, ou vous n'y avez pas accès.",
-    "noAccess": "Vous n'avez accès ni aux clients ni aux ventes."
+    "noAccess": "Vous n'avez accès ni aux clients ni aux ventes.",
+    "tickets": "Tickets"
   },
   "platformSettings": {
     "title": "Plateformes",
@@ -347,7 +377,9 @@
     "access": "Accès",
     "area": {
       "CUSTOMERS": "Clients",
-      "SALES": "Ventes"
+      "SALES": "Ventes",
+      "TICKETS": "Tickets",
+      "TASKS": "Tâches et rendez-vous"
     },
     "level": {
       "NONE": "Aucun accès",
@@ -408,5 +440,207 @@
     "mismatch": "Les deux mots de passe ne sont pas identiques.",
     "expired": "Ce lien a expiré ou a déjà été utilisé. Demandez à votre administrateur de vous en envoyer un nouveau.",
     "toLogin": "Aller à la connexion"
+  },
+  "tickets": {
+    "title": "Tickets",
+    "subtitle": "Les demandes d'assistance des clients, suivies jusqu'à leur résolution.",
+    "add": "Nouveau ticket",
+    "create": "Créer le ticket",
+    "views": {
+      "active": "En cours",
+      "mine": "Attribués à moi",
+      "urgent": "Haute priorité",
+      "unassigned": "Non attribués",
+      "done": "Résolus ou fermés",
+      "all": "Tous"
+    },
+    "searchPlaceholder": "Rechercher par numéro, objet ou client",
+    "anyStatus": "Tous les statuts",
+    "anyPriority": "Toutes les priorités",
+    "anyDepartment": "Tous les services",
+    "noneForCustomer": "Aucun ticket pour l'instant.",
+    "empty": "Aucun ticket ici",
+    "emptyBody": "Les tickets créés par l'équipe ou envoyés depuis le site apparaissent ici.",
+    "unassigned": "Non attribué",
+    "notFound": "Ce ticket n'existe pas, ou vous n'y avez pas accès.",
+    "fromWebsite": "Depuis le site",
+    "addTask": "Ajouter une tâche",
+    "progress": "Suivi",
+    "opened": "Ouvert par {name}",
+    "openedWebsite": "Envoyé depuis le site par {name}",
+    "commentPlaceholder": "Écrivez un commentaire ou une mise à jour…",
+    "addComment": "Ajouter le commentaire",
+    "handling": "Traitement",
+    "reporter": "Client",
+    "requester": "Signalé par",
+    "email": "E-mail",
+    "phone": "Téléphone",
+    "created": "Ouvert le",
+    "resolved": "Résolu le",
+    "deleteTitle": "Supprimer ce ticket ?",
+    "deleteBody": "Le ticket n° {number} sera supprimé avec son suivi. Cette action est définitive.",
+    "form": {
+      "subject": "Objet",
+      "description": "Description",
+      "descriptionHint": "Ce qui s'est passé, ce que voit le client et ce qui a déjà été essayé.",
+      "customer": "Client",
+      "platform": "Service concerné",
+      "noPlatform": "Aucune plateforme",
+      "priority": "Priorité",
+      "department": "Service",
+      "noDepartment": "Aucun service",
+      "assignee": "Attribué à",
+      "status": "Statut"
+    },
+    "updates": {
+      "STATUS": "Statut passé à : {to}",
+      "PRIORITY": "Priorité passée à : {to}",
+      "DEPARTMENT": "Transmis à : {to}",
+      "DEPARTMENT_NONE": "Service retiré",
+      "ASSIGNED": "Attribué à {to}",
+      "UNASSIGNED": "N'est plus attribué"
+    }
+  },
+  "agenda": {
+    "title": "Tâches et rendez-vous",
+    "subtitle": "Quoi faire et quand : vos tâches, rappels et rendez-vous.",
+    "newTask": "Nouvelle tâche",
+    "newAppointment": "Nouveau rendez-vous",
+    "editTask": "Modifier la tâche",
+    "editAppointment": "Modifier le rendez-vous",
+    "tabs": {
+      "tasks": "Tâches",
+      "appointments": "Rendez-vous"
+    },
+    "views": {
+      "mine": "Les miennes",
+      "all": "Toutes",
+      "overdue": "En retard",
+      "completed": "Terminées"
+    },
+    "noTasks": "Aucune tâche ici",
+    "noTasksBody": {
+      "mine": "Rien ne vous est attribué en attente.",
+      "all": "Aucune tâche en attente.",
+      "overdue": "Rien n'est en retard.",
+      "completed": "Aucune tâche terminée pour l'instant."
+    },
+    "noAppointments": "Aucun rendez-vous à venir",
+    "noAppointmentsBody": "Les réunions et visites planifiées apparaissent ici.",
+    "deleteTaskTitle": "Supprimer cette tâche ?",
+    "deleteAppointmentTitle": "Supprimer ce rendez-vous ?",
+    "deleteBody": "{title} sera supprimé. Cette action est définitive.",
+    "nobody": "Personne",
+    "noPlatform": "Aucune plateforme",
+    "priority": {
+      "NORMAL": "Normale",
+      "HIGH": "Haute priorité"
+    },
+    "linkedTicket": "Concerne le ticket {label}",
+    "linkedOpportunity": "Concerne l'opportunité {label}",
+    "appointmentStatus": {
+      "SCHEDULED": "Planifié",
+      "COMPLETED": "Terminé",
+      "CANCELLED": "Annulé"
+    },
+    "markDone": "Marquer {title} comme terminée",
+    "markPending": "Marquer {title} comme non terminée",
+    "overdueSince": "En retard depuis le {date}",
+    "fields": {
+      "title": "Titre",
+      "description": "Détails",
+      "dueAt": "Échéance",
+      "remindAt": "Rappel",
+      "remindHint": "Une notification et un e-mail à la personne, à ce moment.",
+      "assignee": "Pour",
+      "priority": "Priorité",
+      "platform": "Plateforme",
+      "customer": "Client",
+      "startsAt": "Début",
+      "endsAt": "Fin",
+      "location": "Lieu",
+      "status": "Statut"
+    }
+  },
+  "notifications": {
+    "label": "Notifications",
+    "labelUnread": "Notifications, {count} non lues",
+    "readAll": "Tout marquer comme lu",
+    "empty": "Rien de nouveau.",
+    "NEW_LEAD": "Nouveau prospect sur {platform} : {title}",
+    "NEW_TICKET": "Nouveau ticket n° {number} : {title}",
+    "TICKET_ASSIGNED": "{by} vous a attribué le ticket n° {number} : {title}",
+    "TICKET_STATUS": "Ticket n° {number} désormais : {status}",
+    "TASK_ASSIGNED": "{by} vous a confié une tâche : {title}",
+    "TASK_REMINDER": "Rappel : {title}",
+    "APPOINTMENT_ASSIGNED": "{by} a planifié {title} pour vous le {when}",
+    "APPOINTMENT_REMINDER": "Rappel : {title} le {when}",
+    "OPPORTUNITY_STATUS": "{title} : {status}"
+  },
+  "departments": {
+    "title": "Services",
+    "subtitle": "Les équipes auxquelles les tickets sont attribués.",
+    "adminOnly": "Seuls les administrateurs peuvent modifier les services.",
+    "add": "Ajouter un service",
+    "edit": "Modifier le service",
+    "inactive": "Désactivé",
+    "openTickets": "{count, plural, =0 {Aucun ticket ouvert} one {# ticket ouvert} other {# tickets ouverts}}",
+    "deactivate": "Désactiver",
+    "activate": "Réactiver",
+    "name": "Nom",
+    "description": "Description",
+    "sortOrder": "Ordre",
+    "active": "Actif"
+  },
+  "dashboard": {
+    "title": "Bienvenue, {name}",
+    "subtitle": "Votre vue d'ensemble de Kouland Technology.",
+    "stats": {
+      "customers": "Clients",
+      "prospects": "{count, plural, =0 {Aucun prospect} one {# prospect} other {# prospects}}",
+      "openDeals": "Opportunités en cours",
+      "wonThisMonth": "{count} gagnée(s) ce mois-ci",
+      "activeTickets": "Tickets en cours",
+      "urgentTickets": "{count, plural, =0 {Aucun urgent} one {# urgent} other {# urgents}}",
+      "pendingTasks": "Tâches en attente",
+      "overdue": "{count, plural, =0 {Aucune en retard} one {# en retard} other {# en retard}}"
+    },
+    "urgentTickets": "Tickets de haute priorité",
+    "allTickets": "Tous les tickets",
+    "unassigned": "Non attribué",
+    "noUrgentTickets": "Aucun ticket de haute priorité.",
+    "urgentTasks": "Tâches urgentes",
+    "allTasks": "Toutes les tâches",
+    "noUrgentTasks": "Rien en retard ni à faire bientôt.",
+    "upcoming": "7 prochains jours",
+    "allAppointments": "Tous les rendez-vous",
+    "noUpcoming": "Aucun rendez-vous dans les 7 prochains jours.",
+    "recentActivity": "Activité récente",
+    "noActivity": "Rien pour l'instant.",
+    "activity": {
+      "NOTE": "Note",
+      "CUSTOMER_CREATED": "Client ajouté",
+      "CUSTOMER_UPDATED": "Informations modifiées",
+      "STAGE_CHANGED": "Étape modifiée",
+      "CONTACT_ADDED": "Contact ajouté",
+      "PLATFORM_LINKED": "Plateforme liée",
+      "PLATFORM_UNLINKED": "Plateforme retirée",
+      "OPPORTUNITY_CREATED": "Nouvelle opportunité",
+      "OPPORTUNITY_STATUS": "Opportunité avancée",
+      "PROPOSAL_CREATED": "Proposition ajoutée",
+      "PROPOSAL_STATUS": "Proposition mise à jour",
+      "TICKET_CREATED": "Ticket ouvert",
+      "TICKET_STATUS": "Ticket mis à jour",
+      "TASK_CREATED": "Tâche ajoutée",
+      "TASK_COMPLETED": "Tâche terminée",
+      "APPOINTMENT_SCHEDULED": "Rendez-vous planifié"
+    },
+    "noAccess": "Rien à afficher pour l'instant",
+    "noAccessBody": "Votre administrateur ne vous a encore donné accès à aucun domaine.",
+    "platformsTitle": "Sections des plateformes",
+    "platformCounts": "{customers} clients · {opportunities} opportunités",
+    "noPlatforms": "Aucune plateforme pour l'instant",
+    "noPlatformsAdmin": "Ajoutez les plateformes de l'entreprise. Chacune aura sa propre section.",
+    "addPlatform": "Ajouter une plateforme"
   }
 }

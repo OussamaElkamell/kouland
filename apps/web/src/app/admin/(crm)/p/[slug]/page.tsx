@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { Icon } from "@kouland/ui";
 import { CustomerTable } from "@/admin/customers/customer-table";
 import { OpportunityTable } from "@/admin/sales/opportunity-table";
+import { TicketTable } from "@/admin/tickets/ticket-table";
 import { useCan, useSession } from "@/admin/session";
 import { ErrorNotice, PageHeader } from "@/admin/ui";
 
@@ -23,6 +24,7 @@ export default function PlatformSectionPage() {
   const tabs = [
     ...(can("CUSTOMERS", "VIEW") ? (["customers"] as const) : []),
     ...(can("SALES", "VIEW") ? (["opportunities"] as const) : []),
+    ...(can("TICKETS", "VIEW") ? (["tickets"] as const) : []),
   ];
   const [tab, setTab] = useState<(typeof tabs)[number] | undefined>(tabs[0]);
 
@@ -83,6 +85,7 @@ export default function PlatformSectionPage() {
 
       {tab === "customers" && <CustomerTable key={platform.id} platformId={platform.id} />}
       {tab === "opportunities" && <OpportunityTable key={platform.id} platformId={platform.id} />}
+      {tab === "tickets" && <TicketTable key={platform.id} platformId={platform.id} />}
       {!tab && <ErrorNotice message={t("noAccess")} />}
     </>
   );

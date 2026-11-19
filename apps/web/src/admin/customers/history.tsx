@@ -21,6 +21,11 @@ const ICON: Record<Activity["type"], IconName> = {
   OPPORTUNITY_STATUS: "chart",
   PROPOSAL_CREATED: "briefcase",
   PROPOSAL_STATUS: "briefcase",
+  TICKET_CREATED: "support",
+  TICKET_STATUS: "support",
+  TASK_CREATED: "check",
+  TASK_COMPLETED: "check",
+  APPOINTMENT_SCHEDULED: "calendar",
 };
 
 /** One line per event, worded in the CRM language from the event's stored details. */
@@ -56,6 +61,15 @@ function useDescribe() {
         return t(activity.type, { platform: str(data.platform) });
       case "CONTACT_ADDED":
         return t("CONTACT_ADDED", { name: str(data.name) });
+      case "TICKET_CREATED":
+        return t(data.website ? "TICKET_CREATED_WEBSITE" : "TICKET_CREATED", { number: String(data.number ?? ""), title: str(data.title) });
+      case "TICKET_STATUS":
+        return t("TICKET_STATUS", { number: String(data.number ?? ""), to: tStatus(`ticket.${str(data.to) || "OPEN"}`) });
+      case "TASK_CREATED":
+      case "TASK_COMPLETED":
+        return t(activity.type, { title: str(data.title) });
+      case "APPOINTMENT_SCHEDULED":
+        return t("APPOINTMENT_SCHEDULED", { title: str(data.title), when: format.dateTime(str(data.when) || null) });
       case "CUSTOMER_CREATED":
         return t("CUSTOMER_CREATED");
       case "NOTE":
@@ -122,6 +136,14 @@ export function History({
               <p className="mt-1 text-xs text-text-faint">
                 {format.dateTime(activity.createdAt)}
                 {activity.user ? ` · ${activity.user.name}` : ""}
+                {activity.ticket && (
+                  <>
+                    {" · "}
+                    <Link href={`/admin/tickets/${activity.ticket.id}`} className="hover:text-text">
+                      #{activity.ticket.number}
+                    </Link>
+                  </>
+                )}
                 {activity.opportunity && !opportunityId && (
                   <>
                     {" · "}

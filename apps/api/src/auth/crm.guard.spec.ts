@@ -34,7 +34,7 @@ const user = (overrides: Partial<AuthUser> = {}): AuthUser => ({
   name: "E",
   role: "EMPLOYEE",
   locale: "en",
-  access: { CUSTOMERS: "EDIT", SALES: null },
+  access: { CUSTOMERS: "EDIT", SALES: null, TICKETS: null, TASKS: null },
   allPlatforms: false,
   platformIds: ["p1"],
   sessionId: "s1",
@@ -75,7 +75,7 @@ describe("CrmGuard", () => {
   });
 
   it("keeps administrator routes for administrators", async () => {
-    resolve.mockResolvedValue(user({ role: "MANAGER", access: { CUSTOMERS: "MANAGE", SALES: "MANAGE" } }));
+    resolve.mockResolvedValue(user({ role: "MANAGER", access: { CUSTOMERS: "MANAGE", SALES: "MANAGE", TICKETS: "MANAGE", TASKS: "MANAGE" } }));
     await request(app.getHttpServer()).get("/api/probe/admin").expect(403);
     resolve.mockResolvedValue(user({ role: "ADMIN", allPlatforms: true }));
     await request(app.getHttpServer()).get("/api/probe/admin").expect(200);

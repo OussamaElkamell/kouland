@@ -10,6 +10,7 @@ import { CRM_LOCALES, type CrmLocale } from "@kouland/contracts";
 import { api } from "@/lib/api";
 import { THEME_STORAGE_KEY } from "@/lib/theme";
 import { LOCALE_NAMES, saveCrmLocale } from "./locale";
+import { NotificationBell } from "./notification-bell";
 import { useCan, useSession } from "./session";
 
 interface NavItem {
@@ -30,13 +31,16 @@ export function CrmShell({ children }: { children: ReactNode }) {
   useEffect(() => setOpen(false), [pathname]);
 
   const main: NavItem[] = [
-    { href: "/admin", label: t("overview"), icon: "home", exact: true },
+    { href: "/admin", label: t("dashboard"), icon: "home", exact: true },
     ...(can("CUSTOMERS", "VIEW") ? [{ href: "/admin/customers", label: t("customers"), icon: "users" as const }] : []),
     ...(can("SALES", "VIEW") ? [{ href: "/admin/sales", label: t("sales"), icon: "chart" as const }] : []),
+    ...(can("TICKETS", "VIEW") ? [{ href: "/admin/tickets", label: t("tickets"), icon: "ticket" as const }] : []),
+    ...(can("TASKS", "VIEW") ? [{ href: "/admin/agenda", label: t("agenda"), icon: "calendar" as const }] : []),
   ];
   const settings: NavItem[] = isAdmin
     ? [
         { href: "/admin/settings/platforms", label: t("platformSettings"), icon: "globe" },
+        { href: "/admin/settings/departments", label: t("departments"), icon: "briefcase" },
         { href: "/admin/settings/users", label: t("users"), icon: "lock" },
       ]
     : [];
@@ -44,10 +48,15 @@ export function CrmShell({ children }: { children: ReactNode }) {
 
   const sidebar = (
     <nav aria-label={t("label")} className="flex h-full flex-col gap-6 overflow-y-auto px-4 py-5">
-      <Link href="/admin" className="flex items-center gap-2 px-2">
-        <Image src="/brand/kouland-technology-logo.png" alt="Kouland Technology, Inc." width={828} height={261} className="h-8 w-auto" priority />
-        <span className="rounded-md border px-1.5 py-0.5 text-[0.65rem] font-bold uppercase tracking-wider text-text-muted">CRM</span>
-      </Link>
+      <div className="flex items-center justify-between gap-2">
+        <Link href="/admin" className="flex items-center gap-2 px-2">
+          <Image src="/brand/kouland-technology-logo.png" alt="Kouland Technology, Inc." width={828} height={261} className="h-8 w-auto" priority />
+          <span className="rounded-md border px-1.5 py-0.5 text-[0.65rem] font-bold uppercase tracking-wider text-text-muted">CRM</span>
+        </Link>
+        <span className="hidden lg:block">
+          <NotificationBell placement="right" />
+        </span>
+      </div>
 
       <ul className="flex flex-col gap-1">
         {main.map((item) => (
@@ -111,9 +120,12 @@ export function CrmShell({ children }: { children: ReactNode }) {
         <Link href="/admin" className="flex items-center gap-2">
           <Image src="/brand/kouland-technology-logo.png" alt="Kouland Technology, Inc." width={828} height={261} className="h-7 w-auto" />
         </Link>
-        <button type="button" className="btn btn-ghost btn-sm !px-2" onClick={() => setOpen(true)} aria-label={t("open")} aria-expanded={open}>
-          <Icon name="menu" className="h-5 w-5" />
-        </button>
+        <div className="flex items-center gap-1">
+          <NotificationBell />
+          <button type="button" className="btn btn-ghost btn-sm !px-2" onClick={() => setOpen(true)} aria-label={t("open")} aria-expanded={open}>
+            <Icon name="menu" className="h-5 w-5" />
+          </button>
+        </div>
       </div>
       {open && (
         <div className="fixed inset-0 z-40 lg:hidden" role="dialog" aria-modal="true" aria-label={t("label")}>
