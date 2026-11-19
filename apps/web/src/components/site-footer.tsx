@@ -15,7 +15,7 @@ export function SiteFooter() {
         <div>
           <CompanyLogo />
           <p className="mt-4 max-w-xs text-sm text-text-muted">{t("company.claim")}</p>
-          <a href={COMPANY.phone.href} className="mt-3 inline-block text-sm font-semibold hover:text-brand">
+          <a href={COMPANY.phone.href} className="mt-3 inline-block text-sm font-semibold hover:text-brand-text">
             {COMPANY.phone.display}
           </a>
         </div>

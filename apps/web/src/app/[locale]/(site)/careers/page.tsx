@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { use } from "react";
 import { APPLICATION_AREAS } from "@kouland/contracts";
-import { Icon, IconBadge, KoulandMark, type IconName } from "@kouland/ui";
+import { HoverCard, Icon, IconBadge, KoulandMark, type IconName } from "@kouland/ui";
 import { PageIntro, Section, SectionHeader } from "@/components/section";
 import { photo } from "@/content/images";
 import { SHOWCASE_PLATFORMS } from "@/content/platforms";
@@ -72,13 +72,13 @@ export default function CareersPage({ params }: Props) {
           {APPLICATION_AREAS.map((area) => {
             const platform = SHOWCASE_PLATFORMS.find((item) => item.slug === area);
             return (
-              <div key={area} className="card flex items-start gap-4 p-5">
-                {platform ? <KoulandMark monogram={platform.monogram} size={36} /> : <KoulandMark monogram="KT" notched size={36} />}
+              <HoverCard key={area} data-platform={platform ? platform.slug : "parent"} className="brand-on-hover card flex items-start gap-4 p-5 hover:border-brand/60">
+                {platform ? <KoulandMark monogram={platform.monogram} size={36} /> : <IconBadge name="briefcase" size="sm" tone="neutral" className="hover-chip" />}
                 <div>
                   <h3 className="font-display font-bold">{areas(`area.${area}`)}</h3>
                   <p className="mt-1 text-sm text-text-muted">{areas(`areaHint.${area}`)}</p>
                 </div>
-              </div>
+              </HoverCard>
             );
           })}
         </div>

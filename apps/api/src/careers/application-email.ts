@@ -79,14 +79,14 @@ export function buildApplicationEmail(application: JobApplication, locale: "en" 
   const isLink = (label: string) => label === "LinkedIn" || label === "Portfolio";
   const cell = (label: string, value: string) =>
     label === "Email"
-      ? `<a href="mailto:${e(value)}" style="color:#0085B9;">${e(value)}</a>`
+      ? `<a href="mailto:${e(value)}" style="color:#D10F2C;">${e(value)}</a>`
       : isLink(label)
-        ? `<a href="${e(value)}" style="color:#0085B9;word-break:break-all;">${e(value)}</a>`
+        ? `<a href="${e(value)}" style="color:#D10F2C;word-break:break-all;">${e(value)}</a>`
         : e(value);
   const htmlSections = filled
     .map(
       ([title, rows]) =>
-        `<p style="margin:20px 0 6px;font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#00A16F;">${title}</p>` +
+        `<p style="margin:20px 0 6px;font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#D10F2C;">${title}</p>` +
         `<table role="presentation" cellspacing="0" cellpadding="0">${rows
           .map(
             ([label, value]) =>
@@ -104,14 +104,14 @@ export function buildApplicationEmail(application: JobApplication, locale: "en" 
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f1f5f9;padding:24px 12px;">
   <tr><td align="center">
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px;background:#ffffff;border-radius:16px;overflow:hidden;">
-      <tr><td style="padding:18px 32px;background:#009FA0;background-image:linear-gradient(135deg,#00AC76,#009FA0 50%,#0085B9);">
+      <tr><td style="padding:18px 32px;background:#D10F2C;background-image:linear-gradient(135deg,#E81C3A,#D10F2C 50%,#9E0A21);">
         <p style="margin:0;font-size:20px;font-weight:800;color:#ffffff;letter-spacing:-0.3px;">Kouland Technology, Inc.</p>
-        <p style="margin:2px 0 0;font-size:13px;color:#e6fffa;">New job application · CV attached</p>
+        <p style="margin:2px 0 0;font-size:13px;color:#FFE4E8;">New job application · CV attached</p>
       </td></tr>
       <tr><td style="padding:8px 32px 28px;">
         ${htmlSections}
-        <p style="margin:20px 0 6px;font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#00A16F;">Why Kouland</p>
-        <div style="padding:16px 18px;background:#f1f5f9;border-left:4px solid #00A16F;border-radius:6px;">
+        <p style="margin:20px 0 6px;font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#D10F2C;">Why Kouland</p>
+        <div style="padding:16px 18px;background:#f1f5f9;border-left:4px solid #D10F2C;border-radius:6px;">
           <p style="margin:0;font-size:15px;line-height:1.6;color:#0f172a;white-space:pre-wrap;">${e(application.motivation)}</p>
         </div>
         <p style="margin:20px 0 0;font-size:13px;color:#64748b;">Reply to this email to answer ${e(application.fullName)} directly.</p>

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { useTranslations } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { use } from "react";
-import { Icon, IconBadge, Wordmark } from "@kouland/ui";
+import { HoverCard, Icon, IconBadge, Wordmark } from "@kouland/ui";
 import { PageIntro, Section } from "@/components/section";
 import { SHOWCASE_PLATFORMS } from "@/content/platforms";
 import { Link } from "@/i18n/navigation";
@@ -28,10 +28,10 @@ export default function ServicesPage({ params }: Props) {
       <Section>
         <div className="flex flex-col gap-5">
           {SHOWCASE_PLATFORMS.map((platform) => (
-            <article key={platform.slug} className="card grid gap-6 p-6 md:grid-cols-[1.2fr_1fr] md:p-8">
+            <HoverCard as="article" tilt={false} key={platform.slug} data-platform={platform.slug} className="brand-on-hover card grid gap-6 p-6 hover:border-brand/60 md:grid-cols-[1.2fr_1fr] md:p-8">
               <div>
                 <div className="flex items-center gap-3">
-                  <IconBadge name={platform.icon} />
+                  <IconBadge name={platform.icon} tone="neutral" className="hover-chip" />
                   <h2 className="text-2xl">
                     <Wordmark product={platform.product} />
                   </h2>
@@ -40,14 +40,14 @@ export default function ServicesPage({ params }: Props) {
                 <p className="mt-2 text-text-muted text-pretty">{p(`${platform.slug}.description`)}</p>
               </div>
               <ul className="grid content-start gap-2 text-sm sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2">
-                {(p.raw(`${platform.slug}.services`) as string[]).map((service) => (
+                {(p.raw(`${platform.slug}.services`) as string[]).map((service, index) => (
                   <li key={service} className="flex items-center gap-2">
-                    <Icon name="check" className="h-4 w-4 flex-none text-brand" strokeWidth={2.6} />
+                    <Icon name="check" className="hover-check h-4 w-4 flex-none text-text-faint" strokeWidth={2.6} style={{ "--i": index }} />
                     {service}
                   </li>
                 ))}
               </ul>
-            </article>
+            </HoverCard>
           ))}
         </div>
         <div className="mt-10 text-center">

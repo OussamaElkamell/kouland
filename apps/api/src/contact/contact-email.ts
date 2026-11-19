@@ -39,7 +39,7 @@ export function buildContactEmail(message: CreateContactMessage, receivedAt: Dat
     .map(
       ([label, value]) =>
         `<tr><td style="padding:6px 16px 6px 0;font-size:14px;color:#64748b;white-space:nowrap;vertical-align:top;">${label}</td>` +
-        `<td style="padding:6px 0;font-size:14px;color:#0f172a;">${label === "Email" ? `<a href="mailto:${e(value)}" style="color:#0085B9;">${e(value)}</a>` : e(value)}</td></tr>`,
+        `<td style="padding:6px 0;font-size:14px;color:#0f172a;">${label === "Email" ? `<a href="mailto:${e(value)}" style="color:#D10F2C;">${e(value)}</a>` : e(value)}</td></tr>`,
     )
     .join("");
 
@@ -50,15 +50,15 @@ export function buildContactEmail(message: CreateContactMessage, receivedAt: Dat
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f1f5f9;padding:24px 12px;">
   <tr><td align="center">
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;background:#ffffff;border-radius:16px;overflow:hidden;">
-      <tr><td style="padding:18px 32px;background:#009FA0;background-image:linear-gradient(135deg,#00AC76,#009FA0 50%,#0085B9);">
+      <tr><td style="padding:18px 32px;background:#D10F2C;background-image:linear-gradient(135deg,#E81C3A,#D10F2C 50%,#9E0A21);">
         <p style="margin:0;font-size:20px;font-weight:800;color:#ffffff;letter-spacing:-0.3px;">Kouland Technology, Inc.</p>
-        <p style="margin:2px 0 0;font-size:13px;color:#e6fffa;">New message from the website contact form</p>
+        <p style="margin:2px 0 0;font-size:13px;color:#FFE4E8;">New message from the website contact form</p>
       </td></tr>
       <tr><td style="padding:28px 32px;">
         <table role="presentation" cellspacing="0" cellpadding="0" style="margin:0 0 20px;">${details}
           <tr><td style="padding:6px 16px 6px 0;font-size:14px;color:#64748b;">Received</td><td style="padding:6px 0;font-size:14px;color:#0f172a;">${received}</td></tr>
         </table>
-        <div style="padding:16px 18px;background:#f1f5f9;border-left:4px solid #00A16F;border-radius:6px;">
+        <div style="padding:16px 18px;background:#f1f5f9;border-left:4px solid #D10F2C;border-radius:6px;">
           <p style="margin:0;font-size:15px;line-height:1.6;color:#0f172a;white-space:pre-wrap;">${e(message.message)}</p>
         </div>
         <p style="margin:20px 0 0;font-size:13px;color:#64748b;">Reply to this email to answer ${e(message.name)} directly.</p>

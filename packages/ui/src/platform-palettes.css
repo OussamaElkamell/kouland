@@ -1,0 +1,118 @@
+/*
+ * Kouland platform palettes. Every platform has its own colour, measured from the official Kouland Technology
+ * poster (2026-11-19). The parent company (Kouland Technology, kouland.com) is red with silver.
+ *
+ * Use: put the platform on the root element, e.g. <html data-platform="host" class="dark">. Without the attribute
+ * the parent-company palette applies. Any element can switch palette too: a platform card on the parent's hub page
+ * is <article data-platform="route">, and everything inside it follows. The component classes in web-globals.css
+ * read only these tokens. Colours are RGB triples: rgb(var(--color-brand) / 0.15).
+ */
+:root,
+[data-platform="parent"] {
+  /* Kouland Technology */
+  --color-brand: 209 15 44; /* #D10F2C: buttons, focus rings, active states, borders */
+  --color-brand-accent: 255 59 85; /* #FF3B55: neon accent for glows and highlights on dark */
+  --brand-g1: 232 28 58; /* #E81C3A */
+  --brand-g2: 209 15 44; /* #D10F2C */
+  --brand-g3: 158 10 33; /* #9E0A21 */
+  --color-on-brand: 255 255 255; /* #FFFFFF: text and icons on the brand gradient */
+  --color-brand-text: 209 15 44; /* #D10F2C: brand-coloured text on light surfaces, at least 4.5:1 */
+  --color-silver: 195 200 207; /* #C3C8CF: the parent logo's silver, for secondary accents */
+}
+
+[data-platform="host"] {
+  /* KoulandHost */
+  --color-brand: 60 194 24; /* #3CC218: buttons, focus rings, active states, borders */
+  --color-brand-accent: 98 245 7; /* #62F507: neon accent for glows and highlights on dark */
+  --brand-g1: 123 234 44; /* #7BEA2C */
+  --brand-g2: 60 194 24; /* #3CC218 */
+  --brand-g3: 30 142 30; /* #1E8E1E */
+  --color-on-brand: 3 9 15; /* #03090F: text and icons on the brand gradient */
+  --color-brand-text: 42 136 17; /* #2A8811: brand-coloured text on light surfaces, at least 4.5:1 */
+}
+
+[data-platform="route"] {
+  /* KoulandRoute */
+  --color-brand: 20 102 189; /* #1466BD: buttons, focus rings, active states, borders */
+  --color-brand-accent: 34 195 242; /* #22C3F2: neon accent for glows and highlights on dark */
+  --brand-g1: 22 115 196; /* #1673C4 */
+  --brand-g2: 20 102 189; /* #1466BD */
+  --brand-g3: 29 78 216; /* #1D4ED8 */
+  --color-on-brand: 255 255 255; /* #FFFFFF: text and icons on the brand gradient */
+  --color-brand-text: 20 102 189; /* #1466BD: brand-coloured text on light surfaces, at least 4.5:1 */
+}
+
+[data-platform="bot"] {
+  /* KoulandBot */
+  --color-brand: 24 206 223; /* #18CEDF: buttons, focus rings, active states, borders */
+  --color-brand-accent: 14 237 240; /* #0EEDF0: neon accent for glows and highlights on dark */
+  --brand-g1: 95 242 244; /* #5FF2F4 */
+  --brand-g2: 24 206 223; /* #18CEDF */
+  --brand-g3: 7 152 168; /* #0798A8 */
+  --color-on-brand: 3 9 15; /* #03090F: text and icons on the brand gradient */
+  --color-brand-text: 15 130 140; /* #0F828C: brand-coloured text on light surfaces, at least 4.5:1 */
+}
+
+[data-platform="event"] {
+  /* KoulandEvent */
+  --color-brand: 241 169 15; /* #F1A90F: buttons, focus rings, active states, borders */
+  --color-brand-accent: 250 194 5; /* #FAC205: neon accent for glows and highlights on dark */
+  --brand-g1: 252 211 77; /* #FCD34D */
+  --brand-g2: 241 169 15; /* #F1A90F */
+  --brand-g3: 224 123 6; /* #E07B06 */
+  --color-on-brand: 3 9 15; /* #03090F: text and icons on the brand gradient */
+  --color-brand-text: 154 108 10; /* #9A6C0A: brand-coloured text on light surfaces, at least 4.5:1 */
+}
+
+[data-platform="tech"] {
+  /* KoulandTech */
+  --color-brand: 200 16 46; /* #C8102E: buttons, focus rings, active states, borders */
+  --color-brand-accent: 255 61 94; /* #FF3D5E: neon accent for glows and highlights on dark */
+  --brand-g1: 224 35 63; /* #E0233F */
+  --brand-g2: 200 16 46; /* #C8102E */
+  --brand-g3: 153 11 34; /* #990B22 */
+  --color-on-brand: 255 255 255; /* #FFFFFF: text and icons on the brand gradient */
+  --color-brand-text: 200 16 46; /* #C8102E: brand-coloured text on light surfaces, at least 4.5:1 */
+}
+
+/* Brand-coloured text needs a lighter shade on dark surfaces. */
+html.dark,
+html.dark [data-platform="parent"],
+html.dark[data-platform="parent"] {
+  --color-brand-text: 255 59 85; /* #FF3B55: brand-coloured text on dark surfaces, at least 4.5:1 */
+}
+html.dark [data-platform="host"],
+html.dark[data-platform="host"] {
+  --color-brand-text: 98 245 7; /* #62F507: brand-coloured text on dark surfaces, at least 4.5:1 */
+}
+html.dark [data-platform="route"],
+html.dark[data-platform="route"] {
+  --color-brand-text: 34 195 242; /* #22C3F2: brand-coloured text on dark surfaces, at least 4.5:1 */
+}
+html.dark [data-platform="bot"],
+html.dark[data-platform="bot"] {
+  --color-brand-text: 14 237 240; /* #0EEDF0: brand-coloured text on dark surfaces, at least 4.5:1 */
+}
+html.dark [data-platform="event"],
+html.dark[data-platform="event"] {
+  --color-brand-text: 250 194 5; /* #FAC205: brand-coloured text on dark surfaces, at least 4.5:1 */
+}
+html.dark [data-platform="tech"],
+html.dark[data-platform="tech"] {
+  --color-brand-text: 255 61 94; /* #FF3D5E: brand-coloured text on dark surfaces, at least 4.5:1 */
+}
+
+/*
+ * Derived from the tokens above, the same rule for every platform. It is repeated on every [data-platform]
+ * element because a custom property built from other ones is computed where it is declared: without this, a
+ * platform card would inherit the page's gradient instead of building its own.
+ */
+:root,
+[data-platform] {
+  --gradient-brand: linear-gradient(135deg, rgb(var(--brand-g1)) 0%, rgb(var(--brand-g2)) 50%, rgb(var(--brand-g3)) 100%);
+  --shadow-glow: 0 0 0 1px rgb(var(--color-brand) / 0.22), 0 10px 28px -6px rgb(var(--color-brand) / 0.38);
+}
+html.dark,
+html.dark [data-platform] {
+  --shadow-glow: 0 0 0 1px rgb(var(--color-brand-accent) / 0.3), 0 10px 30px -6px rgb(var(--color-brand-accent) / 0.4);
+}

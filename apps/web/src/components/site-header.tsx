@@ -19,7 +19,7 @@ export function SiteHeader() {
   useEffect(() => setOpen(false), [pathname]);
 
   const linkClass = (href: string) =>
-    `text-sm font-semibold transition-colors ${pathname === href ? "text-brand" : "text-text-muted hover:text-text"}`;
+    `text-sm font-semibold transition-colors ${pathname === href ? "text-brand-text" : "text-text-muted hover:text-text"}`;
   const mobileLinks = [...NAV_LINKS, { href: "/contact", key: "contactUs" } as const];
 
   return (

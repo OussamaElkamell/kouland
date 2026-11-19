@@ -1,8 +1,8 @@
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
-import { use } from "react";
-import { Icon, IconBadge } from "@kouland/ui";
+import { use, type CSSProperties } from "react";
+import { HoverCard, Icon, IconBadge } from "@kouland/ui";
 import { NetworkGlobe } from "@/components/network-globe";
 import { PlatformCard } from "@/components/platform-card";
 import { Section, SectionHeader } from "@/components/section";
@@ -98,13 +98,17 @@ function HeroMosaic() {
         if (!platform) return null;
         const name = `Kouland${platform.product}`;
         return (
-          <a
+          <HoverCard
+            as="a"
             key={tile.slug}
+            data-platform={tile.slug}
             href={platformUrl(platform)}
             target="_blank"
             rel="noopener noreferrer"
             aria-label={t("visit", { name })}
-            className={`group relative overflow-hidden rounded-xl border shadow-lift transition duration-200 hover:-translate-y-1 hover:border-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-bg ${
+            // The label sits on a dark chip, so the name's resting colour (brand-on-hover uses --color-text) is white.
+            style={{ "--color-text": "255 255 255" } as CSSProperties}
+            className={`brand-on-hover group relative overflow-hidden rounded-xl border shadow-lift hover:border-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-bg ${
               wide ? "col-span-3 aspect-[5/4]" : "col-span-2 aspect-[3/4]"
             }`}
           >
@@ -122,7 +126,7 @@ function HeroMosaic() {
               Kouland<span className="gradient-text-brand">{platform.product}</span>
               <Icon name="arrow" className="h-3.5 w-3.5 -rotate-45 opacity-0 transition-opacity group-hover:opacity-100" />
             </span>
-          </a>
+          </HoverCard>
         );
       })}
     </nav>
@@ -175,21 +179,15 @@ function AboutIntro() {
             </Link>
           </div>
         </div>
-        {/* Capped in width like the hero photos, so it does not grow with wide screens. */}
-        <div className="w-full max-w-[32rem] justify-self-center">
-          <div className="relative aspect-[16/10] overflow-hidden rounded-xl border shadow-lift">
-            <Image src={photo("team", 900, 560)} alt="" fill sizes="(min-width: 768px) 512px, 100vw" className="object-cover" />
-          </div>
-          {/* The figures overlap the bottom of the photo. */}
-          <dl className="relative -mt-12 grid grid-cols-2 gap-3 px-4 sm:px-6">
-            {STATS.map((stat) => (
-              <div key={stat.key} className="card flex flex-col-reverse px-5 py-4">
-                <dt className="mt-1 text-sm text-text-muted">{t(`stats.${stat.key}`)}</dt>
-                <dd className="font-display text-3xl font-extrabold gradient-text-brand">{statValue(stat)}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
+        {/* The four figures, capped in width so they do not stretch on wide screens. */}
+        <dl className="grid w-full max-w-[32rem] grid-cols-2 gap-4 justify-self-center">
+          {STATS.map((stat) => (
+            <div key={stat.key} className="card flex flex-col-reverse p-6">
+              <dt className="mt-1 text-sm text-text-muted">{t(`stats.${stat.key}`)}</dt>
+              <dd className="font-display text-4xl font-extrabold gradient-text-brand">{statValue(stat)}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
     </Section>
   );
@@ -202,17 +200,17 @@ function PopularServices() {
       <SectionHeader eyebrow={t("eyebrow")} title={t("title")} subtitle={t("subtitle")} />
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {POPULAR_SERVICES.map((service) => (
-          <article key={service.key} className="card card-hover overflow-hidden">
-            <div className="relative aspect-[16/9]">
+          <HoverCard as="article" key={service.key} className="card overflow-hidden">
+            <div className="hover-zoom relative aspect-[16/9] overflow-hidden">
               <Image src={photo(service.photo, 640, 360)} alt="" fill sizes="(min-width: 1024px) 360px, (min-width: 640px) 50vw, 100vw" className="object-cover" />
             </div>
             <div className="relative px-6 pb-6">
               {/* The icon sits half over the photo. */}
-              <IconBadge name={service.icon} className="-mt-6 ring-4 ring-[rgb(var(--color-surface))]" />
+              <IconBadge name={service.icon} className="hover-chip relative -mt-6 ring-4 ring-[rgb(var(--color-surface))]" />
               <h3 className="mt-3 font-display text-lg font-bold">{t(`${service.key}.title`)}</h3>
               <p className="mt-1 text-sm text-text-muted">{t(`${service.key}.body`)}</p>
             </div>
-          </article>
+          </HoverCard>
         ))}
       </div>
       <div className="mt-10 text-center">
@@ -323,7 +321,7 @@ function SatisfactionBand() {
             <Link href="/contact" className="btn btn-primary btn-lg">
               {t("nav.contactUs")}
             </Link>
-            <a href={COMPANY.phone.href} className="flex items-center gap-2 text-sm font-semibold hover:text-brand">
+            <a href={COMPANY.phone.href} className="flex items-center gap-2 text-sm font-semibold hover:text-brand-text">
               <Icon name="phone" className="h-4 w-4" />
               {COMPANY.phone.display}
             </a>

@@ -10,8 +10,12 @@ const preset: Partial<Config> = {
     extend: {
       colors: {
         brand: "rgb(var(--color-brand) / <alpha-value>)",
-        "brand-2": "rgb(var(--color-brand-2) / <alpha-value>)",
-        "brand-3": "rgb(var(--color-brand-3) / <alpha-value>)",
+        // Per-platform colours (platform-palettes.css): accent for glows, on-brand for text on the gradient,
+        // brand-text for brand-coloured text that must stay readable, silver for the parent's secondary accent.
+        "brand-accent": "rgb(var(--color-brand-accent) / <alpha-value>)",
+        "on-brand": "rgb(var(--color-on-brand) / <alpha-value>)",
+        "brand-text": "rgb(var(--color-brand-text) / <alpha-value>)",
+        silver: "rgb(var(--color-silver) / <alpha-value>)",
         bg: "rgb(var(--color-bg) / <alpha-value>)",
         "bg-alt": "rgb(var(--color-bg-alt) / <alpha-value>)",
         surface: "rgb(var(--color-surface) / <alpha-value>)",

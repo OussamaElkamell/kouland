@@ -39,7 +39,8 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   return (
     // Dark is the default theme; the inline script switches to light before first paint if the visitor chose it.
-    <html lang={locale} className={`dark ${inter.variable} ${manrope.variable}`} suppressHydrationWarning>
+    // data-platform="parent": the corporate site uses Kouland Technology's red palette; platform cards switch to their own.
+    <html lang={locale} data-platform="parent" className={`dark ${inter.variable} ${manrope.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </head>

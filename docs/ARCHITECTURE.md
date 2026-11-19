@@ -60,9 +60,16 @@ Build order is handled by Turborepo (`dependsOn: ["^build"]`): contracts → api
 
 ## Design
 
-The UI follows the Kouland brand system: dark-first with a light mode, green → teal → blue gradient,
-Manrope for headings and Inter for body, pill buttons, the outlined two-letter mark. Tokens and component
-classes are in `packages/ui/src/styles.css`.
+The UI follows the Kouland brand system: dark-first with a light mode, Manrope for headings and Inter for body,
+pill buttons. **Each platform has its own colour** (Host green, Route blue, Bot cyan, Event gold, Tech red); the
+corporate site uses the parent company's red. Palettes are in `packages/ui/src/platform-palettes.css` and are
+chosen with `data-platform`: `parent` on `<html>`, and the platform's key on each platform card, hero tile, service
+row and team card, so everything inside takes that platform's colours. Product marks pick their palette from the
+monogram. Shared tokens and component classes are in `packages/ui/src/styles.css`.
+
+The header and footer show the official Kouland Technology logo exactly as on koulandtechnology.com
+(`apps/web/public/brand/kouland-technology-logo.png`). The favicon and Apple touch icon use its house icon alone
+(`apps/web/src/app/[locale]/icon.png` and `apple-icon.png`).
 
 ## Open decisions
 

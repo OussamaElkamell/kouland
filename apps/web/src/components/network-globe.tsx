@@ -42,14 +42,15 @@ export function NetworkGlobe({ className = "" }: { className?: string }) {
   return (
     <svg className={className} viewBox="-320 -320 640 640" aria-hidden="true">
       <defs>
+        {/* Colours come from the surrounding platform palette (the parent's red on kouland.com). */}
         <linearGradient id="globe-line" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#00AC76" />
-          <stop offset="0.5" stopColor="#009FA0" />
-          <stop offset="1" stopColor="#0085B9" />
+          <stop offset="0" style={{ stopColor: "rgb(var(--brand-g1))" }} />
+          <stop offset="0.5" style={{ stopColor: "rgb(var(--brand-g2))" }} />
+          <stop offset="1" style={{ stopColor: "rgb(var(--brand-g3))" }} />
         </linearGradient>
         <radialGradient id="globe-fill">
-          <stop offset="0" stopColor="#00AC76" stopOpacity="0.16" />
-          <stop offset="1" stopColor="#00AC76" stopOpacity="0" />
+          <stop offset="0" style={{ stopColor: "rgb(var(--color-brand))", stopOpacity: 0.16 }} />
+          <stop offset="1" style={{ stopColor: "rgb(var(--color-brand))", stopOpacity: 0 }} />
         </radialGradient>
       </defs>
       <circle r={R + 40} fill="url(#globe-fill)" />
@@ -63,7 +64,7 @@ export function NetworkGlobe({ className = "" }: { className?: string }) {
           <ellipse key={y} cy={y.toFixed(1)} rx={rx.toFixed(1)} ry={(rx * 0.18).toFixed(1)} strokeOpacity="0.22" />
         ))}
       </g>
-      <g stroke="#3fe0ae" strokeWidth="1">
+      <g style={{ stroke: "rgb(var(--color-brand-accent))" }} strokeWidth="1">
         {NETWORK.links.map(({ a, b }) => {
           const p = NETWORK.points[a];
           const q = NETWORK.points[b];
@@ -73,7 +74,7 @@ export function NetworkGlobe({ className = "" }: { className?: string }) {
           );
         })}
       </g>
-      <g fill="#5ff0c0">
+      <g style={{ fill: "rgb(var(--color-brand-accent))" }}>
         {NETWORK.points.map((p, i) => (
           <circle key={i} cx={p.x.toFixed(1)} cy={p.y.toFixed(1)} r={(1.6 + 2.2 * p.depth).toFixed(1)} fillOpacity={(0.45 + 0.55 * p.depth).toFixed(2)} />
         ))}

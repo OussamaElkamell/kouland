@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 /**
  * Outline icon set: 24px grid, 2px stroke, round caps and joins (Heroicons-outline geometry).
  * Add new glyphs in the same style.
@@ -21,6 +23,7 @@ const PATHS = {
   support: '<path d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/>',
   clock: '<path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>',
   star: '<path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>',
+  home: '<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>',
   upload: '<path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>',
   briefcase: '<path d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>',
   chart: '<path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>',
@@ -34,10 +37,22 @@ const PATHS = {
 
 export type IconName = keyof typeof PATHS;
 
-export function Icon({ name, className = "w-5 h-5", strokeWidth = 2 }: { name: IconName; className?: string; strokeWidth?: number }) {
+export function Icon({
+  name,
+  className = "w-5 h-5",
+  strokeWidth = 2,
+  style,
+}: {
+  name: IconName;
+  className?: string;
+  strokeWidth?: number;
+  /** Inline style, also used to pass CSS variables such as `--i` for staggered hover effects. */
+  style?: CSSProperties & Record<`--${string}`, string | number>;
+}) {
   return (
     <svg
       className={className}
+      style={style}
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -56,11 +71,28 @@ const BADGE_SIZES = {
   lg: { box: "w-12 h-12 rounded-2xl", icon: "w-6 h-6" },
 } as const;
 
-/** White glyph on the brand-gradient chip with a soft glow. */
-export function IconBadge({ name, size = "md", className = "" }: { name: IconName; size?: keyof typeof BADGE_SIZES; className?: string }) {
+const BADGE_TONES = {
+  /** On the brand gradient with a soft glow: for the page's own palette (one per page section). */
+  brand: "gradient-brand text-on-brand shadow-glow",
+  /** Quiet: a neutral chip with a muted glyph. Use where several platforms sit side by side. */
+  neutral: "border bg-surface-2 text-text-muted",
+} as const;
+
+/** An icon in a rounded chip. `tone="neutral"` keeps rows of platform cards calm. */
+export function IconBadge({
+  name,
+  size = "md",
+  tone = "brand",
+  className = "",
+}: {
+  name: IconName;
+  size?: keyof typeof BADGE_SIZES;
+  tone?: keyof typeof BADGE_TONES;
+  className?: string;
+}) {
   const s = BADGE_SIZES[size];
   return (
-    <span className={`gradient-brand text-white flex items-center justify-center flex-none shadow-glow ${s.box} ${className}`}>
+    <span className={`flex flex-none items-center justify-center ${BADGE_TONES[tone]} ${s.box} ${className}`}>
       <Icon name={name} className={s.icon} />
     </span>
   );

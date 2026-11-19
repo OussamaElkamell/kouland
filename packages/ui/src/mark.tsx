@@ -1,9 +1,10 @@
 import { useId } from "react";
 
 /**
- * The Kouland mark: a rounded rectangle with a thick brand-gradient outline and a heavy two-letter monogram
- * (K + the product initial) whose letters touch. The parent mark (Kouland Technology, "KT" with `notched`)
- * has two diagonal cuts in the outline. Letters are custom paths, never a font.
+ * A Kouland product mark: a rounded rectangle with a thick outline in the platform's own gradient and a heavy
+ * two-letter monogram (K + the product initial) whose letters touch. Letters are custom paths, never a font.
+ * The mark sets data-platform on itself, so its gradient and glow come from that platform's palette
+ * (platform-palettes.css) wherever it is placed. The parent company uses its own house logo, not this mark.
  */
 const GLYPHS: Record<string, readonly [width: number, path: string]> = {
   K: [17, "M0 0H5V6.6L10.6 0H16.8L9.2 8.7L17 18H10.8L5 11.1V18H0Z"],
@@ -20,19 +21,21 @@ const DEFAULT_JOIN = 15.2;
 const SCALE = 19 / 18;
 
 export type MarkMonogram = "KT" | "KH" | "KR" | "KB" | "KE";
+export type PlatformKey = "host" | "route" | "bot" | "event" | "tech";
+
+/** The platform (and so the palette) of each product monogram. */
+export const PLATFORM_OF_MONOGRAM: Record<MarkMonogram, PlatformKey> = { KH: "host", KR: "route", KB: "bot", KE: "event", KT: "tech" };
 
 export interface KoulandMarkProps {
   monogram: MarkMonogram;
   /** Height in pixels; the width follows the 44:32 shape. */
   size?: number;
-  /** Parent-company mark: two diagonal cuts in the outline. */
-  notched?: boolean;
-  /** Soft brand glow behind the mark. */
+  /** Soft glow in the platform's accent colour. */
   glow?: boolean;
   className?: string;
 }
 
-export function KoulandMark({ monogram, size = 40, notched = false, glow = false, className = "" }: KoulandMarkProps) {
+export function KoulandMark({ monogram, size = 40, glow = false, className = "" }: KoulandMarkProps) {
   const id = useId();
   const second = monogram[1] ?? "T";
   const first = GLYPHS.K;
@@ -44,44 +47,34 @@ export function KoulandMark({ monogram, size = 40, notched = false, glow = false
   const tx = (44 - glyphWidth) / 2;
   const ty = (32 - 19) / 2;
   const gradientId = `${id}-g`;
-  const maskId = `${id}-m`;
 
   return (
     <svg
+      data-platform={PLATFORM_OF_MONOGRAM[monogram]}
       className={`flex-none ${className}`}
       width={Math.round((size * 44) / 32)}
       height={size}
       viewBox="0 0 44 32"
       role="img"
       aria-label={`${monogram} logo`}
-      style={glow ? { overflow: "visible", filter: "drop-shadow(0 0 6px rgb(0 161 111 / 0.55)) drop-shadow(0 0 18px rgb(0 161 111 / 0.3))" } : undefined}
+      style={
+        glow
+          ? {
+              overflow: "visible",
+              filter: "drop-shadow(0 0 6px rgb(var(--color-brand-accent) / 0.55)) drop-shadow(0 0 18px rgb(var(--color-brand-accent) / 0.3))",
+            }
+          : undefined
+      }
     >
       <defs>
         <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#00AC76" />
-          <stop offset="0.5" stopColor="#009FA0" />
-          <stop offset="1" stopColor="#0085B9" />
+          <stop offset="0" style={{ stopColor: "rgb(var(--brand-g1))" }} />
+          <stop offset="0.5" style={{ stopColor: "rgb(var(--brand-g2))" }} />
+          <stop offset="1" style={{ stopColor: "rgb(var(--brand-g3))" }} />
         </linearGradient>
-        {notched && (
-          <mask id={maskId}>
-            <rect x="-2" y="-2" width="48" height="36" fill="#fff" />
-            <path d="M26.2 -1L29.4 -1L27 5L23.8 5Z" fill="#000" />
-            <path d="M16.6 27L19.8 27L17.4 33L14.2 33Z" fill="#000" />
-          </mask>
-        )}
       </defs>
       <rect x="2" y="2" width="40" height="28" rx="8" fill="rgb(var(--color-surface))" />
-      <rect
-        x="2"
-        y="2"
-        width="40"
-        height="28"
-        rx="8"
-        fill="none"
-        stroke={`url(#${gradientId})`}
-        strokeWidth="3.4"
-        mask={notched ? `url(#${maskId})` : undefined}
-      />
+      <rect x="2" y="2" width="40" height="28" rx="8" fill="none" stroke={`url(#${gradientId})`} strokeWidth="3.4" />
       <g fill="rgb(var(--color-text))" transform={`translate(${tx.toFixed(2)} ${ty}) scale(${SCALE.toFixed(4)})`}>
         <path fillRule="evenodd" d={first[1]} />
         <path fillRule="evenodd" transform={`translate(${offset} 0)`} d={other[1]} />
@@ -90,7 +83,7 @@ export function KoulandMark({ monogram, size = 40, notched = false, glow = false
   );
 }
 
-/** "Kouland" in the text colour + the product word in the brand gradient. */
+/** "Kouland" in the text colour + the product word in the gradient of the surrounding platform palette. */
 export function Wordmark({ product, className = "" }: { product: string; className?: string }) {
   return (
     <span className={`font-display font-extrabold tracking-tight ${className}`}>

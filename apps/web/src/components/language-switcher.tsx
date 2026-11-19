@@ -29,7 +29,7 @@ export function LanguageSwitcher({ className = "" }: { className?: string }) {
                 aria-label={LANGUAGE_NAMES[locale]}
                 aria-current={active ? "true" : undefined}
                 className={`block rounded-full px-2.5 py-1 uppercase transition-colors ${
-                  active ? "gradient-brand text-white" : "text-text-muted hover:text-text"
+                  active ? "gradient-brand text-on-brand" : "text-text-muted hover:text-text"
                 }`}
               >
                 {locale}

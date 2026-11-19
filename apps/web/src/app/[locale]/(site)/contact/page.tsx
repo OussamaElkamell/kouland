@@ -34,7 +34,7 @@ export default function ContactPage({ params }: Props) {
             <div>
               <h2 className="font-display text-lg font-bold">{t("callTitle")}</h2>
               <p className="mt-1 text-sm text-text-muted">{t("callBody")}</p>
-              <a href={COMPANY.phone.href} className="mt-2 inline-block font-semibold text-brand hover:underline">
+              <a href={COMPANY.phone.href} className="mt-2 inline-block font-semibold text-brand-text hover:underline">
                 {COMPANY.phone.display}
               </a>
             </div>
