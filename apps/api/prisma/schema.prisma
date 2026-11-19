@@ -58,3 +58,313 @@ model JobApplication {
   @@index([email])
   @@map("job_applications")
 }
+
+// ---------------------------------------------------------------------------------------------------------------
+// CRM (Milestone 2): accounts and permissions, platforms, customers, sales.
+// ---------------------------------------------------------------------------------------------------------------
+
+/// ADMIN: the whole CRM, accounts and platform settings. MANAGER and EMPLOYEE: only the areas and platforms the
+/// administrator grants them. An employee can be given at most EDIT on an area; only managers can be given MANAGE.
+enum UserRole {
+  ADMIN
+  MANAGER
+  EMPLOYEE
+}
+
+/// A part of the CRM that access is granted to. Milestone 3 adds tickets and tasks.
+enum PermissionArea {
+  CUSTOMERS
+  SALES
+}
+
+/// VIEW: read. EDIT: also create and update. MANAGE: also delete.
+enum AccessLevel {
+  VIEW
+  EDIT
+  MANAGE
+}
+
+/// A CRM account. Signs in with email and password; the password is stored as a scrypt hash.
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  name         String
+  passwordHash String
+  role         UserRole
+  /// Deactivated accounts cannot sign in and their sessions are ended.
+  isActive     Boolean   @default(true)
+  /// When true the account sees every platform, including ones added later. Always true for administrators.
+  allPlatforms Boolean   @default(false)
+  /// CRM language: en, fr or es.
+  locale       String    @default("en")
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  permissions        UserPermission[]
+  platforms          UserPlatform[]
+  sessions           Session[]
+  activities         Activity[]
+  ownedOpportunities Opportunity[]    @relation("OpportunityOwner")
+  createdCustomers   Customer[]       @relation("CustomerCreatedBy")
+  createdProposals   Proposal[]       @relation("ProposalCreatedBy")
+
+  @@map("users")
+}
+
+model UserPermission {
+  userId String
+  area   PermissionArea
+  level  AccessLevel
+  user   User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, area])
+  @@map("user_permissions")
+}
+
+/// The platform sections a manager or employee may work in (unless `allPlatforms`).
+model UserPlatform {
+  userId     String
+  platformId String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  platform   Platform @relation(fields: [platformId], references: [id], onDelete: Cascade)
+
+  @@id([userId, platformId])
+  @@index([platformId])
+  @@map("user_platforms")
+}
+
+/// A signed-in browser. The cookie holds a random token; only its SHA-256 hash is stored.
+model Session {
+  id         String   @id @default(cuid())
+  tokenHash  String   @unique
+  userId     String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  lastSeenAt DateTime @default(now())
+  userAgent  String?
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+/// A platform section of the CRM, configured by administrators. The CRM never hardcodes platform names: every
+/// filter, section and permission reads these rows. Platforms are deactivated, never deleted, to keep history.
+/// Integration settings for synchronization come in Milestone 4.
+model Platform {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  /// URL-safe key used in CRM addresses, e.g. /admin/workspace/<slug>.
+  slug        String   @unique
+  description String?
+  websiteUrl  String?
+  /// Accent colour of the platform's chips, as #RRGGBB.
+  color       String   @default("#64748B")
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  users         UserPlatform[]
+  customers     CustomerPlatform[]
+  opportunities Opportunity[]
+
+  @@map("platforms")
+}
+
+enum CustomerType {
+  INDIVIDUAL
+  COMPANY
+}
+
+/// PROSPECT until they buy (an opportunity is won, or staff mark them as a customer).
+enum CustomerStage {
+  PROSPECT
+  CUSTOMER
+}
+
+/// One record per person or company, shared by every platform (linked through CustomerPlatform), so the same
+/// customer is never duplicated per platform.
+model Customer {
+  id          String        @id @default(cuid())
+  type        CustomerType
+  stage       CustomerStage @default(PROSPECT)
+  /// Person's full name or company name, used for lists and search.
+  displayName String
+  firstName   String?
+  lastName    String?
+  companyName String?
+  email       String?
+  phone       String?
+  website     String?
+  addressLine String?
+  city        String?
+  region      String?
+  postalCode  String?
+  country     String?
+  notes       String?
+  createdById String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  createdBy     User?              @relation("CustomerCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  contacts      Contact[]
+  platforms     CustomerPlatform[]
+  opportunities Opportunity[]
+  activities    Activity[]
+
+  @@index([displayName])
+  @@index([email])
+  @@index([stage])
+  @@map("customers")
+}
+
+/// A person at a company customer.
+model Contact {
+  id         String   @id @default(cuid())
+  customerId String
+  firstName  String
+  lastName   String?
+  jobTitle   String?
+  email      String?
+  phone      String?
+  isPrimary  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([customerId])
+  @@map("contacts")
+}
+
+/// The platforms (services) a customer uses or is interested in.
+model CustomerPlatform {
+  customerId String
+  platformId String
+  createdAt  DateTime @default(now())
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  platform   Platform @relation(fields: [platformId], references: [id], onDelete: Restrict)
+
+  @@id([customerId, platformId])
+  @@index([platformId])
+  @@map("customer_platforms")
+}
+
+enum OpportunityStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  PROPOSAL_SENT
+  NEGOTIATION
+  WON
+  LOST
+}
+
+/// Where a prospect or request came from.
+enum OpportunitySource {
+  WEBSITE
+  PHONE
+  EMAIL
+  REFERRAL
+  PLATFORM
+  WALK_IN
+  OTHER
+}
+
+/// A business opportunity: a prospect's or customer's request, followed until it is won or lost.
+model Opportunity {
+  id                String            @id @default(cuid())
+  title             String
+  customerId        String
+  platformId        String
+  status            OpportunityStatus @default(NEW)
+  source            OpportunitySource @default(OTHER)
+  /// What the prospect or customer asked for.
+  request           String?
+  estimatedValue    Decimal?          @db.Decimal(12, 2)
+  currency          String            @default("USD")
+  /// Calendar date, YYYY-MM-DD.
+  expectedCloseDate String?
+  ownerId           String?
+  lostReason        String?
+  closedAt          DateTime?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  customer   Customer   @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  platform   Platform   @relation(fields: [platformId], references: [id], onDelete: Restrict)
+  owner      User?      @relation("OpportunityOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  proposals  Proposal[]
+  activities Activity[]
+
+  @@index([status])
+  @@index([platformId])
+  @@index([customerId])
+  @@map("opportunities")
+}
+
+enum ProposalStatus {
+  DRAFT
+  SENT
+  ACCEPTED
+  REJECTED
+}
+
+/// A commercial proposal (quote) made for an opportunity.
+model Proposal {
+  id            String         @id @default(cuid())
+  opportunityId String
+  title         String
+  amount        Decimal        @db.Decimal(12, 2)
+  currency      String         @default("USD")
+  status        ProposalStatus @default(DRAFT)
+  /// Calendar date, YYYY-MM-DD.
+  validUntil    String?
+  details       String?
+  sentAt        DateTime?
+  respondedAt   DateTime?
+  createdById   String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  opportunity Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  createdBy   User?       @relation("ProposalCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([opportunityId])
+  @@map("proposals")
+}
+
+enum ActivityType {
+  NOTE
+  CUSTOMER_CREATED
+  CUSTOMER_UPDATED
+  STAGE_CHANGED
+  CONTACT_ADDED
+  PLATFORM_LINKED
+  PLATFORM_UNLINKED
+  OPPORTUNITY_CREATED
+  OPPORTUNITY_STATUS
+  PROPOSAL_CREATED
+  PROPOSAL_STATUS
+}
+
+/// One event in a customer's history: a note written by staff, or a change recorded by the CRM.
+/// `data` holds the event's details (old and new status, titles…) so the CRM can word it in any language.
+model Activity {
+  id            String       @id @default(cuid())
+  customerId    String
+  opportunityId String?
+  type          ActivityType
+  body          String?
+  data          Json?
+  userId        String?
+  createdAt     DateTime     @default(now())
+
+  customer    Customer     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  opportunity Opportunity? @relation(fields: [opportunityId], references: [id], onDelete: SetNull)
+  user        User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([customerId, createdAt])
+  @@map("activities")
+}

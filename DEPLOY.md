@@ -49,7 +49,24 @@ Both services listen on the port Railway gives them (`PORT`).
 | `CAREERS_INBOX_EMAIL` | Optional. Inbox for job applications (CV attached). Defaults to `CONTACT_INBOX_EMAIL` |
 | `TRUST_PROXY` | `1` (Railway's proxy). Use `2` if Cloudflare is also in front. Needed so rate limits count each visitor separately |
 
+| `COOKIE_SECURE` | Optional. The CRM session cookie is HTTPS-only when the request came over HTTPS (needs `TRUST_PROXY`); `true` forces it |
+| `COOKIE_DOMAIN` | Optional. Leave empty; `kouland.com` would also send the CRM cookie to the website |
+
 `start:api` runs `prisma migrate deploy` before starting, so the tables are created and updated on every deploy.
+
+## First CRM administrator
+
+The CRM (`https://kouland.com/admin`) has no sign-up page. Create the first administrator once, from a shell with
+the production `DATABASE_URL` (Railway: `railway ssh` into the api service, or `railway run` locally):
+
+```sh
+pnpm --filter @kouland/api create-admin
+```
+
+It asks for the email, name and password (at least 10 characters). On a server without a terminal, pass
+`--email` and `--name` and put the password in `ADMIN_PASSWORD` for that one command. Running it again for the
+same email resets that account's password and makes it an administrator. Every other account is then created in
+the CRM under **Settings → Accounts**.
 
 ## Website variables (`kouland.com`), set **before** the build
 
@@ -65,3 +82,4 @@ These are written into the site when it is built: after changing one, redeploy (
 1. `https://api.kouland.com/api/health` answers `{"status":"ok"}` (this also checks the database connection).
 2. `https://kouland.com` redirects to `/en` and shows the site.
 3. Send a message from the contact page and check that it reaches `contact@koulandtechnology.com`.
+4. `https://kouland.com/admin` shows the CRM sign-in page; sign in with the administrator created above.
