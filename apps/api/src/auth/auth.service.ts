@@ -53,7 +53,7 @@ export class AuthService {
   /** Changes the account's password and signs out its other browsers. */
   async changePassword(user: AuthUser, input: ChangePassword): Promise<void> {
     const account = await this.prisma.user.findUniqueOrThrow({ where: { id: user.id }, select: { passwordHash: true } });
-    if (!(await verifyPassword(input.currentPassword, account.passwordHash))) {
+    if (!account.passwordHash || !(await verifyPassword(input.currentPassword, account.passwordHash))) {
       const body: ApiErrorBody = {
         statusCode: 400,
         message: "Your current password is not correct.",

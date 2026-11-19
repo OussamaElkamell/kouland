@@ -7,7 +7,10 @@ import {
   contactSchema,
   customerDetailSchema,
   customerSummarySchema,
+  invitedUserSchema,
   jobApplicationReceiptSchema,
+  linkInfoSchema,
+  linkReceiptSchema,
   opportunityDetailSchema,
   opportunitySummarySchema,
   pageOf,
@@ -129,13 +132,20 @@ export function createApiClient({ baseUrl, fetch: fetchImpl = fetch }: ApiClient
       me: () => request("GET", "/auth/me", sessionUserSchema),
       updateMe: (input: UpdateProfileInput) => request("PATCH", "/auth/me", sessionUserSchema, { json: input }),
       changePassword: (input: ChangePasswordInput) => request("POST", "/auth/password", noContent, { json: input }),
+      /** Public: whose invitation or password link this is (410 when expired or used). */
+      linkInfo: (token: string) => request("GET", `/auth/links/${encodeURIComponent(token)}`, linkInfoSchema),
+      /** Public: choose a password with the link; signs the person in. */
+      useLink: (token: string, password: string) =>
+        request("POST", `/auth/links/${encodeURIComponent(token)}`, sessionUserSchema, { json: { password } }),
     },
     users: {
       list: () => request("GET", "/users", z.array(userSchema)),
       assignable: () => request("GET", "/users/assignable", assignableUsersSchema),
-      create: (input: CreateUserInput) => request("POST", "/users", userSchema, { json: input }),
+      /** Creates the account and emails the invitation. */
+      create: (input: CreateUserInput) => request("POST", "/users", invitedUserSchema, { json: input }),
       update: (id: string, input: UpdateUserInput) => request("PATCH", `/users/${id}`, userSchema, { json: input }),
-      resetPassword: (id: string, password: string) => request("POST", `/users/${id}/password`, noContent, { json: { password } }),
+      /** Emails a new invitation, or a link to choose a new password. */
+      sendLink: (id: string) => request("POST", `/users/${id}/link`, linkReceiptSchema),
     },
     platforms: {
       /** `all`: include inactive platforms (administrators). */

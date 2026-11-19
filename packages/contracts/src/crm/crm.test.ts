@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { createUserSchema, levelAllows, updateUserSchema } from "./auth";
+import { createUserSchema, levelAllows, updateUserSchema, useLinkSchema } from "./auth";
 import { customerDisplayName, customerFieldsSchema } from "./customers";
 import { createPlatformSchema, slugify } from "./platforms";
 import { createOpportunitySchema, proposalInputSchema } from "./sales";
@@ -15,7 +15,7 @@ test("access levels are ordered VIEW < EDIT < MANAGE", () => {
 });
 
 test("an employee cannot be given MANAGE; a manager can", () => {
-  const base = { email: "a@b.co", password: "long-enough-1", name: "A", platformIds: [] };
+  const base = { email: "a@b.co", name: "A", platformIds: [] };
   const employee = createUserSchema.safeParse({ ...base, role: "EMPLOYEE", access: { CUSTOMERS: "MANAGE", SALES: null } });
   assert.equal(employee.success, false);
   assert.equal(firstCode(employee, "access.CUSTOMERS"), "invalid");
@@ -23,9 +23,15 @@ test("an employee cannot be given MANAGE; a manager can", () => {
   assert.equal(updateUserSchema.safeParse({ role: "EMPLOYEE", access: { CUSTOMERS: "EDIT", SALES: "MANAGE" } }).success, false);
 });
 
-test("passwords need at least 10 characters", () => {
-  const result = createUserSchema.safeParse({ email: "a@b.co", password: "short", name: "A", role: "MANAGER", access: { CUSTOMERS: null, SALES: null } });
-  assert.equal(firstCode(result, "password"), "passwordTooShort");
+test("passwords chosen from a link need at least 10 characters", () => {
+  assert.equal(firstCode(useLinkSchema.safeParse({ password: "short" }), "password"), "passwordTooShort");
+  assert.equal(useLinkSchema.safeParse({ password: "long-enough-1" }).success, true);
+});
+
+test("an administrator creates an account without a password", () => {
+  const parsed = createUserSchema.parse({ email: " New@Kouland.com ", name: "New", role: "EMPLOYEE", access: { CUSTOMERS: "VIEW", SALES: null } });
+  assert.equal(parsed.email, "new@kouland.com");
+  assert.equal("password" in parsed, false);
 });
 
 test("a person needs a first name and a company needs a company name", () => {

@@ -4,6 +4,8 @@ import {
   PERMISSION_AREAS,
   type AccessMap,
   type ApiErrorBody,
+  type InvitedUser,
+  type LinkReceipt,
   type Ref,
   type User,
   createUserSchema,
@@ -11,7 +13,7 @@ import {
 } from "@kouland/contracts";
 import type { z } from "zod";
 import type { AuthUser } from "../auth/auth-user";
-import { hashPassword } from "../auth/password";
+import { LinkService } from "../auth/link.service";
 import { SessionService } from "../auth/session.service";
 import { isUniqueViolation, notFound, taken } from "../common/prisma-errors";
 import { PrismaService } from "../prisma/prisma.service";
@@ -26,13 +28,15 @@ const SELECT = {
   locale: true,
   lastLoginAt: true,
   createdAt: true,
+  passwordHash: true,
   permissions: { select: { area: true, level: true } },
   platforms: { select: { platformId: true } },
 } satisfies Prisma.UserSelect;
 
 type Row = Prisma.UserGetPayload<{ select: typeof SELECT }>;
 
-function toUser({ permissions, platforms, lastLoginAt, createdAt, locale, ...row }: Row): User {
+/** The password hash never leaves this function: only whether one exists. */
+function toUser({ permissions, platforms, lastLoginAt, createdAt, locale, passwordHash, ...row }: Row): User {
   const access: AccessMap = { CUSTOMERS: null, SALES: null };
   for (const permission of permissions) access[permission.area] = permission.level;
   return {
@@ -42,6 +46,7 @@ function toUser({ permissions, platforms, lastLoginAt, createdAt, locale, ...row
     platformIds: platforms.map((platform) => platform.platformId),
     lastLoginAt: lastLoginAt?.toISOString() ?? null,
     createdAt: createdAt.toISOString(),
+    invitationPending: passwordHash === null,
   };
 }
 
@@ -59,6 +64,7 @@ export class UsersService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly sessions: SessionService,
+    private readonly links: LinkService,
   ) {}
 
   async list(): Promise<User[]> {
@@ -78,7 +84,8 @@ export class UsersService {
     });
   }
 
-  async create(input: z.output<typeof createUserSchema>): Promise<User> {
+  /** Creates the account without a password and emails the person an invitation to choose one. */
+  async create(actor: AuthUser, input: z.output<typeof createUserSchema>): Promise<InvitedUser> {
     await this.checkPlatforms(input.platformIds);
     const isAdmin = input.role === "ADMIN";
     try {
@@ -88,14 +95,14 @@ export class UsersService {
           name: input.name,
           role: input.role,
           locale: input.locale,
-          passwordHash: await hashPassword(input.password),
           allPlatforms: isAdmin || input.allPlatforms,
           permissions: { create: isAdmin ? [] : permissionRows(input.access) },
           platforms: { create: isAdmin ? [] : input.platformIds.map((platformId) => ({ platformId })) },
         },
         select: SELECT,
       });
-      return toUser(row);
+      const invitation = await this.links.issue(row.id, "INVITE", actor.id);
+      return { user: toUser(row), invitation };
     } catch (error) {
       if (isUniqueViolation(error, "email")) throw taken("email", "An account with this email already exists.");
       throw error;
@@ -151,11 +158,15 @@ export class UsersService {
     return toUser(row);
   }
 
-  /** Sets a new password chosen by the administrator and signs the account out everywhere. */
-  async resetPassword(id: string, password: string): Promise<void> {
-    if (!(await this.prisma.user.findUnique({ where: { id }, select: { id: true } }))) throw notFound("Account");
-    await this.prisma.user.update({ where: { id }, data: { passwordHash: await hashPassword(password) } });
-    await this.sessions.destroyAllFor(id);
+  /**
+   * Emails the person a new link: an invitation again while they have never chosen a password, otherwise a link to
+   * choose a new password. Their current password keeps working until the link is used.
+   */
+  async sendLink(actor: AuthUser, id: string): Promise<LinkReceipt> {
+    const user = await this.prisma.user.findUnique({ where: { id }, select: { isActive: true, passwordHash: true } });
+    if (!user) throw notFound("Account");
+    if (!user.isActive) throw badRequest("isActive", "inactive", "Reactivate the account before sending it a link.");
+    return this.links.issue(id, user.passwordHash ? "RESET_PASSWORD" : "INVITE", actor.id);
   }
 
   private async checkPlatforms(ids: string[]): Promise<void> {

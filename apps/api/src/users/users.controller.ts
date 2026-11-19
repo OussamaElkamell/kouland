@@ -1,5 +1,6 @@
 import { Body, Controller, Get, HttpCode, Param, Patch, Post } from "@nestjs/common";
-import { createUserSchema, resetPasswordSchema, updateUserSchema, type Ref, type User } from "@kouland/contracts";
+import { Throttle } from "@nestjs/throttler";
+import { createUserSchema, updateUserSchema, type InvitedUser, type LinkReceipt, type Ref, type User } from "@kouland/contracts";
 import type { z } from "zod";
 import { CurrentUser, type AuthUser } from "../auth/auth-user";
 import { AdminOnly, Crm, RequireAccess } from "../auth/crm.guard";
@@ -26,8 +27,8 @@ export class UsersController {
 
   @Post()
   @AdminOnly()
-  create(@Body(new ZodValidationPipe(createUserSchema)) body: z.output<typeof createUserSchema>): Promise<User> {
-    return this.users.create(body);
+  create(@CurrentUser() actor: AuthUser, @Body(new ZodValidationPipe(createUserSchema)) body: z.output<typeof createUserSchema>): Promise<InvitedUser> {
+    return this.users.create(actor, body);
   }
 
   /** Change role, access, platforms, or deactivate (`isActive: false`, which also signs the account out). */
@@ -41,10 +42,12 @@ export class UsersController {
     return this.users.update(actor, id, body);
   }
 
-  @Post(":id/password")
-  @HttpCode(204)
+  /** Emails a new invitation (never signed in yet) or a link to choose a new password. */
+  @Post(":id/link")
+  @HttpCode(200)
   @AdminOnly()
-  resetPassword(@Param("id") id: string, @Body(new ZodValidationPipe(resetPasswordSchema)) body: { password: string }): Promise<void> {
-    return this.users.resetPassword(id, body.password);
+  @Throttle({ default: { ttl: 60_000, limit: 10 } })
+  sendLink(@CurrentUser() actor: AuthUser, @Param("id") id: string): Promise<LinkReceipt> {
+    return this.users.sendLink(actor, id);
   }
 }

@@ -53,6 +53,7 @@ Build order is handled by Turborepo (`dependsOn: ["^build"]`): contracts → api
 | 16 | Sales pipeline: New → Contacted → Qualified → Proposal sent → Negotiation → Won / Lost. Proposals: Draft → Sent → Accepted / Rejected | Confirmed on 2026-11-19. |
 | 17 | Platforms are rows (`platforms`), added, edited and deactivated by administrators; never deleted. The sidebar, the platform sections (`/admin/p/<slug>`), filters and account permissions all read them | Requirements §3 "Global and Platform Management"; no platform name in CRM code. |
 | 18 | The first administrator is created with `pnpm --filter @kouland/api create-admin` | Confirmed on 2026-11-19. No public sign-up. |
+| 19 | Other accounts are invited by email: the administrator creates the account without a password, the person opens a one-time link (`/admin/link`, 7 days) and chooses it. Administrators can resend the invitation or send a password link (24 hours); they never see or set passwords. Links are stored hashed (`user_tokens`), a new one replaces the older ones, and using one ends the person's other sessions | Requested on 2026-11-19 ("invite managers", Requirements §4). Without an email provider the administrator gets the link to pass on. |
 
 ## Languages
 

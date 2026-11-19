@@ -55,7 +55,11 @@
     "language": "Idioma",
     "theme": "Cambiar a modo claro u oscuro",
     "signOut": "Cerrar sesión",
-    "role": { "ADMIN": "Administrador", "MANAGER": "Gerente", "EMPLOYEE": "Empleado" }
+    "role": {
+      "ADMIN": "Administrador",
+      "MANAGER": "Gerente",
+      "EMPLOYEE": "Empleado"
+    }
   },
   "login": {
     "title": "Iniciar sesión en Kouland CRM",
@@ -64,7 +68,7 @@
     "password": "Contraseña",
     "signIn": "Iniciar sesión",
     "signingIn": "Iniciando sesión…",
-    "help": "¿Olvidó su contraseña? Pida a su administrador que le asigne una nueva."
+    "help": "¿Olvidó su contraseña? Pida a su administrador que le envíe un nuevo enlace."
   },
   "overview": {
     "title": "Bienvenido, {name}",
@@ -90,14 +94,30 @@
     "searchPlaceholder": "Buscar por nombre, correo o teléfono",
     "allStages": "Prospectos y clientes",
     "allTypes": "Personas y empresas",
-    "stage": { "PROSPECT": "Prospecto", "CUSTOMER": "Cliente" },
-    "type": { "INDIVIDUAL": "Persona", "COMPANY": "Empresa" },
-    "markAs": { "CUSTOMER": "Marcar como cliente", "PROSPECT": "Marcar como prospecto" },
+    "stage": {
+      "PROSPECT": "Prospecto",
+      "CUSTOMER": "Cliente"
+    },
+    "type": {
+      "INDIVIDUAL": "Persona",
+      "COMPANY": "Empresa"
+    },
+    "markAs": {
+      "CUSTOMER": "Marcar como cliente",
+      "PROSPECT": "Marcar como prospecto"
+    },
     "noMatch": "Sin resultados",
     "noMatchBody": "Pruebe otra búsqueda o quite un filtro.",
     "empty": "Aún no hay clientes",
     "emptyBody": "Agregue un cliente o registre un prospecto desde Ventas.",
-    "columns": { "name": "Nombre", "stage": "Etapa", "contact": "Contacto", "platforms": "Plataformas", "open": "Negocios abiertos", "updated": "Actualizado" },
+    "columns": {
+      "name": "Nombre",
+      "stage": "Etapa",
+      "contact": "Contacto",
+      "platforms": "Plataformas",
+      "open": "Negocios abiertos",
+      "updated": "Actualizado"
+    },
     "fields": {
       "type": "Tipo",
       "companyName": "Nombre de la empresa",
@@ -175,7 +195,12 @@
       "WON": "Ganada",
       "LOST": "Perdida"
     },
-    "proposal": { "DRAFT": "Borrador", "SENT": "Enviada", "ACCEPTED": "Aceptada", "REJECTED": "Rechazada" }
+    "proposal": {
+      "DRAFT": "Borrador",
+      "SENT": "Enviada",
+      "ACCEPTED": "Aceptada",
+      "REJECTED": "Rechazada"
+    }
   },
   "sales": {
     "title": "Ventas",
@@ -194,7 +219,14 @@
     "noMatchBody": "Pruebe otra búsqueda o quite un filtro.",
     "empty": "Aún no hay oportunidades",
     "emptyBody": "Registre un prospecto o una solicitud de cliente para empezar el seguimiento.",
-    "columns": { "title": "Oportunidad", "status": "Estado", "value": "Valor", "platform": "Plataforma", "owner": "Responsable", "close": "Cierre previsto" },
+    "columns": {
+      "title": "Oportunidad",
+      "status": "Estado",
+      "value": "Valor",
+      "platform": "Plataforma",
+      "owner": "Responsable",
+      "close": "Cierre previsto"
+    },
     "notFound": "Esta oportunidad no existe o no tiene acceso a ella.",
     "pipeline": "Etapas de venta",
     "markWon": "Marcar como ganada",
@@ -304,8 +336,7 @@
     "name": "Nombre",
     "email": "Correo electrónico",
     "emailFixed": "El correo electrónico no se puede cambiar.",
-    "password": "Contraseña",
-    "passwordHint": "Al menos 10 caracteres. Compártala con la persona de forma privada.",
+    "passwordHint": "Al menos 10 caracteres.",
     "role": "Rol",
     "roleHint": {
       "ADMIN": "Acceso completo, incluidas las cuentas y las plataformas.",
@@ -314,8 +345,16 @@
     },
     "language": "Idioma del CRM",
     "access": "Acceso",
-    "area": { "CUSTOMERS": "Clientes", "SALES": "Ventas" },
-    "level": { "NONE": "Sin acceso", "VIEW": "Ver", "EDIT": "Ver y editar", "MANAGE": "Ver, editar y eliminar" },
+    "area": {
+      "CUSTOMERS": "Clientes",
+      "SALES": "Ventas"
+    },
+    "level": {
+      "NONE": "Sin acceso",
+      "VIEW": "Ver",
+      "EDIT": "Ver y editar",
+      "MANAGE": "Ver, editar y eliminar"
+    },
     "levelHint": "A un empleado se le puede dar como máximo «Ver y editar».",
     "platforms": "Plataformas",
     "allPlatforms": "Todas las plataformas",
@@ -325,11 +364,24 @@
     "activeHint": "Una cuenta desactivada no puede iniciar sesión y se cierra su sesión de inmediato.",
     "lastLogin": "Último inicio de sesión: {date}",
     "never": "nunca",
-    "resetPassword": "Asignar contraseña",
-    "resetTitle": "Nueva contraseña para {name}",
-    "resetBody": "Se cerrará la sesión de la cuenta en todas partes y deberá usar la nueva contraseña.",
-    "newPassword": "Nueva contraseña",
-    "setPassword": "Asignar contraseña"
+    "pending": "Invitación pendiente",
+    "pendingHint": "Invitado, aún no ha elegido una contraseña",
+    "resendInvite": "Reenviar invitación",
+    "sendPasswordLink": "Enviar enlace de contraseña",
+    "inviteNote": "Enviaremos una invitación a este correo. La persona abre el enlace y elige su propia contraseña.",
+    "inviteSentTitle": "Invitación enviada",
+    "linkSentTitle": "Enlace de contraseña enviado",
+    "inviteSentBody": "Enviamos una invitación a {name} ({email}). El enlace es válido durante 7 días.",
+    "linkSentBody": "Enviamos a {name} ({email}) un enlace para elegir una nueva contraseña. Es válido durante 24 horas; su contraseña actual sigue funcionando hasta entonces.",
+    "notSentBody": "No se pudo enviar el correo (el envío de correos no está configurado en este servidor). Copie este enlace y envíeselo usted mismo a {name}:",
+    "linkLabel": "Enlace",
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "inviteValid": "Es válido durante 7 días y una sola vez.",
+    "resetValid": "Es válido durante 24 horas y una sola vez.",
+    "inviteReadyTitle": "Enlace de invitación listo",
+    "linkReadyTitle": "Enlace de contraseña listo",
+    "sendInvite": "Enviar invitación"
   },
   "account": {
     "title": "Mi cuenta",
@@ -340,5 +392,21 @@
     "passwordNote": "Se cerrará la sesión en sus otros navegadores.",
     "passwordChanged": "Contraseña cambiada",
     "changePassword": "Cambiar contraseña"
+  },
+  "link": {
+    "welcome": "Bienvenido, {name}",
+    "inviteBody": "Elija una contraseña para terminar de configurar su cuenta de Kouland CRM.",
+    "resetTitle": "Elija una nueva contraseña",
+    "resetBody": "Su nueva contraseña reemplaza la anterior y cierra la sesión en sus otros navegadores.",
+    "account": "Cuenta:",
+    "password": "Contraseña",
+    "passwordHint": "Al menos 10 caracteres.",
+    "repeat": "Repita la contraseña",
+    "start": "Guardar e iniciar sesión",
+    "save": "Guardar e iniciar sesión",
+    "saving": "Guardando…",
+    "mismatch": "Las dos contraseñas no coinciden.",
+    "expired": "Este enlace ha caducado o ya se usó. Pida a su administrador que le envíe uno nuevo.",
+    "toLogin": "Ir a iniciar sesión"
   }
 }

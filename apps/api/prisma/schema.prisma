@@ -84,12 +84,13 @@ enum AccessLevel {
   MANAGE
 }
 
-/// A CRM account. Signs in with email and password; the password is stored as a scrypt hash.
+/// A CRM account. Signs in with email and password; the password is stored as a scrypt hash. Accounts created by an
+/// administrator have no password until the person accepts the emailed invitation and chooses one.
 model User {
   id           String    @id @default(cuid())
   email        String    @unique
   name         String
-  passwordHash String
+  passwordHash String?
   role         UserRole
   /// Deactivated accounts cannot sign in and their sessions are ended.
   isActive     Boolean   @default(true)
@@ -104,6 +105,8 @@ model User {
   permissions        UserPermission[]
   platforms          UserPlatform[]
   sessions           Session[]
+  tokens             UserToken[]      @relation("TokenUser")
+  issuedTokens       UserToken[]      @relation("TokenIssuer")
   activities         Activity[]
   ownedOpportunities Opportunity[]    @relation("OpportunityOwner")
   createdCustomers   Customer[]       @relation("CustomerCreatedBy")
@@ -147,6 +150,29 @@ model Session {
 
   @@index([userId])
   @@map("sessions")
+}
+
+enum TokenPurpose {
+  INVITE
+  RESET_PASSWORD
+}
+
+/// A one-time link emailed to a person: accept an invitation (choose a first password) or choose a new password.
+/// The email holds a random token; only its SHA-256 hash is stored. A new link replaces the person's older ones.
+model UserToken {
+  id          String       @id @default(cuid())
+  userId      String
+  purpose     TokenPurpose
+  tokenHash   String       @unique
+  expiresAt   DateTime
+  usedAt      DateTime?
+  createdById String?
+  createdAt   DateTime     @default(now())
+  user        User         @relation("TokenUser", fields: [userId], references: [id], onDelete: Cascade)
+  createdBy   User?        @relation("TokenIssuer", fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@map("user_tokens")
 }
 
 /// A platform section of the CRM, configured by administrators. The CRM never hardcodes platform names: every

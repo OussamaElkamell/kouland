@@ -1,10 +1,12 @@
-import { Body, Controller, Get, HttpCode, Patch, Post, Req, Res } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, Param, Patch, Post, Req, Res } from "@nestjs/common";
 import { Throttle } from "@nestjs/throttler";
 import {
   changePasswordSchema,
   loginSchema,
   updateProfileSchema,
+  useLinkSchema,
   type ChangePassword,
+  type LinkInfo,
   type SessionUser,
   type UpdateProfileInput,
 } from "@kouland/contracts";
@@ -13,6 +15,7 @@ import { ZodValidationPipe } from "../common/zod-validation.pipe";
 import { CurrentUser, type AuthUser } from "./auth-user";
 import { AuthService } from "./auth.service";
 import { Crm } from "./crm.guard";
+import { LinkService } from "./link.service";
 import { SessionService } from "./session.service";
 
 @Controller("auth")
@@ -20,7 +23,28 @@ export class AuthController {
   constructor(
     private readonly auth: AuthService,
     private readonly sessions: SessionService,
+    private readonly links: LinkService,
   ) {}
+
+  /** Public: whose invitation or password link this is. 410 when it expired or was used. */
+  @Get("links/:token")
+  @Throttle({ default: { ttl: 60_000, limit: 20 } })
+  linkInfo(@Param("token") token: string): Promise<LinkInfo> {
+    return this.links.info(token);
+  }
+
+  /** Public: choose a password with an invitation or reset link; signs the person in. */
+  @Post("links/:token")
+  @HttpCode(200)
+  @Throttle({ default: { ttl: 60_000, limit: 10 } })
+  useLink(
+    @Param("token") token: string,
+    @Body(new ZodValidationPipe(useLinkSchema)) body: { password: string },
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<SessionUser> {
+    return this.links.use(token, body.password, request.headers["user-agent"], response);
+  }
 
   /** Signs in and sets the session cookie. Limited to 10 attempts a minute per IP address. */
   @Post("login")

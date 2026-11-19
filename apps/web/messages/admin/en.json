@@ -55,7 +55,11 @@
     "language": "Language",
     "theme": "Switch light or dark mode",
     "signOut": "Sign out",
-    "role": { "ADMIN": "Administrator", "MANAGER": "Manager", "EMPLOYEE": "Employee" }
+    "role": {
+      "ADMIN": "Administrator",
+      "MANAGER": "Manager",
+      "EMPLOYEE": "Employee"
+    }
   },
   "login": {
     "title": "Sign in to Kouland CRM",
@@ -64,7 +68,7 @@
     "password": "Password",
     "signIn": "Sign in",
     "signingIn": "Signing in…",
-    "help": "Forgot your password? Ask your administrator to set a new one."
+    "help": "Forgot your password? Ask your administrator to send you a new link."
   },
   "overview": {
     "title": "Welcome, {name}",
@@ -90,14 +94,30 @@
     "searchPlaceholder": "Search by name, email or phone",
     "allStages": "Prospects and customers",
     "allTypes": "People and companies",
-    "stage": { "PROSPECT": "Prospect", "CUSTOMER": "Customer" },
-    "type": { "INDIVIDUAL": "Person", "COMPANY": "Company" },
-    "markAs": { "CUSTOMER": "Mark as customer", "PROSPECT": "Mark as prospect" },
+    "stage": {
+      "PROSPECT": "Prospect",
+      "CUSTOMER": "Customer"
+    },
+    "type": {
+      "INDIVIDUAL": "Person",
+      "COMPANY": "Company"
+    },
+    "markAs": {
+      "CUSTOMER": "Mark as customer",
+      "PROSPECT": "Mark as prospect"
+    },
     "noMatch": "No match",
     "noMatchBody": "Try another search or remove a filter.",
     "empty": "No customers yet",
     "emptyBody": "Add a customer, or register a prospect from Sales.",
-    "columns": { "name": "Name", "stage": "Stage", "contact": "Contact", "platforms": "Platforms", "open": "Open deals", "updated": "Updated" },
+    "columns": {
+      "name": "Name",
+      "stage": "Stage",
+      "contact": "Contact",
+      "platforms": "Platforms",
+      "open": "Open deals",
+      "updated": "Updated"
+    },
     "fields": {
       "type": "Type",
       "companyName": "Company name",
@@ -175,7 +195,12 @@
       "WON": "Won",
       "LOST": "Lost"
     },
-    "proposal": { "DRAFT": "Draft", "SENT": "Sent", "ACCEPTED": "Accepted", "REJECTED": "Rejected" }
+    "proposal": {
+      "DRAFT": "Draft",
+      "SENT": "Sent",
+      "ACCEPTED": "Accepted",
+      "REJECTED": "Rejected"
+    }
   },
   "sales": {
     "title": "Sales",
@@ -194,7 +219,14 @@
     "noMatchBody": "Try another search or remove a filter.",
     "empty": "No opportunities yet",
     "emptyBody": "Register a prospect or a customer request to start following it.",
-    "columns": { "title": "Opportunity", "status": "Status", "value": "Value", "platform": "Platform", "owner": "Owner", "close": "Expected close" },
+    "columns": {
+      "title": "Opportunity",
+      "status": "Status",
+      "value": "Value",
+      "platform": "Platform",
+      "owner": "Owner",
+      "close": "Expected close"
+    },
     "notFound": "This opportunity does not exist, or you do not have access to it.",
     "pipeline": "Pipeline",
     "markWon": "Mark as won",
@@ -304,8 +336,7 @@
     "name": "Name",
     "email": "Email",
     "emailFixed": "The email cannot be changed.",
-    "password": "Password",
-    "passwordHint": "At least 10 characters. Share it with the person privately.",
+    "passwordHint": "At least 10 characters.",
     "role": "Role",
     "roleHint": {
       "ADMIN": "Full access, including accounts and platform settings.",
@@ -314,8 +345,16 @@
     },
     "language": "CRM language",
     "access": "Access",
-    "area": { "CUSTOMERS": "Customers", "SALES": "Sales" },
-    "level": { "NONE": "No access", "VIEW": "View", "EDIT": "View and edit", "MANAGE": "View, edit and delete" },
+    "area": {
+      "CUSTOMERS": "Customers",
+      "SALES": "Sales"
+    },
+    "level": {
+      "NONE": "No access",
+      "VIEW": "View",
+      "EDIT": "View and edit",
+      "MANAGE": "View, edit and delete"
+    },
     "levelHint": "Employees can be given up to \"View and edit\".",
     "platforms": "Platforms",
     "allPlatforms": "All platforms",
@@ -325,11 +364,24 @@
     "activeHint": "An inactive account cannot sign in and is signed out right away.",
     "lastLogin": "Last sign-in: {date}",
     "never": "never",
-    "resetPassword": "Set password",
-    "resetTitle": "New password for {name}",
-    "resetBody": "The account is signed out everywhere and must use the new password.",
-    "newPassword": "New password",
-    "setPassword": "Set password"
+    "pending": "Invitation pending",
+    "pendingHint": "Invited, has not chosen a password yet",
+    "resendInvite": "Resend invitation",
+    "sendPasswordLink": "Send password link",
+    "inviteNote": "We will email an invitation to this address. The person opens the link and chooses their own password.",
+    "inviteSentTitle": "Invitation sent",
+    "linkSentTitle": "Password link sent",
+    "inviteSentBody": "We emailed an invitation to {name} at {email}. The link works for 7 days.",
+    "linkSentBody": "We emailed {name} at {email} a link to choose a new password. It works for 24 hours; their current password keeps working until then.",
+    "notSentBody": "The email could not be sent (email is not set up on this server). Copy this link and send it to {name} yourself:",
+    "linkLabel": "Link",
+    "copy": "Copy",
+    "copied": "Copied",
+    "inviteValid": "It works for 7 days and only once.",
+    "resetValid": "It works for 24 hours and only once.",
+    "inviteReadyTitle": "Invitation link ready",
+    "linkReadyTitle": "Password link ready",
+    "sendInvite": "Send invitation"
   },
   "account": {
     "title": "My account",
@@ -340,5 +392,21 @@
     "passwordNote": "Your other browsers will be signed out.",
     "passwordChanged": "Password changed",
     "changePassword": "Change password"
+  },
+  "link": {
+    "welcome": "Welcome, {name}",
+    "inviteBody": "Choose a password to finish setting up your Kouland CRM account.",
+    "resetTitle": "Choose a new password",
+    "resetBody": "Your new password replaces the old one and signs you out of other browsers.",
+    "account": "Account:",
+    "password": "Password",
+    "passwordHint": "At least 10 characters.",
+    "repeat": "Repeat the password",
+    "start": "Save and sign in",
+    "save": "Save and sign in",
+    "saving": "Saving…",
+    "mismatch": "The two passwords are not the same.",
+    "expired": "This link has expired or was already used. Ask your administrator to send you a new one.",
+    "toLogin": "Go to sign in"
   }
 }

@@ -12,6 +12,7 @@ import {
   type AccessLevel,
   type AccessMap,
   type CrmLocale,
+  type LinkReceipt,
   type User,
   type UserRole,
 } from "@kouland/contracts";
@@ -26,7 +27,6 @@ import { api } from "@/lib/api";
 interface Values {
   name: string;
   email: string;
-  password: string;
   role: UserRole;
   locale: CrmLocale;
   access: AccessMap;
@@ -38,7 +38,6 @@ interface Values {
 const EMPTY: Values = {
   name: "",
   email: "",
-  password: "",
   role: "MANAGER",
   locale: "en",
   access: { CUSTOMERS: "EDIT", SALES: "EDIT" },
@@ -58,10 +57,11 @@ export default function UsersPage() {
   const users = useLoad(() => api.users.list(), []);
   const platforms = useLoad(() => api.platforms.list(true), []);
   const form = useSubmit();
-  const reset = useSubmit();
+  const linkAction = useSubmit();
   const [editing, setEditing] = useState<User | "new" | null>(null);
-  const [resetting, setResetting] = useState<User | null>(null);
-  const [newPassword, setNewPassword] = useState("");
+  /** What happened to the last invitation or password link: shown so the administrator knows it went out. */
+  const [sent, setSent] = useState<{ name: string; email: string; invite: boolean; receipt: LinkReceipt } | null>(null);
+  const [copied, setCopied] = useState(false);
   const [values, setValues] = useState<Values>(EMPTY);
   const set = <K extends keyof Values>(key: K, value: Values[K]) => setValues((current) => ({ ...current, [key]: value }));
 
@@ -75,7 +75,6 @@ export default function UsersPage() {
         : {
             name: user.name,
             email: user.email,
-            password: "",
             role: user.role,
             locale: user.locale,
             access: user.access,
@@ -98,27 +97,36 @@ export default function UsersPage() {
   async function onSubmit(event: FormEvent) {
     event.preventDefault();
     const shared = { name: values.name, role: values.role, locale: values.locale, access: values.access, allPlatforms: values.allPlatforms, platformIds: values.platformIds };
-    const saved = await form.submit(() =>
-      editing === "new"
-        ? api.users.create({ ...shared, email: values.email, password: values.password })
-        : api.users.update((editing as User).id, { ...shared, isActive: values.isActive }),
-    );
-    if (saved) {
+    if (editing === "new") {
+      const created = await form.submit(() => api.users.create({ ...shared, email: values.email }));
+      if (!created) return;
       setEditing(null);
-      await users.reload();
+      showSent({ name: created.user.name, email: created.user.email, invite: true, receipt: created.invitation });
+    } else {
+      const saved = await form.submit(() => api.users.update((editing as User).id, { ...shared, isActive: values.isActive }));
+      if (!saved) return;
+      setEditing(null);
     }
+    await users.reload();
   }
 
-  async function onReset(event: FormEvent) {
-    event.preventDefault();
-    if (!resetting) return;
-    const done = await reset.submit(async () => {
-      await api.users.resetPassword(resetting.id, newPassword);
-      return true;
-    });
-    if (done) {
-      setResetting(null);
-      setNewPassword("");
+  function showSent(result: NonNullable<typeof sent>) {
+    setCopied(false);
+    setSent(result);
+  }
+
+  /** A new invitation while the person has never signed in, otherwise a link to choose a new password. */
+  async function sendLink(user: User) {
+    const receipt = await linkAction.submit(() => api.users.sendLink(user.id));
+    if (receipt) showSent({ name: user.name, email: user.email, invite: user.invitationPending, receipt });
+  }
+
+  async function copyLink(link: string) {
+    try {
+      await navigator.clipboard.writeText(link);
+      setCopied(true);
+    } catch {
+      /* the link stays visible to copy by hand */
     }
   }
 
@@ -154,6 +162,7 @@ export default function UsersPage() {
                     {user.name}
                     <Badge tone={user.role === "ADMIN" ? "brand" : "neutral"}>{tn(`role.${user.role}`)}</Badge>
                     {!user.isActive && <Badge tone="error">{t("inactive")}</Badge>}
+                    {user.isActive && user.invitationPending && <Badge tone="warning">{t("pending")}</Badge>}
                     {user.id === me.id && <span className="text-xs font-normal text-text-muted">{t("you")}</span>}
                   </p>
                   <p className="truncate text-sm text-text-muted">{user.email}</p>
@@ -170,15 +179,17 @@ export default function UsersPage() {
                         : user.platformIds.map((id) => platformById.get(id)).filter(Boolean).map((platform) => <PlatformChip key={platform!.id} platform={platform!} size="sm" />)}
                     </p>
                   )}
-                  <p className="mt-1 text-xs text-text-faint">{t("lastLogin", { date: user.lastLoginAt ? format.dateTime(user.lastLoginAt) : t("never") })}</p>
+                  <p className="mt-1 text-xs text-text-faint">
+                    {user.invitationPending ? t("pendingHint") : t("lastLogin", { date: user.lastLoginAt ? format.dateTime(user.lastLoginAt) : t("never") })}
+                  </p>
                 </div>
                 <div className="flex gap-2">
                   <button type="button" className="btn btn-outline btn-sm" onClick={() => open(user)}>
                     <Icon name="pencil" className="h-4 w-4" />
                     {tc("edit")}
                   </button>
-                  <button type="button" className="btn btn-ghost btn-sm" onClick={() => setResetting(user)}>
-                    {t("resetPassword")}
+                  <button type="button" className="btn btn-ghost btn-sm" onClick={() => void sendLink(user)} disabled={!user.isActive || linkAction.pending}>
+                    {user.invitationPending ? t("resendInvite") : t("sendPasswordLink")}
                   </button>
                 </div>
               </li>
@@ -198,13 +209,14 @@ export default function UsersPage() {
               {tc("cancel")}
             </button>
             <button type="submit" form="user-form" className="btn btn-primary" disabled={form.pending}>
-              {form.pending ? tc("saving") : tc("save")}
+              {form.pending ? tc("saving") : editing === "new" ? t("sendInvite") : tc("save")}
             </button>
           </>
         }
       >
         <form id="user-form" onSubmit={onSubmit} className="flex flex-col gap-5" noValidate>
           <FormError message={form.formError} />
+          {editing === "new" && <p className="rounded-xl bg-surface-2 px-4 py-3 text-sm text-text-muted">{t("inviteNote")}</p>}
           <div className="grid gap-4 sm:grid-cols-2">
             <Field htmlFor="user-name" label={t("name")} error={form.errorFor("name")}>
               <Input id="user-name" value={values.name} onChange={(e) => set("name", e.target.value)} invalid={!!form.errorFor("name")} />
@@ -212,11 +224,6 @@ export default function UsersPage() {
             <Field htmlFor="user-email" label={t("email")} error={form.errorFor("email")} hint={editing !== "new" ? t("emailFixed") : undefined}>
               <Input id="user-email" type="email" value={values.email} disabled={editing !== "new"} onChange={(e) => set("email", e.target.value)} invalid={!!form.errorFor("email")} />
             </Field>
-            {editing === "new" && (
-              <Field htmlFor="user-password" label={t("password")} hint={t("passwordHint")} error={form.errorFor("password")}>
-                <Input id="user-password" type="password" autoComplete="new-password" value={values.password} onChange={(e) => set("password", e.target.value)} invalid={!!form.errorFor("password")} />
-              </Field>
-            )}
             <Field htmlFor="user-role" label={t("role")} hint={t(`roleHint.${values.role}`)} error={form.errorFor("role")}>
               <Select id="user-role" value={values.role} onChange={(value) => setRole(value as UserRole)}>
                 {USER_ROLES.map((role) => (
@@ -288,28 +295,38 @@ export default function UsersPage() {
       </Modal>
 
       <Modal
-        open={resetting !== null}
-        onClose={() => setResetting(null)}
-        title={t("resetTitle", { name: resetting?.name ?? "" })}
+        open={sent !== null}
+        onClose={() => setSent(null)}
+        title={sent ? t(sent.receipt.emailSent ? (sent.invite ? "inviteSentTitle" : "linkSentTitle") : sent.invite ? "inviteReadyTitle" : "linkReadyTitle") : ""}
         footer={
-          <>
-            <button type="button" className="btn btn-ghost" onClick={() => setResetting(null)}>
-              {tc("cancel")}
-            </button>
-            <button type="submit" form="reset-form" className="btn btn-primary" disabled={reset.pending}>
-              {reset.pending ? tc("saving") : t("setPassword")}
-            </button>
-          </>
+          <button type="button" className="btn btn-primary" onClick={() => setSent(null)}>
+            {tc("close")}
+          </button>
         }
       >
-        <form id="reset-form" onSubmit={onReset} className="flex flex-col gap-4" noValidate>
-          <p className="text-sm text-text-muted">{t("resetBody")}</p>
-          <FormError message={reset.formError} />
-          <Field htmlFor="reset-password" label={t("newPassword")} hint={t("passwordHint")} error={reset.errorFor("password")}>
-            <Input id="reset-password" type="password" autoComplete="new-password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} invalid={!!reset.errorFor("password")} />
-          </Field>
-        </form>
+        {sent &&
+          (sent.receipt.emailSent ? (
+            <p className="text-sm text-text-muted">{t(sent.invite ? "inviteSentBody" : "linkSentBody", { name: sent.name, email: sent.email })}</p>
+          ) : (
+            <div className="flex flex-col gap-3">
+              <p className="text-sm text-text-muted">{t("notSentBody", { name: sent.name })}</p>
+              {sent.receipt.link && (
+                <div className="flex gap-2">
+                  <input className="input text-xs" readOnly value={sent.receipt.link} aria-label={t("linkLabel")} onFocus={(e) => e.target.select()} />
+                  <button type="button" className="btn btn-outline btn-sm flex-none" onClick={() => void copyLink(sent.receipt.link!)}>
+                    {copied ? t("copied") : t("copy")}
+                  </button>
+                </div>
+              )}
+              <p className="text-xs text-text-faint">{t(sent.invite ? "inviteValid" : "resetValid")}</p>
+            </div>
+          ))}
       </Modal>
+      {linkAction.formError && !sent && (
+        <div className="mt-4">
+          <ErrorNotice message={linkAction.formError} />
+        </div>
+      )}
     </>
   );
 }

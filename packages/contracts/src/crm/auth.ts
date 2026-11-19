@@ -88,11 +88,12 @@ function checkRoleLimits(value: { role?: UserRole; access?: AccessMap }, ctx: z.
   }
 }
 
-/** POST /users */
+/**
+ * POST /users. There is no password: the person receives an invitation email and chooses their own password.
+ */
 export const createUserSchema = z
   .object({
     email: z.string().trim().toLowerCase().min(1, ERROR_CODES.required).max(254, ERROR_CODES.tooLong).email(ERROR_CODES.email),
-    password: passwordSchema,
     ...accountFields,
   })
   .superRefine(checkRoleLimits);
@@ -112,10 +113,6 @@ export const updateUserSchema = z
   .superRefine(checkRoleLimits);
 export type UpdateUserInput = z.input<typeof updateUserSchema>;
 
-/** POST /users/:id/password: the administrator sets a new password. */
-export const resetPasswordSchema = z.object({ password: passwordSchema });
-export type ResetPasswordInput = z.input<typeof resetPasswordSchema>;
-
 export const userSchema = z.object({
   id: z.string(),
   email: z.string(),
@@ -128,8 +125,42 @@ export const userSchema = z.object({
   locale: crmLocaleSchema,
   lastLoginAt: z.string().nullable(),
   createdAt: z.string(),
+  /** True until the person accepts their invitation and chooses a password. */
+  invitationPending: z.boolean(),
 });
 export type User = z.infer<typeof userSchema>;
+
+// ---- Invitation and password links ----
+
+export const TOKEN_PURPOSES = ["INVITE", "RESET_PASSWORD"] as const;
+export const tokenPurposeSchema = z.enum(TOKEN_PURPOSES);
+export type TokenPurpose = z.infer<typeof tokenPurposeSchema>;
+
+/**
+ * What the administrator gets back after an invitation or a password link is made. `link` is only given when the
+ * email could not be sent (no email provider configured, or the provider failed), so the administrator can pass
+ * it on another way.
+ */
+export const linkReceiptSchema = z.object({ emailSent: z.boolean(), link: z.string().nullable() });
+export type LinkReceipt = z.infer<typeof linkReceiptSchema>;
+
+/** POST /users answers the new account and its invitation. */
+export const invitedUserSchema = z.object({ user: userSchema, invitation: linkReceiptSchema });
+export type InvitedUser = z.infer<typeof invitedUserSchema>;
+
+
+/** GET /auth/links/:token: whose link it is, before they choose a password. */
+export const linkInfoSchema = z.object({
+  purpose: tokenPurposeSchema,
+  email: z.string(),
+  name: z.string(),
+  locale: crmLocaleSchema,
+});
+export type LinkInfo = z.infer<typeof linkInfoSchema>;
+
+/** POST /auth/links/:token: choose the password; signs the person in. */
+export const useLinkSchema = z.object({ password: passwordSchema });
+export type UseLinkInput = z.input<typeof useLinkSchema>;
 
 /** People a record can be assigned to (GET /users/assignable). */
 export const assignableUsersSchema = z.array(refSchema);

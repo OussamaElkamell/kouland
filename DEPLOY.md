@@ -50,6 +50,7 @@ Both services listen on the port Railway gives them (`PORT`).
 | `TRUST_PROXY` | `1` (Railway's proxy). Use `2` if Cloudflare is also in front. Needed so rate limits count each visitor separately |
 
 | `COOKIE_SECURE` | Optional. The CRM session cookie is HTTPS-only when the request came over HTTPS (needs `TRUST_PROXY`); `true` forces it |
+| `APP_URL` | The website's address, e.g. `https://kouland.com`: invitation and password emails link to `APP_URL/admin/link`. Defaults to the first `CORS_ORIGINS` entry |
 | `COOKIE_DOMAIN` | Optional. Leave empty; `kouland.com` would also send the CRM cookie to the website |
 
 `start:api` runs `prisma migrate deploy` before starting, so the tables are created and updated on every deploy.
@@ -75,7 +76,8 @@ On your own computer, `pnpm --filter @kouland/api create-admin` does the same wi
 `apps/api/.env`. It asks for the email, name and password (at least 10 characters). On a server without a terminal, pass
 `--email` and `--name` and put the password in `ADMIN_PASSWORD` for that one command. Running it again for the
 same email resets that account's password and makes it an administrator. Every other account is then created in
-the CRM under **Settings → Accounts**.
+the CRM under **Settings → Accounts**: the person receives an invitation email (through Brevo) and chooses their own
+password. Without `BREVO_API_KEY` the CRM shows the administrator the link to pass on instead.
 
 ## Website variables (`kouland.com`), set **before** the build
 
@@ -118,7 +120,8 @@ CRM sign-in cookie set by the api's address would never be sent. On staging the 
 | api | `TRUST_PROXY` | `2` (Railway's proxy, then the website forwarding) |
 | api | `COOKIE_SECURE` | `true` (the forwarded request reaches the api over plain HTTP inside Railway) |
 | api | `CORS_ORIGINS` | the web address (not used by the forwarding, but keeps direct calls working) |
-| api | `BREVO_API_KEY` | leave empty: staging only logs emails instead of sending them |
+| api | `BREVO_API_KEY` | leave empty: staging only logs emails; invitations then show the link to copy |
+| api | `APP_URL` | the web address (invitation links point to it) |
 
 All `web` values are read during the build: change them, then redeploy. The api's start command must stay
 `pnpm run start:api` (Settings → Deploy → Custom Start Command empty or set to that): it creates the tables before

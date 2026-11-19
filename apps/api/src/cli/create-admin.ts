@@ -8,7 +8,8 @@
  * put the password in the ADMIN_PASSWORD environment variable. Reads DATABASE_URL like the API.
  */
 import { PrismaClient } from "@prisma/client";
-import { createUserSchema, PASSWORD_MIN } from "@kouland/contracts";
+import { createUserSchema, PASSWORD_MIN, passwordSchema } from "@kouland/contracts";
+import { z } from "zod";
 import { createInterface } from "node:readline";
 import { hashPassword } from "../auth/password";
 
@@ -53,7 +54,11 @@ async function main(): Promise<void> {
     if ((await ask("Repeat the password: ", true)) !== password) throw new Error("The passwords do not match.");
   }
 
-  const parsed = createUserSchema.safeParse({ email, name, password, role: "ADMIN", access: { CUSTOMERS: null, SALES: null } });
+  // Accounts made in the CRM get an emailed invitation; this first administrator chooses the password here.
+  const parsed = z
+    .object({ account: createUserSchema, password: passwordSchema })
+    .transform(({ account, password }) => ({ ...account, password }))
+    .safeParse({ account: { email, name, role: "ADMIN", access: { CUSTOMERS: null, SALES: null } }, password });
   if (!parsed.success) {
     const problems = parsed.error.issues.map((issue) => `${issue.path.join(".")}: ${issue.message}`).join(", ");
     throw new Error(`Invalid input (${problems}).`);
