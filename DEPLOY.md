@@ -83,3 +83,34 @@ These are written into the site when it is built: after changing one, redeploy (
 2. `https://kouland.com` redirects to `/en` and shows the site.
 3. Send a message from the contact page and check that it reaches `contact@koulandtechnology.com`.
 4. `https://kouland.com/admin` shows the CRM sign-in page; sign in with the administrator created above.
+
+## Staging on Railway addresses only (`*.up.railway.app`)
+
+To test a branch like production without touching it, create a second Railway environment (environment menu →
+**New Environment** → duplicate `production`, name it `staging`). In `staging`:
+
+1. In each service's **Settings**, connect the branch to test (for example `m2-crm-foundation`). Never change the
+   branch of the `production` environment.
+2. Add a PostgreSQL database to `staging` and point the api's `DATABASE_URL` at it, never at production's.
+3. Generate a public domain for the web service (Settings → Networking). The api does not need a public domain.
+4. Set the variables below, then redeploy both services.
+
+Browsers treat two `*.up.railway.app` addresses as two unrelated sites (`up.railway.app` is a public suffix), so a
+CRM sign-in cookie set by the api's address would never be sent. On staging the website therefore forwards
+`/backend/*` to the api over Railway's private network, and the browser only talks to the website's address.
+
+| Service | Variable | Value |
+|---|---|---|
+| web | `API_PROXY_TARGET` | `http://${{api.RAILWAY_PRIVATE_DOMAIN}}:${{api.PORT}}` (the api's private address; no `/api`) |
+| web | `NEXT_PUBLIC_API_URL` | `/backend/api` |
+| web | `NEXT_PUBLIC_SITE_URL` | the web service's `https://….up.railway.app` address |
+| api | `DATABASE_URL` | the staging database's `DATABASE_URL` |
+| api | `PORT` | `8080` (fixed, so the web service can reach it at a known port) |
+| api | `TRUST_PROXY` | `2` (Railway's proxy, then the website forwarding) |
+| api | `COOKIE_SECURE` | `true` (the forwarded request reaches the api over plain HTTP inside Railway) |
+| api | `CORS_ORIGINS` | the web address (not used by the forwarding, but keeps direct calls working) |
+| api | `BREVO_API_KEY` | leave empty: staging only logs emails instead of sending them |
+
+All `web` values are read during the build: change them, then redeploy. When staging runs, create its first
+administrator against the staging database (`railway run --environment staging --service api pnpm --filter
+@kouland/api create-admin`) and sign in at `<web address>/admin`.
