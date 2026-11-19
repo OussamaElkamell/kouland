@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useLocale } from "next-intl";
 import { Icon } from "@kouland/ui";
 
 /**
@@ -15,6 +16,8 @@ export function DateInput({
   withTime = false,
   invalid,
   min,
+  name,
+  required,
 }: {
   id: string;
   value: string;
@@ -22,7 +25,10 @@ export function DateInput({
   withTime?: boolean;
   invalid?: boolean;
   min?: string;
+  name?: string;
+  required?: boolean;
 }) {
+  const hint = PLACEHOLDER[useLocale().slice(0, 2)] ?? PLACEHOLDER.en!;
   const picker = useRef<HTMLInputElement>(null);
   const [text, setText] = useState(() => display(value, withTime));
   const [focused, setFocused] = useState(false);
@@ -54,10 +60,12 @@ export function DateInput({
     <div className="relative">
       <input
         id={id}
+        name={name}
+        required={required}
         type="text"
         inputMode="numeric"
         autoComplete="off"
-        placeholder={withTime ? "dd/mm/yyyy hh:mm" : "dd/mm/yyyy"}
+        placeholder={withTime ? `${hint.date} ${hint.time}` : hint.date}
         value={text}
         onChange={(e) => type(e.target.value)}
         onFocus={() => setFocused(true)}
@@ -92,6 +100,13 @@ export function DateInput({
     </div>
   );
 }
+
+/** What the empty field shows, in the page language. */
+const PLACEHOLDER: Record<string, { date: string; time: string }> = {
+  en: { date: "dd/mm/yyyy", time: "hh:mm" },
+  fr: { date: "jj/mm/aaaa", time: "hh:mm" },
+  es: { date: "dd/mm/aaaa", time: "hh:mm" },
+};
 
 const pad = (n: number) => String(n).padStart(2, "0");
 

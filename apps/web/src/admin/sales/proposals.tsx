@@ -4,7 +4,7 @@ import { useState, type FormEvent } from "react";
 import { useTranslations } from "next-intl";
 import { PROPOSAL_STATUSES, type Proposal, type ProposalStatus } from "@kouland/contracts";
 import { Field, Icon, Input, Textarea } from "@kouland/ui";
-import { DateInput } from "@/admin/date-input";
+import { DateInput } from "@/components/date-input";
 import { useFormat, useSubmit } from "@/admin/hooks";
 import { PROPOSAL_TONE } from "@/admin/labels";
 import { Badge, ConfirmDialog, FormError, Modal, Select } from "@/admin/ui";

@@ -18,6 +18,7 @@ import {
 } from "@kouland/contracts";
 import { ChoiceGroup, Field, Icon, Input, Textarea } from "@kouland/ui";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
+import { DateInput } from "@/components/date-input";
 import { api } from "@/lib/api";
 import {
   clearDraft,
@@ -276,7 +277,7 @@ export function ApplicationWizard() {
               <>
                 <div className="grid gap-5 sm:grid-cols-2">
                   <Field htmlFor="apply-availableFrom" label={t("fields.availableFrom")} error={errorOf("availableFrom")}>
-                    <Input {...control("availableFrom")} type="date" min={new Date().toISOString().slice(0, 10)} required />
+                    <DateInput {...control("availableFrom")} onChange={(v) => set("availableFrom", v)} min={new Date().toISOString().slice(0, 10)} required />
                   </Field>
                   <Field htmlFor="apply-salaryExpectation" label={t("fields.salaryExpectation")} optionalLabel={t("optional")} error={errorOf("salaryExpectation")}>
                     <Input {...control("salaryExpectation")} />

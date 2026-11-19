@@ -4,7 +4,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { useTranslations } from "next-intl";
 import { APPOINTMENT_STATUSES, type Appointment, type AppointmentStatus } from "@kouland/contracts";
 import { Field, Input, Textarea } from "@kouland/ui";
-import { DateInput } from "@/admin/date-input";
+import { DateInput } from "@/components/date-input";
 import { fromLocalInput, localInputIn, toLocalInput } from "@/admin/datetime";
 import { useLoad, useSubmit } from "@/admin/hooks";
 import { CustomerPicker } from "@/admin/sales/customer-picker";

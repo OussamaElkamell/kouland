@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { OPPORTUNITY_SOURCES, OPPORTUNITY_STATUSES, type OpportunitySource, type OpportunityStatus } from "@kouland/contracts";
 import { Field, Input, Textarea } from "@kouland/ui";
-import { DateInput } from "@/admin/date-input";
+import { DateInput } from "@/components/date-input";
 import { CustomerFields, EMPTY_CUSTOMER, toCustomerInput } from "@/admin/customers/customer-fields";
 import { useLoad, useSubmit } from "@/admin/hooks";
 import { useCan, useSession } from "@/admin/session";
