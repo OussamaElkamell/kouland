@@ -34,15 +34,20 @@ export function DateInput({
   const [focused, setFocused] = useState(false);
 
   // A value set from outside (the calendar, a default, a linked field) replaces the text unless it is being typed.
+  // Text that is not a whole date yet stays as typed (the value is then empty), so nothing typed disappears.
   useEffect(() => {
-    if (!focused) setText(display(value, withTime));
+    if (focused) return;
+    const typed = parse(text, withTime);
+    if (typed === value || (!typed && !value)) return;
+    setText(display(value, withTime));
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only an outside change of the value matters here
   }, [value, withTime, focused]);
 
   function type(next: string) {
-    setText(next);
-    if (!next.trim()) return onChange("");
-    const parsed = parse(next, withTime);
-    if (parsed) onChange(parsed);
+    // Deleting keeps the text as it is, so Backspace can remove a "/" too; typing adds the separators.
+    const shown = next.length < text.length ? next : mask(next, withTime);
+    setText(shown);
+    onChange(parse(shown, withTime) ?? "");
   }
 
   function openCalendar() {
@@ -71,7 +76,8 @@ export function DateInput({
         onFocus={() => setFocused(true)}
         onBlur={() => {
           setFocused(false);
-          setText(display(value, withTime));
+          const typed = parse(text, withTime);
+          if (typed) setText(display(typed, withTime));
         }}
         aria-invalid={invalid || undefined}
         aria-describedby={invalid ? `${id}-error` : undefined}
@@ -109,6 +115,39 @@ const PLACEHOLDER: Record<string, { date: string; time: string }> = {
 };
 
 const pad = (n: number) => String(n).padStart(2, "0");
+
+const PART_LENGTH = [2, 2, 4, 2, 2]; // day, month, year, hour, minute
+const SEPARATOR = ["/", "/", " ", ":"];
+
+/**
+ * Shapes what is typed as "dd/mm/yyyy hh:mm": digits fill each part and the separators are added, so "20112026"
+ * becomes "20/11/2026". A separator typed after one digit pads it ("5/" → "05/").
+ */
+function mask(raw: string, withTime: boolean): string {
+  const count = withTime ? 5 : 3;
+  const parts: string[] = [""];
+  for (const char of raw) {
+    let at = parts.length - 1;
+    if (/\d/.test(char)) {
+      if (parts[at]!.length === PART_LENGTH[at]) {
+        if (at === count - 1) break;
+        parts.push("");
+        at++;
+      }
+      parts[at] += char;
+    } else if (parts[at] && at < count - 1) {
+      if (parts[at]!.length === 1 && at !== 2) parts[at] = `0${parts[at]}`;
+      parts.push("");
+    }
+  }
+  let out = "";
+  parts.forEach((part, i) => {
+    out += part;
+    const complete = part.length === PART_LENGTH[i];
+    if (i < count - 1 && (i < parts.length - 1 || complete)) out += SEPARATOR[i];
+  });
+  return out;
+}
 
 /** "2026-11-20T14:30" → "20/11/2026 14:30". */
 function display(value: string, withTime: boolean): string {
