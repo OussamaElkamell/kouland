@@ -5,6 +5,7 @@ import { platformUrl, SHOWCASE_PLATFORMS } from "@/content/platforms";
 import { Link } from "@/i18n/navigation";
 import { CONTAINER } from "@/lib/layout";
 import { CompanyLogo } from "./brand";
+import { PlatformName } from "./platform-name";
 
 export function SiteFooter() {
   const t = useTranslations();
@@ -35,7 +36,7 @@ export function SiteFooter() {
             {SHOWCASE_PLATFORMS.map((platform) => (
               <li key={platform.slug}>
                 <a href={platformUrl(platform)} target="_blank" rel="noopener noreferrer" className="hover:text-text">
-                  Kouland{platform.product}
+                  <PlatformName platform={platform} />
                 </a>
               </li>
             ))}

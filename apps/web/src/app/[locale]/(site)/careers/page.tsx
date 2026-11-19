@@ -8,6 +8,7 @@ import { HoverCard, Icon, IconBadge, KoulandMark, type IconName } from "@kouland
 import { PageIntro, Section, SectionHeader } from "@/components/section";
 import { photo } from "@/content/images";
 import { SHOWCASE_PLATFORMS } from "@/content/platforms";
+import { PlatformName } from "@/components/platform-name";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { pageMetadata } from "@/lib/seo";
@@ -75,7 +76,7 @@ export default function CareersPage({ params }: Props) {
               <HoverCard key={area} data-platform={platform ? platform.slug : "parent"} className="brand-on-hover card flex items-start gap-4 p-5 hover:border-brand/60">
                 {platform ? <KoulandMark monogram={platform.monogram} size={36} /> : <IconBadge name="briefcase" size="sm" tone="neutral" className="hover-chip" />}
                 <div>
-                  <h3 className="font-display font-bold">{areas(`area.${area}`)}</h3>
+                  <h3 className="font-display font-bold">{platform ? <PlatformName platform={platform} /> : areas(`area.${area}`)}</h3>
                   <p className="mt-1 text-sm text-text-muted">{areas(`areaHint.${area}`)}</p>
                 </div>
               </HoverCard>

@@ -18,6 +18,8 @@ import {
 } from "@kouland/contracts";
 import { ChoiceGroup, Field, Icon, Input, Textarea } from "@kouland/ui";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
+import { PlatformName } from "@/components/platform-name";
+import { SHOWCASE_PLATFORMS } from "@/content/platforms";
 import { api } from "@/lib/api";
 import {
   clearDraft,
@@ -219,7 +221,10 @@ export function ApplicationWizard() {
                   value={values.area as (typeof APPLICATION_AREAS)[number] | ""}
                   onChange={(value) => set("area", value)}
                   error={errorOf("area")}
-                  choices={APPLICATION_AREAS.map((value) => ({ value, label: t(`options.area.${value}`), description: t(`options.areaHint.${value}`) }))}
+                  choices={APPLICATION_AREAS.map((value) => {
+                    const platform = SHOWCASE_PLATFORMS.find((item) => item.slug === value);
+                    return { value, label: platform ? <PlatformName platform={platform} /> : t(`options.area.${value}`), description: t(`options.areaHint.${value}`) };
+                  })}
                 />
                 <Field htmlFor="apply-position" label={t("fields.position")} hint={t("fields.positionHint")} error={errorOf("position")}>
                   <Input {...control("position")} required />
