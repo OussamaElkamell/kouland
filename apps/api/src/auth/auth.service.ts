@@ -29,12 +29,14 @@ export class AuthService {
       orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
       select: { id: true, name: true, slug: true, color: true },
     });
+    const account = await this.prisma.user.findUnique({ where: { id: user.id }, select: { phone: true } });
     return {
       id: user.id,
       email: user.email,
       name: user.name,
       role: user.role,
       locale: crmLocaleSchema.catch("en").parse(user.locale),
+      phone: account?.phone ?? null,
       access: user.access,
       allPlatforms: user.allPlatforms,
       platforms,
@@ -44,7 +46,7 @@ export class AuthService {
   async updateProfile(user: AuthUser, input: UpdateProfileInput): Promise<SessionUser> {
     const updated = await this.prisma.user.update({
       where: { id: user.id },
-      data: { name: input.name, locale: input.locale },
+      data: { name: input.name, locale: input.locale, phone: input.phone },
       select: { name: true, locale: true },
     });
     return this.me({ ...user, ...updated });

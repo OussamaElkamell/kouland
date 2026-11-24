@@ -1,5 +1,20 @@
 import {
   activitySchema,
+  callSchema,
+  customerEmailsSchema,
+  emailConnectionSchema,
+  emailMessageSchema,
+  phoneSettingsSchema,
+  platformIntegrationSchema,
+  smsSchema,
+  type CallListQuery,
+  type SendEmailInput,
+  type SendSmsInput,
+  type SmsListQuery,
+  type StartCallInput,
+  type UpdateCallInput,
+  type UpdateIntegrationInput,
+  type UpdatePhoneSettingsInput,
   apiErrorSchema,
   appointmentSchema,
   dashboardSchema,
@@ -226,6 +241,36 @@ export function createApiClient({ baseUrl, fetch: fetchImpl = fetch }: ApiClient
     },
     dashboard: {
       get: (platformId?: string) => request("GET", `/dashboard${queryString({ platformId })}`, dashboardSchema),
+    },
+    /** A platform's webhook (administrators). */
+    integrations: {
+      get: (platformId: string) => request("GET", `/platforms/${platformId}/integration`, platformIntegrationSchema),
+      setEnabled: (platformId: string, input: UpdateIntegrationInput) =>
+        request("PATCH", `/platforms/${platformId}/integration`, platformIntegrationSchema, { json: input }),
+      rotateSecret: (platformId: string) => request("POST", `/platforms/${platformId}/integration/secret`, platformIntegrationSchema),
+    },
+    /** The signed-in person's own mailbox (Google Workspace or Microsoft 365). */
+    email: {
+      connection: () => request("GET", "/email/connection", emailConnectionSchema),
+      disconnect: () => request("DELETE", "/email/connection", noContent),
+      /** Address to open in the browser (not fetched) to connect a mailbox. */
+      connectUrl: (provider: "google" | "microsoft") => `${root}/email/connect/${provider}`,
+      forCustomer: (customerId: string) => request("GET", `/customers/${customerId}/emails`, customerEmailsSchema),
+      message: (id: string) => request("GET", `/email/messages/${encodeURIComponent(id)}`, emailMessageSchema),
+      send: (customerId: string, input: SendEmailInput) => request("POST", `/customers/${customerId}/emails`, noContent, { json: input }),
+    },
+    calls: {
+      list: (query?: CallListQuery) => request("GET", `/calls${queryString(query)}`, pageOf(callSchema)),
+      start: (input: StartCallInput) => request("POST", "/calls", callSchema, { json: input }),
+      update: (id: string, input: UpdateCallInput) => request("PATCH", `/calls/${id}`, callSchema, { json: input }),
+    },
+    sms: {
+      list: (query?: SmsListQuery) => request("GET", `/sms${queryString(query)}`, pageOf(smsSchema)),
+      send: (input: SendSmsInput) => request("POST", "/sms", smsSchema, { json: input }),
+    },
+    phoneSettings: {
+      get: () => request("GET", "/settings/phone", phoneSettingsSchema),
+      update: (input: UpdatePhoneSettingsInput) => request("PUT", "/settings/phone", phoneSettingsSchema, { json: input }),
     },
     opportunities: {
       list: (query?: OpportunityListQuery) => request("GET", `/opportunities${queryString(query)}`, pageOf(opportunitySummarySchema)),

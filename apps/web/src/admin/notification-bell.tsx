@@ -52,7 +52,16 @@ export function NotificationBell({ placement = "down" }: { placement?: "down" | 
   function describe(item: Notification): string {
     const d = item.data;
     const s = (key: string) => (d[key] === undefined || d[key] === null ? "" : String(d[key]));
-    const values = { title: s("title"), number: s("number"), by: s("by"), platform: s("platform"), when: s("when") ? format.dateTime(s("when")) : "" };
+    const values = {
+      title: s("title"),
+      number: s("number"),
+      by: s("by"),
+      platform: s("platform"),
+      when: s("when") ? format.dateTime(s("when")) : "",
+      // Missed calls and SMS: the customer's name, else the number.
+      who: s("name") || s("from"),
+      preview: s("preview"),
+    };
     if (item.type === "TICKET_STATUS") return t("TICKET_STATUS", { ...values, status: tStatus(`ticket.${s("status") || "OPEN"}`) });
     if (item.type === "OPPORTUNITY_STATUS") return t("OPPORTUNITY_STATUS", { ...values, status: tStatus(`opportunity.${s("status") || "WON"}`) });
     return t(item.type, values);

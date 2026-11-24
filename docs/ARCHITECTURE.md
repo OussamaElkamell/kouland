@@ -61,6 +61,12 @@ Build order is handled by Turborepo (`dependsOn: ["^build"]`): contracts → api
 | 24 | Reminders: a worker in the API checks every minute for task and appointment reminders that are due, claims each with a conditional update (sent once even with several instances) and notifies the assignee. `REMINDERS=off` disables it | No extra scheduler service for v1. |
 | 25 | Access areas are Customers, Sales, Tickets and Tasks (tasks and appointments). Tickets, tasks and appointments follow the platform scope; tasks and appointments assigned to or created by a person are always theirs to see | Same model as Milestone 2. |
 | 26 | The general rate limit is 600 requests a minute per IP (an office behind one connection shares it); public forms and sign-in keep strict limits | Found while testing on 2026-11-19. |
+| 27 | Platform sync is one generic, signed webhook per platform (`POST /api/webhooks/platforms/<id>`), not one connector per platform's API. Platforms send `customer.upsert`, `event` (added to the customer's history) and `ping`. Each call is signed with HMAC-SHA256 over `<unix time>.<body>` (header `X-Kouland-Signature: t=…,v1=…`, 5-minute window); each event id is applied once. The platform's Integration page shows the address, the secret and code in Node.js, PHP, Python and curl | Confirmed on 2026-11-23 ("dynamic with webhooks", customers + events). Any platform added in the CRM can be connected without code. |
+| 28 | Matching: the platform's own customer id (`customer_platforms.externalId`), then email (customer or contact), then phone (last 9 digits). A matched customer only gets the fields the CRM is missing; what staff typed is never overwritten | "Avoid duplicates where matching is possible" (Milestones, Milestone 4). |
+| 29 | Integration secrets (webhook secrets, mailbox tokens) are encrypted with AES-256-GCM using `INTEGRATIONS_KEY` | Technical document §5: credentials must not be stored as plain text. |
+| 30 | Email: each person connects their own Google Workspace or Microsoft 365 mailbox (OAuth). A customer's page lists the emails between that mailbox and the customer's addresses, read live from Gmail or Outlook (nothing copied into the CRM); sending and replying go through the person's mailbox and are noted in the customer's history | Confirmed on 2026-11-23. Scopes: Gmail `gmail.readonly` + `gmail.send`; Microsoft `Mail.Read` + `Mail.Send` + `offline_access`. |
+| 31 | Phone: the CRM uses Twilio directly with the company number. Incoming calls ring the employee who looks after the caller (owner of their open opportunity, else whoever last spoke with them), then a default number set by the administrator; unknown numbers ring the default number. Click-to-call rings the employee's own phone first, then connects the customer showing the company number. SMS are sent and received on the same number. Calls and SMS go into the customer's history; employees write call notes; missed calls and new SMS notify the employee (or those who can edit customers) | Confirmed on 2026-11-23 (calls and SMS, "owner first, then default", Twilio directly). No browser calling, recording, voicemail or transcription (excluded by the documents). Twilio requests are checked with `X-Twilio-Signature`. |
+| 32 | Sending an email, an SMS or starting a call needs "edit" on Customers; seeing them needs "view". Calls and SMS from unknown numbers are visible to everyone with customer access so someone can say who it was | Same model as the rest of the CRM. |
 
 ## Languages
 
@@ -95,12 +101,13 @@ The header and footer show the official Kouland Technology logo exactly as on ko
 - `apps/web/src/admin`: CRM components (session, shell, forms, tables).
 - API modules: `auth` (sign-in, sessions, guard, invitation links), `users`, `platforms`, `customers` (contacts, notes,
   history), `sales` (opportunities, proposals), `tickets` (tickets, departments, website form), `agenda` (tasks,
-  appointments, reminder worker), `notifications`, `dashboard`.
+  appointments, reminder worker), `notifications`, `dashboard`; Milestone 4: `sync` (platform webhooks and their
+  settings), `email` (Google and Microsoft mailboxes), `phone` (Twilio calls, SMS, phone settings).
 
 ## Open decisions
 
-Before Milestone 4: which platforms sync first and their API access; the email provider; the Twilio
-account, numbers and call routing; hosting and domain.
+Before going live with Milestone 4: the Google Cloud and Microsoft Entra app registrations (see DEPLOY.md), the
+Twilio account and number, and which platforms' developers add the webhook first.
 
-Adding a platform in the CRM needs no code. Syncing from a platform whose API has a new shape needs a new
-adapter in the API.
+Adding a platform in the CRM needs no code, and neither does connecting it: its developers send events to the
+webhook shown on its Integration page.

@@ -36,11 +36,13 @@ export function CrmShell({ children }: { children: ReactNode }) {
     ...(can("SALES", "VIEW") ? [{ href: "/admin/sales", label: t("sales"), icon: "chart" as const }] : []),
     ...(can("TICKETS", "VIEW") ? [{ href: "/admin/tickets", label: t("tickets"), icon: "ticket" as const }] : []),
     ...(can("TASKS", "VIEW") ? [{ href: "/admin/agenda", label: t("agenda"), icon: "calendar" as const }] : []),
+    ...(can("CUSTOMERS", "VIEW") ? [{ href: "/admin/phone", label: t("phone"), icon: "phone" as const }] : []),
   ];
   const settings: NavItem[] = isAdmin
     ? [
         { href: "/admin/settings/platforms", label: t("platformSettings"), icon: "globe" },
         { href: "/admin/settings/departments", label: t("departments"), icon: "briefcase" },
+        { href: "/admin/settings/phone", label: t("phoneSettings"), icon: "phone" },
         { href: "/admin/settings/users", label: t("users"), icon: "lock" },
       ]
     : [];

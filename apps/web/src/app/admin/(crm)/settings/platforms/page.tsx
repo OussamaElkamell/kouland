@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { slugify, type Platform } from "@kouland/contracts";
 import { Field, Icon, Input, Textarea } from "@kouland/ui";
@@ -114,6 +115,10 @@ export default function PlatformSettingsPage() {
                   </p>
                 </div>
                 <div className="flex gap-2">
+                  <Link href={`/admin/settings/platforms/${platform.id}`} className="btn btn-outline btn-sm">
+                    <Icon name="server" className="h-4 w-4" />
+                    {t("integration")}
+                  </Link>
                   <button type="button" className="btn btn-outline btn-sm" onClick={() => open(platform)}>
                     <Icon name="pencil" className="h-4 w-4" />
                     {tc("edit")}

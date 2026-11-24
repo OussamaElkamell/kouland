@@ -13,6 +13,9 @@ import { NotificationsModule } from "./notifications/notifications.module";
 import { PlatformsModule } from "./platforms/platforms.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { SalesModule } from "./sales/sales.module";
+import { SyncModule } from "./sync/sync.module";
+import { EmailModule } from "./email/email.module";
+import { PhoneModule } from "./phone/phone.module";
 import { TicketsModule } from "./tickets/tickets.module";
 import { UsersModule } from "./users/users.module";
 
@@ -35,6 +38,10 @@ import { UsersModule } from "./users/users.module";
     TicketsModule,
     AgendaModule,
     DashboardModule,
+    // Milestone 4
+    SyncModule,
+    EmailModule,
+    PhoneModule,
   ],
   controllers: [HealthController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],

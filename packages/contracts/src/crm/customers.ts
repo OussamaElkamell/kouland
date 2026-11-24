@@ -129,6 +129,11 @@ export const ACTIVITY_TYPES = [
   "TASK_CREATED",
   "TASK_COMPLETED",
   "APPOINTMENT_SCHEDULED",
+  "PLATFORM_EVENT",
+  "EMAIL_SENT",
+  "CALL",
+  "SMS_SENT",
+  "SMS_RECEIVED",
 ] as const;
 export const activityTypeSchema = z.enum(ACTIVITY_TYPES);
 export type ActivityType = z.infer<typeof activityTypeSchema>;
@@ -146,6 +151,10 @@ export const activitySchema = z.object({
   user: refSchema.nullable(),
   opportunity: z.object({ id: z.string(), title: z.string() }).nullable(),
   ticket: z.object({ id: z.string(), number: z.number().int(), subject: z.string() }).nullable(),
+  /** For CALL events: the call, with the notes written about it. */
+  call: z
+    .object({ id: z.string(), direction: z.enum(["INBOUND", "OUTBOUND"]), status: z.string(), durationSec: z.number().int().nullable(), notes: z.string().nullable() })
+    .nullable(),
   createdAt: z.string(),
 });
 export type Activity = z.infer<typeof activitySchema>;

@@ -18,6 +18,7 @@ export const ERROR_CODES = {
   slug: "slug",
   amount: "amount",
   passwordTooShort: "passwordTooShort",
+  phone: "phone",
 } as const;
 export type ErrorCode = (typeof ERROR_CODES)[keyof typeof ERROR_CODES];
 
@@ -61,6 +62,28 @@ export const optionalUrl = z
   .transform((value) => (value ? value : null))
   .transform((value) => (value && !/^https?:\/\//i.test(value) ? `https://${value}` : value))
   .refine((value) => value === null || z.string().url().safeParse(value).success, ERROR_CODES.url);
+
+/**
+ * "+1 (918) 555-0123" → "+19185550123". Numbers the CRM dials or texts must be international (E.164), the format
+ * Twilio needs: "+", the country code and the number, 8 to 15 digits in all.
+ */
+export function toE164(value: string): string {
+  const trimmed = value.trim();
+  const digits = trimmed.replace(/\D/g, "");
+  return trimmed.startsWith("+") ? `+${digits}` : trimmed.startsWith("00") ? `+${digits.slice(2)}` : digits;
+}
+
+export const phoneSchema = z
+  .string({ required_error: ERROR_CODES.required, invalid_type_error: ERROR_CODES.invalid })
+  .trim()
+  .min(1, ERROR_CODES.required)
+  .max(40, ERROR_CODES.tooLong)
+  .transform(toE164)
+  .refine((value) => /^\+[1-9]\d{7,14}$/.test(value), ERROR_CODES.phone);
+
+export const optionalPhone = z
+  .union([z.literal(""), z.null(), z.undefined(), phoneSchema])
+  .transform((value) => (value ? value : null));
 
 /** A calendar date as YYYY-MM-DD, or null. */
 export const optionalDate = z

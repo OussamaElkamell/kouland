@@ -10,6 +10,8 @@ export const NOTIFICATION_TYPES = [
   "APPOINTMENT_ASSIGNED",
   "APPOINTMENT_REMINDER",
   "OPPORTUNITY_STATUS",
+  "MISSED_CALL",
+  "NEW_SMS",
 ] as const;
 export const notificationTypeSchema = z.enum(NOTIFICATION_TYPES);
 export type NotificationType = z.infer<typeof notificationTypeSchema>;

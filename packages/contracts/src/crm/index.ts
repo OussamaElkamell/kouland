@@ -7,3 +7,5 @@ export * from "./tickets";
 export * from "./agenda";
 export * from "./notifications";
 export * from "./dashboard";
+export * from "./integrations";
+export * from "./communication";

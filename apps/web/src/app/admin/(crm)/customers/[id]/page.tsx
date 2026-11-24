@@ -6,6 +6,8 @@ import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Icon } from "@kouland/ui";
 import { Contacts } from "@/admin/customers/contacts";
+import { CustomerEmails } from "@/admin/email/customer-emails";
+import { PhoneActions } from "@/admin/phone/phone-actions";
 import { History } from "@/admin/customers/history";
 import { useFormat, useLoad, useSubmit } from "@/admin/hooks";
 import { STAGE_TONE } from "@/admin/labels";
@@ -119,7 +121,15 @@ export default function CustomerPage() {
                     </a>
                   ),
                 },
-                { label: t("fields.phone"), value: c.phone && <a href={`tel:${c.phone}`}>{c.phone}</a> },
+                {
+                  label: t("fields.phone"),
+                  value: c.phone && (
+                    <span className="flex flex-wrap items-center gap-2">
+                      <a href={`tel:${c.phone}`}>{c.phone}</a>
+                      {canEdit && <PhoneActions customer={{ id: c.id, name: c.displayName, phone: c.phone }} onDone={() => void customer.reload()} />}
+                    </span>
+                  ),
+                },
                 {
                   label: t("fields.website"),
                   value: c.website && (
@@ -162,12 +172,15 @@ export default function CustomerPage() {
             </section>
           )}
 
+          <CustomerEmails customerId={c.id} defaultTo={c.email} canSend={canEdit} onSent={() => void customer.reload()} />
+
           <section className="card p-5 sm:p-6">
             <h2 className="mb-4 font-display text-lg font-bold">{t("history")}</h2>
             <History
               customerId={c.id}
               activities={c.activities}
               onAdded={(activity) => customer.setData({ ...c, activities: [activity, ...c.activities] })}
+              onChanged={(activity) => customer.setData({ ...c, activities: c.activities.map((a) => (a.id === activity.id ? activity : a)) })}
             />
           </section>
         </div>

@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import type { Activity } from "@kouland/contracts";
 import { Icon, Textarea, type IconName } from "@kouland/ui";
 import { useFormat, useSubmit } from "@/admin/hooks";
+import { CallNotes, duration } from "@/admin/phone/phone-actions";
 import { FormError } from "@/admin/ui";
 import { api } from "@/lib/api";
 
@@ -26,6 +27,11 @@ const ICON: Record<Activity["type"], IconName> = {
   TASK_CREATED: "check",
   TASK_COMPLETED: "check",
   APPOINTMENT_SCHEDULED: "calendar",
+  PLATFORM_EVENT: "server",
+  EMAIL_SENT: "mail",
+  CALL: "phone",
+  SMS_SENT: "message",
+  SMS_RECEIVED: "message",
 };
 
 /** One line per event, worded in the CRM language from the event's stored details. */
@@ -43,7 +49,22 @@ function useDescribe() {
         return t("STAGE_CHANGED", { to: tCustomers(`stage.${str(data.to) || "PROSPECT"}`) });
       case "CUSTOMER_UPDATED": {
         const fields = Array.isArray(data.fields) ? data.fields.map((field) => tCustomers(`fields.${String(field)}`)) : [];
-        return t("CUSTOMER_UPDATED", { fields: fields.join(", ") });
+        return data.platform
+          ? t("CUSTOMER_UPDATED_PLATFORM", { fields: fields.join(", "), platform: str(data.platform) })
+          : t("CUSTOMER_UPDATED", { fields: fields.join(", ") });
+      }
+      case "PLATFORM_EVENT":
+        return t("PLATFORM_EVENT", { platform: str(data.platform), title: str(data.title) });
+      case "EMAIL_SENT":
+        return t(data.reply ? "EMAIL_REPLIED" : "EMAIL_SENT", { subject: str(data.subject), to: str(data.to) });
+      case "SMS_SENT":
+        return t("SMS_SENT", { to: str(data.to) });
+      case "SMS_RECEIVED":
+        return t("SMS_RECEIVED", { from: str(data.from) });
+      case "CALL": {
+        const call = activity.call;
+        if (!call) return t("CALL_GONE");
+        return t(`CALL_${call.direction}_${call.status === "COMPLETED" ? "COMPLETED" : call.status === "RINGING" ? "RINGING" : "MISSED"}`, { duration: duration(call.durationSec) });
       }
       case "OPPORTUNITY_STATUS":
         return t("OPPORTUNITY_STATUS", { title: str(data.title), to: tStatus(`opportunity.${str(data.to) || "NEW"}`) });
@@ -71,7 +92,7 @@ function useDescribe() {
       case "APPOINTMENT_SCHEDULED":
         return t("APPOINTMENT_SCHEDULED", { title: str(data.title), when: format.dateTime(str(data.when) || null) });
       case "CUSTOMER_CREATED":
-        return t("CUSTOMER_CREATED");
+        return data.platform ? t("CUSTOMER_CREATED_PLATFORM", { platform: str(data.platform) }) : t("CUSTOMER_CREATED");
       case "NOTE":
         return t("NOTE");
     }
@@ -83,11 +104,14 @@ export function History({
   customerId,
   activities,
   onAdded,
+  onChanged,
   opportunityId,
 }: {
   customerId: string;
   activities: Activity[];
   onAdded: (activity: Activity) => void;
+  /** An event changed in place (a call's notes). */
+  onChanged?: (activity: Activity) => void;
   /** On an opportunity's screen: notes are attached to it and only its events are listed. */
   opportunityId?: string;
 }) {
@@ -133,6 +157,14 @@ export function History({
               </span>
               <p className="text-sm font-semibold">{describe(activity)}</p>
               {activity.body && <p className="mt-1 whitespace-pre-line rounded-lg bg-surface-2 px-3 py-2 text-sm">{activity.body}</p>}
+              {activity.type === "PLATFORM_EVENT" && typeof activity.data?.url === "string" && (
+                <a href={activity.data.url} target="_blank" rel="noopener noreferrer" className="mt-1 inline-block text-xs font-semibold text-brand-text hover:underline">
+                  {t("openOnPlatform")}
+                </a>
+              )}
+              {activity.type === "CALL" && activity.call && (
+                <CallNotes call={activity.call} onSaved={(notes) => onChanged?.({ ...activity, call: { ...activity.call!, notes } })} />
+              )}
               <p className="mt-1 text-xs text-text-faint">
                 {format.dateTime(activity.createdAt)}
                 {activity.user ? ` · ${activity.user.name}` : ""}

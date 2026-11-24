@@ -41,7 +41,10 @@
       "lastAdmin": "El CRM necesita al menos un administrador activo.",
       "remindAfterDue": "El recordatorio debe ser antes de la fecha límite.",
       "endBeforeStart": "El final debe ser después del inicio.",
-      "remindAfterStart": "El recordatorio debe ser antes del inicio."
+      "remindAfterStart": "El recordatorio debe ser antes del inicio.",
+      "phone": "Escriba el número en formato internacional, p. ej. +34612345678.",
+      "myPhoneMissing": "Añada primero su número en su página de cuenta.",
+      "reconnect": "Vuelva a conectar su buzón en su página de cuenta."
     }
   },
   "nav": {
@@ -66,7 +69,9 @@
     "dashboard": "Panel",
     "tickets": "Tickets",
     "agenda": "Tareas y citas",
-    "departments": "Departamentos"
+    "departments": "Departamentos",
+    "phone": "Teléfono",
+    "phoneSettings": "Teléfono"
   },
   "login": {
     "title": "Iniciar sesión en Kouland CRM",
@@ -199,7 +204,22 @@
     "TICKET_STATUS": "Ticket n.º {number} ahora: {to}",
     "TASK_CREATED": "Tarea agregada: {title}",
     "TASK_COMPLETED": "Tarea terminada: {title}",
-    "APPOINTMENT_SCHEDULED": "Cita {title} el {when}"
+    "APPOINTMENT_SCHEDULED": "Cita {title} el {when}",
+    "CUSTOMER_CREATED_PLATFORM": "Cliente añadido desde {platform}",
+    "CUSTOMER_UPDATED_PLATFORM": "{platform} completó: {fields}",
+    "PLATFORM_EVENT": "{platform}: {title}",
+    "EMAIL_SENT": "Correo enviado: {subject}",
+    "EMAIL_REPLIED": "Respuesta enviada: {subject}",
+    "SMS_SENT": "SMS enviado al {to}",
+    "SMS_RECEIVED": "SMS recibido del {from}",
+    "CALL_GONE": "Llamada",
+    "CALL_INBOUND_COMPLETED": "Llamada entrante ({duration})",
+    "CALL_INBOUND_MISSED": "Llamada perdida",
+    "CALL_INBOUND_RINGING": "Llamada entrante",
+    "CALL_OUTBOUND_COMPLETED": "Llamada saliente ({duration})",
+    "CALL_OUTBOUND_MISSED": "Llamada saliente, sin respuesta",
+    "CALL_OUTBOUND_RINGING": "Llamada saliente",
+    "openOnPlatform": "Abrir en la plataforma"
   },
   "status": {
     "opportunity": {
@@ -353,7 +373,8 @@
     "color": "Color",
     "sortOrder": "Orden",
     "sortOrderHint": "Los números más bajos aparecen primero.",
-    "active": "Activa"
+    "active": "Activa",
+    "integration": "Integración"
   },
   "users": {
     "title": "Cuentas",
@@ -423,7 +444,9 @@
     "newPassword": "Nueva contraseña",
     "passwordNote": "Se cerrará la sesión en sus otros navegadores.",
     "passwordChanged": "Contraseña cambiada",
-    "changePassword": "Cambiar contraseña"
+    "changePassword": "Cambiar contraseña",
+    "phone": "Su teléfono",
+    "phoneHint": "Formato internacional, p. ej. +34612345678. Las llamadas de los clientes lo hacen sonar, y Llamar lo hace sonar primero."
   },
   "link": {
     "welcome": "Bienvenido, {name}",
@@ -575,7 +598,9 @@
     "TASK_REMINDER": "Recordatorio: {title}",
     "APPOINTMENT_ASSIGNED": "{by} programó {title} para usted el {when}",
     "APPOINTMENT_REMINDER": "Recordatorio: {title} el {when}",
-    "OPPORTUNITY_STATUS": "{title}: {status}"
+    "OPPORTUNITY_STATUS": "{title}: {status}",
+    "MISSED_CALL": "Llamada perdida de {who}",
+    "NEW_SMS": "SMS de {who}: {preview}"
   },
   "departments": {
     "title": "Departamentos",
@@ -633,7 +658,12 @@
       "TICKET_STATUS": "Ticket actualizado",
       "TASK_CREATED": "Tarea agregada",
       "TASK_COMPLETED": "Tarea terminada",
-      "APPOINTMENT_SCHEDULED": "Cita programada"
+      "APPOINTMENT_SCHEDULED": "Cita programada",
+      "PLATFORM_EVENT": "Evento de plataforma",
+      "EMAIL_SENT": "Correo enviado",
+      "CALL": "Llamada",
+      "SMS_SENT": "SMS enviado",
+      "SMS_RECEIVED": "SMS recibido"
     },
     "noAccess": "Aún no hay nada que mostrar",
     "noAccessBody": "Su administrador aún no le ha dado acceso a ninguna área.",
@@ -642,5 +672,167 @@
     "noPlatforms": "Aún no hay plataformas",
     "noPlatformsAdmin": "Agregue las plataformas de la empresa. Cada una tendrá su propia sección.",
     "addPlatform": "Agregar una plataforma"
+  },
+  "integration": {
+    "title": "Integración",
+    "titleFor": "{platform}: integración",
+    "subtitle": "La plataforma envía sus clientes y lo que les ocurre al CRM, mediante un webhook firmado.",
+    "turnOn": "Activar",
+    "turnOff": "Desactivar",
+    "on": "Activada",
+    "off": "Desactivada",
+    "connection": "Conexión",
+    "lastReceived": "Último evento recibido el {date}",
+    "offHint": "Active la integración para obtener la dirección del webhook y su secreto.",
+    "offWarning": "La integración está desactivada: el webhook rechaza los eventos de esta plataforma hasta que la active.",
+    "url": "Dirección del webhook",
+    "secret": "Secreto de firma",
+    "secretHint": "Entréguelo en privado a los desarrolladores de la plataforma (nunca en su código ni en un repositorio público). Firma cada evento para que el CRM sepa que viene de esta plataforma.",
+    "show": "Mostrar",
+    "hide": "Ocultar",
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "rotate": "Nuevo secreto",
+    "rotateTitle": "¿Crear un nuevo secreto?",
+    "rotateBody": "El secreto actual deja de funcionar enseguida: los eventos de la plataforma se rechazan hasta que use el nuevo.",
+    "forDevelopers": "Para los desarrolladores de la plataforma",
+    "forDevelopersBody": "Envíe un POST HTTP con un cuerpo JSON a la dirección del webhook cada vez que un cliente se registra o cambia, o le ocurre algo.",
+    "step1": "Guarde el secreto en la configuración de la plataforma como KOULAND_WEBHOOK_SECRET.",
+    "step2": "Firme cada llamada: HMAC-SHA256 de TIMESTAMP.BODY (la hora Unix, un punto y luego el cuerpo JSON exacto) con el secreto, en hexadecimal, enviado en la cabecera X-Kouland-Signature: t=TIMESTAMP,v1=SIGNATURE.",
+    "step3": "Dé a cada evento un id único: si se reenvía (un reintento), el CRM lo aplica una sola vez.",
+    "step4": "Envíe siempre el id del cliente en la plataforma (externalId); el CRM también busca por correo y luego por teléfono, para no duplicar clientes.",
+    "payloads": "Qué enviar",
+    "payloadsBody": "Tres tipos de eventos. Un cliente que el CRM ya conoce solo recibe los datos que le faltan: lo que escribió el equipo nunca se sobrescribe.",
+    "answers": "Respuestas",
+    "answer200": "200: recibido. status es PROCESSED, DUPLICATE (este id ya se recibió) o FAILED (vea el registro abajo).",
+    "answer400": "400: el cuerpo no es válido; el mensaje indica el campo.",
+    "answer401": "401: firma ausente o incorrecta, o el reloj de la plataforma tiene más de 5 minutos de diferencia.",
+    "answer403": "403: la integración está desactivada en el CRM.",
+    "events": "Eventos recibidos",
+    "refresh": "Actualizar",
+    "noEvents": "Aún no se ha recibido nada",
+    "noEventsBody": "Envíe una prueba con el ejemplo curl de arriba: aparecerá aquí.",
+    "received": "Recibido",
+    "type": "Tipo",
+    "eventId": "Id del evento",
+    "customer": "Cliente",
+    "result": "Resultado",
+    "createdCustomer": "nuevo",
+    "status": {
+      "PROCESSED": "Procesado",
+      "FAILED": "Error"
+    }
+  },
+  "phoneSettings": {
+    "title": "Teléfono",
+    "subtitle": "Llamadas y SMS en el número de Twilio de la empresa.",
+    "adminOnly": "Solo los administradores pueden cambiar la configuración del teléfono.",
+    "twilio": "Twilio",
+    "connected": "Conectado",
+    "notConnected": "Sin configurar",
+    "notConnectedHint": "Defina TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN y TWILIO_PHONE_NUMBER en el servidor de la API y vuelva a cargar esta página.",
+    "companyNumber": "Número de la empresa",
+    "addresses": "Direcciones para Twilio",
+    "addressesHint": "En la consola de Twilio, abra el número de la empresa (Phone Numbers → Manage → Active numbers) y pegue estas direcciones.",
+    "voiceUrl": "Entra una llamada (Webhook, HTTP POST)",
+    "voiceUrlHint": "Voice configuration → A call comes in.",
+    "statusUrl": "Cambio de estado de la llamada",
+    "statusUrlHint": "Voice configuration → Call status changes: avisa al CRM cuando alguien cuelga antes de que respondan.",
+    "smsUrl": "Entra un mensaje (Webhook, HTTP POST)",
+    "smsUrlHint": "Messaging configuration → A message comes in.",
+    "routing": "Quién responde",
+    "routingHint": "Una llamada de un cliente conocido hace sonar primero al empleado que lo atiende (el responsable de su oportunidad abierta, o quien habló con él por última vez) y luego el número predeterminado. Una llamada de un número desconocido hace sonar el número predeterminado.",
+    "fallbackNumber": "Número predeterminado",
+    "fallbackNumberHint": "El teléfono de recepción o de un responsable, en formato internacional.",
+    "ringSeconds": "Tiempo de timbre (segundos)",
+    "ringSecondsHint": "Cuánto suena cada teléfono antes de pasar al siguiente. Entre 10 y 60."
+  },
+  "phone": {
+    "title": "Teléfono",
+    "subtitle": "Llamadas y SMS en el número de la empresa.",
+    "tabs": {
+      "calls": "Llamadas",
+      "sms": "SMS"
+    },
+    "filters": {
+      "all": "Todas",
+      "mine": "Mías",
+      "missed": "Perdidas",
+      "unknown": "Números desconocidos"
+    },
+    "status": {
+      "RINGING": "Sonando",
+      "COMPLETED": "Atendida",
+      "MISSED": "Perdida",
+      "FAILED": "No conectada"
+    },
+    "direction": {
+      "INBOUND": "Entrante",
+      "OUTBOUND": "Saliente"
+    },
+    "smsDirection": {
+      "INBOUND": "Recibido",
+      "OUTBOUND": "Enviado"
+    },
+    "noCalls": "Aún no hay llamadas",
+    "noCallsBody": "Las llamadas hacia y desde el número de la empresa aparecen aquí.",
+    "noSms": "Aún no hay SMS",
+    "noSmsBody": "Los SMS hacia y desde el número de la empresa aparecen aquí.",
+    "linkCustomer": "¿Quién era?",
+    "linkTitle": "¿Qué cliente es el {phone}?",
+    "call": "Llamar",
+    "text": "SMS",
+    "callTitle": "Llamar a {name}",
+    "callExplain": "El CRM hace sonar su teléfono ({me}). Cuando responda, llama a {name} al {phone}, mostrando el número de la empresa.",
+    "callNow": "Llamar ahora",
+    "ringing": "Su teléfono ({phone}) está sonando. Responda para conectarse.",
+    "noPhone": "Añada primero su propio número: el CRM lo hace sonar y luego llama al cliente.",
+    "addPhone": "Ir a su cuenta",
+    "smsTitle": "SMS a {name}",
+    "smsTo": "Al {phone}, desde el número de la empresa.",
+    "message": "Mensaje",
+    "smsLength": "{count} / 1600 caracteres",
+    "send": "Enviar",
+    "notes": "Notas",
+    "notesPlaceholder": "Qué se dijo, qué hacer después…",
+    "addNotes": "Añadir notas",
+    "editNotes": "Editar notas",
+    "smsStatus": {
+      "accepted": "En cola",
+      "queued": "En cola",
+      "sending": "Enviando",
+      "sent": "Enviado",
+      "delivered": "Entregado",
+      "undelivered": "No entregado",
+      "failed": "Error"
+    }
+  },
+  "email": {
+    "title": "Correos",
+    "mailbox": "Su buzón",
+    "mailboxHint": "Conecte su buzón de Google Workspace o Microsoft 365 para ver sus correos con cada cliente en su ficha, y enviar o responder desde el CRM. Solo usted ve su buzón.",
+    "connectGoogle": "Conectar Google Workspace",
+    "connectMicrosoft": "Conectar Microsoft 365",
+    "disconnect": "Desconectar",
+    "noneAvailable": "La conexión de buzones aún no está configurada en el servidor (ids de aplicación de Google o Microsoft).",
+    "connectedNotice": "Su buzón está conectado.",
+    "deniedNotice": "El buzón no se conectó: no se permitió el acceso.",
+    "errorNotice": "No se pudo conectar el buzón.",
+    "notConnected": "Conecte su buzón para ver sus correos con este cliente.",
+    "connectOnAccount": "Conectarlo en su página de cuenta",
+    "reconnect": "Su buzón debe conectarse de nuevo.",
+    "goToAccount": "Ir a su cuenta",
+    "noAddress": "Este cliente no tiene correo electrónico.",
+    "none": "No hay correos con {addresses} en su buzón.",
+    "noSubject": "(sin asunto)",
+    "toLine": "Para {to}",
+    "new": "Nuevo correo",
+    "reply": "Responder",
+    "replyHint": "El mensaje original se conserva en la conversación.",
+    "to": "Para",
+    "subject": "Asunto",
+    "message": "Mensaje",
+    "send": "Enviar",
+    "openInMailbox": "Abrir en mi buzón"
   }
 }

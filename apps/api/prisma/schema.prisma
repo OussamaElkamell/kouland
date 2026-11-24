@@ -100,6 +100,8 @@ model User {
   allPlatforms Boolean   @default(false)
   /// CRM language: en, fr or es.
   locale       String    @default("en")
+  /// Phone in international format (+19185550123): customers' calls ring it, and click-to-call rings it first.
+  phone        String?
   lastLoginAt  DateTime?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
@@ -121,6 +123,9 @@ model User {
   ownedOpportunities Opportunity[]    @relation("OpportunityOwner")
   createdCustomers   Customer[]       @relation("CustomerCreatedBy")
   createdProposals   Proposal[]       @relation("ProposalCreatedBy")
+  emailConnection    EmailConnection?
+  calls              Call[]
+  smsMessages        SmsMessage[]
 
   @@map("users")
 }
@@ -187,22 +192,28 @@ model UserToken {
 
 /// A platform section of the CRM, configured by administrators. The CRM never hardcodes platform names: every
 /// filter, section and permission reads these rows. Platforms are deactivated, never deleted, to keep history.
-/// Integration settings for synchronization come in Milestone 4.
+/// Platforms send customers and events to the CRM through a signed webhook (see PlatformEvent).
 model Platform {
-  id          String   @id @default(cuid())
-  name        String   @unique
+  id               String    @id @default(cuid())
+  name             String    @unique
   /// URL-safe key used in CRM addresses, e.g. /admin/workspace/<slug>.
-  slug        String   @unique
-  description String?
-  websiteUrl  String?
+  slug             String    @unique
+  description      String?
+  websiteUrl       String?
   /// Accent colour of the platform's chips, as #RRGGBB.
-  color       String   @default("#64748B")
-  isActive    Boolean  @default(true)
-  sortOrder   Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  color            String    @default("#64748B")
+  isActive         Boolean   @default(true)
+  sortOrder        Int       @default(0)
+  /// Whether the platform's webhook is accepted.
+  webhookEnabled   Boolean   @default(false)
+  /// Secret that signs the platform's webhook calls, encrypted with INTEGRATIONS_KEY.
+  webhookSecretEnc String?
+  lastWebhookAt    DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
   users         UserPlatform[]
+  events        PlatformEvent[]
   customers     CustomerPlatform[]
   opportunities Opportunity[]
   tickets       Ticket[]
@@ -247,14 +258,17 @@ model Customer {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
-  createdBy     User?              @relation("CustomerCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
-  contacts      Contact[]
-  platforms     CustomerPlatform[]
-  opportunities Opportunity[]
-  activities    Activity[]
-  tickets       Ticket[]
-  tasks         Task[]
-  appointments  Appointment[]
+  createdBy      User?              @relation("CustomerCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  contacts       Contact[]
+  platforms      CustomerPlatform[]
+  opportunities  Opportunity[]
+  activities     Activity[]
+  tickets        Ticket[]
+  tasks          Task[]
+  appointments   Appointment[]
+  calls          Call[]
+  smsMessages    SmsMessage[]
+  platformEvents PlatformEvent[]
 
   @@index([displayName])
   @@index([email])
@@ -284,11 +298,14 @@ model Contact {
 model CustomerPlatform {
   customerId String
   platformId String
+  /// The customer's id on that platform, sent by its webhook; used first to match the same customer again.
+  externalId String?
   createdAt  DateTime @default(now())
   customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
   platform   Platform @relation(fields: [platformId], references: [id], onDelete: Restrict)
 
   @@id([customerId, platformId])
+  @@unique([platformId, externalId])
   @@index([platformId])
   @@map("customer_platforms")
 }
@@ -395,6 +412,11 @@ enum ActivityType {
   TASK_CREATED
   TASK_COMPLETED
   APPOINTMENT_SCHEDULED
+  PLATFORM_EVENT
+  EMAIL_SENT
+  CALL
+  SMS_SENT
+  SMS_RECEIVED
 }
 
 /// One event in a customer's history: a note written by staff, or a change recorded by the CRM.
@@ -404,6 +426,7 @@ model Activity {
   customerId    String
   opportunityId String?
   ticketId      String?
+  callId        String?      @unique
   type          ActivityType
   body          String?
   data          Json?
@@ -413,6 +436,7 @@ model Activity {
   customer    Customer     @relation(fields: [customerId], references: [id], onDelete: Cascade)
   opportunity Opportunity? @relation(fields: [opportunityId], references: [id], onDelete: SetNull)
   ticket      Ticket?      @relation(fields: [ticketId], references: [id], onDelete: SetNull)
+  call        Call?        @relation(fields: [callId], references: [id], onDelete: SetNull)
   user        User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@index([customerId, createdAt])
@@ -613,6 +637,8 @@ enum NotificationType {
   APPOINTMENT_ASSIGNED
   APPOINTMENT_REMINDER
   OPPORTUNITY_STATUS
+  MISSED_CALL
+  NEW_SMS
 }
 
 /// A message for one person in the CRM's bell. `data` holds what the screen needs to word it in their language.
@@ -629,4 +655,134 @@ model Notification {
 
   @@index([userId, readAt, createdAt])
   @@map("notifications")
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// Milestone 4: platform synchronization, email connection, Twilio calls and SMS.
+// ---------------------------------------------------------------------------------------------------------------
+
+enum PlatformEventStatus {
+  PROCESSED
+  FAILED
+}
+
+/// One webhook call received from a platform: what it sent and what the CRM did with it. The platform's event id is
+/// unique per platform, so an event sent twice (a retry) is applied once.
+model PlatformEvent {
+  id         String              @id @default(cuid())
+  platformId String
+  /// The platform's own id for this event.
+  eventId    String
+  type       String
+  status     PlatformEventStatus
+  /// Why it failed.
+  error      String?
+  customerId String?
+  /// Whether this event created the customer (otherwise it matched an existing one).
+  created    Boolean             @default(false)
+  payload    Json
+  receivedAt DateTime            @default(now())
+  platform   Platform            @relation(fields: [platformId], references: [id], onDelete: Cascade)
+  customer   Customer?           @relation(fields: [customerId], references: [id], onDelete: SetNull)
+
+  @@unique([platformId, eventId])
+  @@index([platformId, receivedAt])
+  @@map("platform_events")
+}
+
+enum EmailProvider {
+  GOOGLE
+  MICROSOFT
+}
+
+/// A person's own mailbox (Google Workspace or Microsoft 365), connected with OAuth. Tokens are encrypted with
+/// INTEGRATIONS_KEY. The CRM reads it live to show emails exchanged with a customer, and sends through it.
+model EmailConnection {
+  id              String        @id @default(cuid())
+  userId          String        @unique
+  provider        EmailProvider
+  email           String
+  accessTokenEnc  String
+  refreshTokenEnc String
+  expiresAt       DateTime
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("email_connections")
+}
+
+enum CallDirection {
+  INBOUND
+  OUTBOUND
+}
+
+/// RINGING until it ends; COMPLETED when someone answered; MISSED when nobody did (no answer, busy).
+enum CallStatus {
+  RINGING
+  COMPLETED
+  MISSED
+  FAILED
+}
+
+/// A phone call through the company's Twilio number. Linked to the customer when the number is known; the employee
+/// who took or made it writes notes. No recording, voicemail or browser calling (not in the first version).
+model Call {
+  id          String        @id @default(cuid())
+  /// Twilio's id of the call.
+  twilioSid   String        @unique
+  direction   CallDirection
+  status      CallStatus    @default(RINGING)
+  fromNumber  String
+  toNumber    String
+  durationSec Int?
+  customerId  String?
+  /// The employee who answered or made the call.
+  userId      String?
+  notes       String?
+  startedAt   DateTime      @default(now())
+  endedAt     DateTime?
+  customer    Customer?     @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  user        User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  activity    Activity?
+
+  @@index([startedAt])
+  @@index([customerId])
+  @@map("calls")
+}
+
+enum SmsDirection {
+  INBOUND
+  OUTBOUND
+}
+
+/// A text message sent or received on the company's Twilio number.
+model SmsMessage {
+  id         String       @id @default(cuid())
+  twilioSid  String       @unique
+  direction  SmsDirection
+  fromNumber String
+  toNumber   String
+  body       String
+  /// Twilio's status: queued, sent, delivered, undelivered, failed, received.
+  status     String
+  customerId String?
+  /// Who sent it (outbound).
+  userId     String?
+  createdAt  DateTime     @default(now())
+  customer   Customer?    @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  user       User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+  @@index([customerId])
+  @@map("sms_messages")
+}
+
+/// Settings administrators change in the CRM (e.g. the phone's default number), one row per key.
+model Setting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+
+  @@map("settings")
 }

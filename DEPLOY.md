@@ -54,6 +54,11 @@ Both services listen on the port Railway gives them (`PORT`).
 | `REMINDERS` | Optional. `off` stops the task and appointment reminder worker on this instance |
 | `APP_URL` | The website's address, e.g. `https://kouland.com`: invitation and password emails link to `APP_URL/admin/link`. Defaults to the first `CORS_ORIGINS` entry |
 | `COOKIE_DOMAIN` | Optional. Leave empty; `kouland.com` would also send the CRM cookie to the website |
+| `INTEGRATIONS_KEY` | 64 hex characters (32 random bytes) that encrypt webhook secrets and mailbox tokens. Generate it once (`openssl rand -hex 32`) and keep it: changing it makes every stored secret unreadable (platforms need a new secret, people reconnect their mailbox) |
+| `PUBLIC_API_URL` | `https://api.kouland.com`: the API's address as platforms, Twilio, Google and Microsoft reach it (without `/api`) |
+| `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_PHONE_NUMBER` | Twilio account and the company number (`+1…`). See "Phone (Twilio)" below |
+| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Google Workspace mailboxes. See "Email" below |
+| `MICROSOFT_CLIENT_ID`, `MICROSOFT_CLIENT_SECRET`, `MICROSOFT_TENANT_ID` | Microsoft 365 mailboxes. See "Email" below |
 
 `start:api` runs `prisma migrate deploy` before starting, so the tables are created and updated on every deploy.
 
@@ -80,6 +85,46 @@ On your own computer, `pnpm --filter @kouland/api create-admin` does the same wi
 same email resets that account's password and makes it an administrator. Every other account is then created in
 the CRM under **Settings → Accounts**: the person receives an invitation email (through Brevo) and chooses their own
 password. Without `BREVO_API_KEY` the CRM shows the administrator the link to pass on instead.
+
+## Platform sync (webhooks)
+
+Nothing to set up on the server besides `INTEGRATIONS_KEY` and `PUBLIC_API_URL`. In the CRM, **Settings → Platform
+settings → Integration** on a platform: turn it on, then give its developers the webhook address and the signing
+secret (privately). The page shows ready-to-copy code (Node.js, PHP, Python, curl) and the events received.
+
+## Email (Google Workspace and Microsoft 365)
+
+Each person connects their own mailbox on **My account**. The server needs an OAuth app for each provider you use:
+
+**Google Workspace** (Google Cloud console, signed in with a Workspace administrator):
+1. Create a project, enable the **Gmail API**.
+2. OAuth consent screen: user type **Internal** (only the company's accounts; no Google review needed). Scopes:
+   `gmail.readonly`, `gmail.send`, `openid`, `email`.
+3. Credentials → OAuth client ID → **Web application**. Authorised redirect URI:
+   `<PUBLIC_API_URL>/api/email/oauth/google/callback`.
+4. Put the client id and secret in `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`.
+
+**Microsoft 365** (Microsoft Entra admin center → App registrations → New registration):
+1. Supported account types: **this organisation only**. Redirect URI (Web):
+   `<PUBLIC_API_URL>/api/email/oauth/microsoft/callback`.
+2. Certificates & secrets → new client secret. API permissions → Microsoft Graph, delegated: `Mail.Read`,
+   `Mail.Send`, `User.Read`, `offline_access` → **Grant admin consent**.
+3. Put the application (client) id, the secret value and the directory (tenant) id in `MICROSOFT_CLIENT_ID`,
+   `MICROSOFT_CLIENT_SECRET` and `MICROSOFT_TENANT_ID`.
+
+## Phone (Twilio)
+
+1. In Twilio, buy or port the company number. Put the Account SID, the Auth Token and the number (`+1…`) in
+   `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN` and `TWILIO_PHONE_NUMBER`, and redeploy the API.
+2. In the CRM, **Settings → Phone** shows three addresses. In the Twilio console (Phone Numbers → Manage → Active
+   numbers → the company number): **A call comes in** = the voice address (HTTP POST), **Call status changes** = the
+   status address, **A message comes in** = the SMS address (HTTP POST).
+3. On the same CRM page, set the **default number** (reception or a manager's phone) and the ring time.
+4. Each employee adds their phone number on **My account**: calls from their customers ring it, and **Call** on a
+   customer's page rings it first.
+
+The addresses must match `PUBLIC_API_URL` exactly: Twilio signs each request with the address it called, and the CRM
+refuses requests whose signature does not match.
 
 ## Website variables (`kouland.com`), set **before** the build
 
@@ -124,6 +169,8 @@ CRM sign-in cookie set by the api's address would never be sent. On staging the 
 | api | `CORS_ORIGINS` | the web address (not used by the forwarding, but keeps direct calls working) |
 | api | `BREVO_API_KEY` | leave empty: staging only logs emails; invitations then show the link to copy |
 | api | `APP_URL` | the web address (invitation links point to it) |
+| api | `PUBLIC_API_URL` | the web address followed by `/backend`, e.g. `https://koulandweb-staging.up.railway.app/backend` (webhooks, Twilio and mailbox sign-in returns go through the website's forwarding) |
+| api | `INTEGRATIONS_KEY` | its own 64 hex characters (not production's) |
 
 All `web` values are read during the build: change them, then redeploy. The api's start command must stay
 `pnpm run start:api` (Settings → Deploy → Custom Start Command empty or set to that): it creates the tables before

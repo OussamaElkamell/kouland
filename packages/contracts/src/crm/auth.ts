@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { crmLocaleSchema, ERROR_CODES, idSchema, refSchema, text } from "./common";
+import { crmLocaleSchema, ERROR_CODES, idSchema, optionalPhone, refSchema, text } from "./common";
 
 export const USER_ROLES = ["ADMIN", "MANAGER", "EMPLOYEE"] as const;
 export const userRoleSchema = z.enum(USER_ROLES);
@@ -55,6 +55,8 @@ export const sessionUserSchema = z.object({
   name: z.string(),
   role: userRoleSchema,
   locale: crmLocaleSchema,
+  /** Phone that customer calls ring, and that click-to-call rings first. */
+  phone: z.string().nullable(),
   access: accessMapSchema,
   /** True for administrators and for accounts given every platform. */
   allPlatforms: z.boolean(),
@@ -72,7 +74,7 @@ export type ChangePasswordInput = z.input<typeof changePasswordSchema>;
 export type ChangePassword = z.output<typeof changePasswordSchema>;
 
 /** PATCH /auth/me */
-export const updateProfileSchema = z.object({ name: text(120).optional(), locale: crmLocaleSchema.optional() });
+export const updateProfileSchema = z.object({ name: text(120).optional(), locale: crmLocaleSchema.optional(), phone: optionalPhone.optional() });
 export type UpdateProfileInput = z.input<typeof updateProfileSchema>;
 
 // ---- Accounts (administrators only) ----
@@ -117,6 +119,7 @@ export const updateUserSchema = z
     platformIds: z.array(idSchema).max(200).optional(),
     access: accessMapSchema.optional(),
     locale: crmLocaleSchema.optional(),
+    phone: optionalPhone.optional(),
   })
   .superRefine(checkRoleLimits);
 export type UpdateUserInput = z.input<typeof updateUserSchema>;
@@ -131,6 +134,7 @@ export const userSchema = z.object({
   platformIds: z.array(z.string()),
   access: accessMapSchema,
   locale: crmLocaleSchema,
+  phone: z.string().nullable(),
   lastLoginAt: z.string().nullable(),
   createdAt: z.string(),
   /** True until the person accepts their invitation and chooses a password. */

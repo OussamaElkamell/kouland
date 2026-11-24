@@ -14,6 +14,7 @@ export const ACTIVITY_SELECT = {
   user: { select: { id: true, name: true } },
   opportunity: { select: { id: true, title: true } },
   ticket: { select: { id: true, number: true, subject: true } },
+  call: { select: { id: true, direction: true, status: true, durationSec: true, notes: true } },
 } satisfies Prisma.ActivitySelect;
 
 export function toActivity(row: Prisma.ActivityGetPayload<{ select: typeof ACTIVITY_SELECT }>): Activity {

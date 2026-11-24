@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { useTranslations } from "next-intl";
 import { Field, Input } from "@kouland/ui";
+import { MailboxCard } from "@/admin/email/mailbox-card";
 import { useSubmit } from "@/admin/hooks";
 import { useSession } from "@/admin/session";
 import { FormError, PageHeader, PlatformChip } from "@/admin/ui";
@@ -18,6 +19,7 @@ export default function AccountPage() {
   const profile = useSubmit();
   const password = useSubmit();
   const [name, setName] = useState(user.name);
+  const [phone, setPhone] = useState(user.phone ?? "");
   const [current, setCurrent] = useState("");
   const [next, setNext] = useState("");
   const [saved, setSaved] = useState<"profile" | "password" | null>(null);
@@ -25,7 +27,7 @@ export default function AccountPage() {
   async function saveProfile(event: FormEvent) {
     event.preventDefault();
     setSaved(null);
-    if (await profile.submit(() => api.auth.updateMe({ name }))) {
+    if (await profile.submit(() => api.auth.updateMe({ name, phone }))) {
       await refresh();
       setSaved("profile");
     }
@@ -54,6 +56,9 @@ export default function AccountPage() {
           <FormError message={profile.formError} />
           <Field htmlFor="account-name" label={tu("name")} error={profile.errorFor("name")}>
             <Input id="account-name" value={name} onChange={(e) => setName(e.target.value)} invalid={!!profile.errorFor("name")} />
+          </Field>
+          <Field htmlFor="account-phone" label={t("phone")} optionalLabel={tc("optional")} hint={t("phoneHint")} error={profile.errorFor("phone")}>
+            <Input id="account-phone" type="tel" placeholder="+19185550123" value={phone} onChange={(e) => setPhone(e.target.value)} invalid={!!profile.errorFor("phone")} />
           </Field>
           <div>
             <p className="field-label">{tu("platforms")}</p>
@@ -92,6 +97,9 @@ export default function AccountPage() {
             </button>
           </div>
         </form>
+        <div className="lg:col-span-2">
+          <MailboxCard />
+        </div>
       </div>
     </>
   );

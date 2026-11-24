@@ -41,7 +41,10 @@
       "lastAdmin": "The CRM needs at least one active administrator.",
       "remindAfterDue": "The reminder must be before the due date.",
       "endBeforeStart": "The end must be after the start.",
-      "remindAfterStart": "The reminder must be before the start."
+      "remindAfterStart": "The reminder must be before the start.",
+      "phone": "Enter the number in international format, e.g. +19185550123.",
+      "myPhoneMissing": "Add your phone number on your account page first.",
+      "reconnect": "Connect your mailbox again on your account page."
     }
   },
   "nav": {
@@ -66,7 +69,9 @@
     "dashboard": "Dashboard",
     "tickets": "Tickets",
     "agenda": "Tasks & appointments",
-    "departments": "Departments"
+    "departments": "Departments",
+    "phone": "Phone",
+    "phoneSettings": "Phone"
   },
   "login": {
     "title": "Sign in to Kouland CRM",
@@ -199,7 +204,22 @@
     "TICKET_STATUS": "Ticket #{number} is now {to}",
     "TASK_CREATED": "Task added: {title}",
     "TASK_COMPLETED": "Task done: {title}",
-    "APPOINTMENT_SCHEDULED": "Appointment {title} on {when}"
+    "APPOINTMENT_SCHEDULED": "Appointment {title} on {when}",
+    "CUSTOMER_CREATED_PLATFORM": "Customer added from {platform}",
+    "CUSTOMER_UPDATED_PLATFORM": "{platform} filled in: {fields}",
+    "PLATFORM_EVENT": "{platform}: {title}",
+    "EMAIL_SENT": "Email sent: {subject}",
+    "EMAIL_REPLIED": "Reply sent: {subject}",
+    "SMS_SENT": "SMS sent to {to}",
+    "SMS_RECEIVED": "SMS received from {from}",
+    "CALL_GONE": "Call",
+    "CALL_INBOUND_COMPLETED": "Incoming call ({duration})",
+    "CALL_INBOUND_MISSED": "Missed call",
+    "CALL_INBOUND_RINGING": "Incoming call",
+    "CALL_OUTBOUND_COMPLETED": "Outgoing call ({duration})",
+    "CALL_OUTBOUND_MISSED": "Outgoing call, not answered",
+    "CALL_OUTBOUND_RINGING": "Outgoing call",
+    "openOnPlatform": "Open on the platform"
   },
   "status": {
     "opportunity": {
@@ -353,7 +373,8 @@
     "color": "Colour",
     "sortOrder": "Order",
     "sortOrderHint": "Lower numbers come first.",
-    "active": "Active"
+    "active": "Active",
+    "integration": "Integration"
   },
   "users": {
     "title": "Accounts",
@@ -423,7 +444,9 @@
     "newPassword": "New password",
     "passwordNote": "Your other browsers will be signed out.",
     "passwordChanged": "Password changed",
-    "changePassword": "Change password"
+    "changePassword": "Change password",
+    "phone": "Your phone",
+    "phoneHint": "International format, e.g. +19185550123. Customers' calls ring it, and Call rings it first."
   },
   "link": {
     "welcome": "Welcome, {name}",
@@ -575,7 +598,9 @@
     "TASK_REMINDER": "Reminder: {title}",
     "APPOINTMENT_ASSIGNED": "{by} scheduled {title} for you on {when}",
     "APPOINTMENT_REMINDER": "Reminder: {title} on {when}",
-    "OPPORTUNITY_STATUS": "{title} was marked {status}"
+    "OPPORTUNITY_STATUS": "{title} was marked {status}",
+    "MISSED_CALL": "Missed call from {who}",
+    "NEW_SMS": "SMS from {who}: {preview}"
   },
   "departments": {
     "title": "Departments",
@@ -633,7 +658,12 @@
       "TICKET_STATUS": "Ticket updated",
       "TASK_CREATED": "Task added",
       "TASK_COMPLETED": "Task done",
-      "APPOINTMENT_SCHEDULED": "Appointment scheduled"
+      "APPOINTMENT_SCHEDULED": "Appointment scheduled",
+      "PLATFORM_EVENT": "Platform event",
+      "EMAIL_SENT": "Email sent",
+      "CALL": "Call",
+      "SMS_SENT": "SMS sent",
+      "SMS_RECEIVED": "SMS received"
     },
     "noAccess": "Nothing to show yet",
     "noAccessBody": "Your administrator has not given you access to an area yet.",
@@ -642,5 +672,167 @@
     "noPlatforms": "No platforms yet",
     "noPlatformsAdmin": "Add the platforms the company works with. Each one gets its own section.",
     "addPlatform": "Add a platform"
+  },
+  "integration": {
+    "title": "Integration",
+    "titleFor": "{platform}: integration",
+    "subtitle": "The platform sends its customers and what happens to them to the CRM, through a signed webhook.",
+    "turnOn": "Turn on",
+    "turnOff": "Turn off",
+    "on": "On",
+    "off": "Off",
+    "connection": "Connection",
+    "lastReceived": "Last event received {date}",
+    "offHint": "Turn the integration on to get the webhook address and its secret.",
+    "offWarning": "The integration is off: the webhook refuses this platform's events until you turn it on.",
+    "url": "Webhook address",
+    "secret": "Signing secret",
+    "secretHint": "Give it to the platform's developers privately (never in its code or a public repository). It signs every event so the CRM knows it comes from this platform.",
+    "show": "Show",
+    "hide": "Hide",
+    "copy": "Copy",
+    "copied": "Copied",
+    "rotate": "New secret",
+    "rotateTitle": "Create a new secret?",
+    "rotateBody": "The current secret stops working at once: the platform's events are refused until it uses the new one.",
+    "forDevelopers": "For the platform's developers",
+    "forDevelopersBody": "Send an HTTP POST with a JSON body to the webhook address each time a customer signs up or changes, or something happens to them.",
+    "step1": "Store the signing secret in the platform's settings as KOULAND_WEBHOOK_SECRET.",
+    "step2": "Sign each call: HMAC-SHA256 of TIMESTAMP.BODY (the Unix time, a dot, then the exact JSON body) with the secret, in hex, sent as the header X-Kouland-Signature: t=TIMESTAMP,v1=SIGNATURE.",
+    "step3": "Give each event a unique id: if it is sent again (a retry), the CRM applies it only once.",
+    "step4": "Always send the customer's id on the platform (externalId); the CRM also matches by email, then phone, so customers are not duplicated.",
+    "payloads": "What to send",
+    "payloadsBody": "Three kinds of events. A customer the CRM already knows only gets the details it is missing: what staff typed is never overwritten.",
+    "answers": "Answers",
+    "answer200": "200: received. status is PROCESSED, DUPLICATE (this id was already received) or FAILED (see the log below).",
+    "answer400": "400: the body is not valid; the message says which field.",
+    "answer401": "401: missing or wrong signature, or the platform's clock is more than 5 minutes off.",
+    "answer403": "403: the integration is turned off in the CRM.",
+    "events": "Events received",
+    "refresh": "Refresh",
+    "noEvents": "Nothing received yet",
+    "noEventsBody": "Send a test with the curl example above: it appears here.",
+    "received": "Received",
+    "type": "Type",
+    "eventId": "Event id",
+    "customer": "Customer",
+    "result": "Result",
+    "createdCustomer": "new",
+    "status": {
+      "PROCESSED": "Processed",
+      "FAILED": "Failed"
+    }
+  },
+  "phoneSettings": {
+    "title": "Phone",
+    "subtitle": "Calls and SMS on the company's Twilio number.",
+    "adminOnly": "Only administrators can change the phone settings.",
+    "twilio": "Twilio",
+    "connected": "Connected",
+    "notConnected": "Not set up",
+    "notConnectedHint": "Set TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN and TWILIO_PHONE_NUMBER on the API server, then reload this page.",
+    "companyNumber": "Company number",
+    "addresses": "Addresses for Twilio",
+    "addressesHint": "In the Twilio console, open the company number (Phone Numbers → Manage → Active numbers) and paste these.",
+    "voiceUrl": "A call comes in (Webhook, HTTP POST)",
+    "voiceUrlHint": "Voice configuration → A call comes in.",
+    "statusUrl": "Call status changes",
+    "statusUrlHint": "Voice configuration → Call status changes: tells the CRM when a caller hangs up before anyone answers.",
+    "smsUrl": "A message comes in (Webhook, HTTP POST)",
+    "smsUrlHint": "Messaging configuration → A message comes in.",
+    "routing": "Who answers",
+    "routingHint": "A call from a known customer first rings the employee who looks after them (the owner of their open opportunity, or whoever last spoke with them), then the default number. A call from an unknown number rings the default number.",
+    "fallbackNumber": "Default number",
+    "fallbackNumberHint": "The reception or manager's phone, in international format.",
+    "ringSeconds": "Ring time (seconds)",
+    "ringSecondsHint": "How long each phone rings before the next is tried. Between 10 and 60."
+  },
+  "phone": {
+    "title": "Phone",
+    "subtitle": "Calls and SMS on the company number.",
+    "tabs": {
+      "calls": "Calls",
+      "sms": "SMS"
+    },
+    "filters": {
+      "all": "All",
+      "mine": "Mine",
+      "missed": "Missed",
+      "unknown": "Unknown numbers"
+    },
+    "status": {
+      "RINGING": "Ringing",
+      "COMPLETED": "Answered",
+      "MISSED": "Missed",
+      "FAILED": "Not connected"
+    },
+    "direction": {
+      "INBOUND": "Incoming",
+      "OUTBOUND": "Outgoing"
+    },
+    "smsDirection": {
+      "INBOUND": "Received",
+      "OUTBOUND": "Sent"
+    },
+    "noCalls": "No calls yet",
+    "noCallsBody": "Calls to and from the company number appear here.",
+    "noSms": "No SMS yet",
+    "noSmsBody": "Text messages to and from the company number appear here.",
+    "linkCustomer": "Who was it?",
+    "linkTitle": "Which customer is {phone}?",
+    "call": "Call",
+    "text": "Text",
+    "callTitle": "Call {name}",
+    "callExplain": "The CRM rings your phone ({me}). When you answer, it calls {name} at {phone}, showing the company number.",
+    "callNow": "Call now",
+    "ringing": "Your phone ({phone}) is ringing. Answer it to be connected.",
+    "noPhone": "Add your own phone number first: the CRM rings it, then connects the customer.",
+    "addPhone": "Go to your account",
+    "smsTitle": "Text {name}",
+    "smsTo": "To {phone}, from the company number.",
+    "message": "Message",
+    "smsLength": "{count} / 1600 characters",
+    "send": "Send",
+    "notes": "Notes",
+    "notesPlaceholder": "What was said, what to do next…",
+    "addNotes": "Add notes",
+    "editNotes": "Edit notes",
+    "smsStatus": {
+      "accepted": "Queued",
+      "queued": "Queued",
+      "sending": "Sending",
+      "sent": "Sent",
+      "delivered": "Delivered",
+      "undelivered": "Not delivered",
+      "failed": "Failed"
+    }
+  },
+  "email": {
+    "title": "Emails",
+    "mailbox": "Your mailbox",
+    "mailboxHint": "Connect your Google Workspace or Microsoft 365 mailbox to see your emails with each customer on their page, and to send or reply from the CRM. Only you see your mailbox.",
+    "connectGoogle": "Connect Google Workspace",
+    "connectMicrosoft": "Connect Microsoft 365",
+    "disconnect": "Disconnect",
+    "noneAvailable": "Mailbox connection is not set up on the server yet (Google or Microsoft app ids).",
+    "connectedNotice": "Your mailbox is connected.",
+    "deniedNotice": "The mailbox was not connected: access was not allowed.",
+    "errorNotice": "The mailbox could not be connected.",
+    "notConnected": "Connect your mailbox to see your emails with this customer.",
+    "connectOnAccount": "Connect it on your account page",
+    "reconnect": "Your mailbox needs to be connected again.",
+    "goToAccount": "Go to your account",
+    "noAddress": "This customer has no email address.",
+    "none": "No emails with {addresses} in your mailbox.",
+    "noSubject": "(no subject)",
+    "toLine": "To {to}",
+    "new": "New email",
+    "reply": "Reply",
+    "replyHint": "The original message is kept in the conversation.",
+    "to": "To",
+    "subject": "Subject",
+    "message": "Message",
+    "send": "Send",
+    "openInMailbox": "Open in my mailbox"
   }
 }
