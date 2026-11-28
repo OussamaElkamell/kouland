@@ -9,7 +9,7 @@ import { PlatformName } from "./platform-name";
 
 export function SiteFooter() {
   const t = useTranslations();
-  const companyLinks = [...NAV_LINKS, { href: "/contact", key: "contact" } as const];
+  const companyLinks = [...NAV_LINKS, { href: "/contact", key: "contact" } as const, { href: "/support", key: "support" } as const];
 
   return (
     <footer className="border-t bg-bg-alt">

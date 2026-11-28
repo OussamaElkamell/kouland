@@ -5,6 +5,6 @@ import { routing } from "./i18n/routing";
 export default createMiddleware(routing);
 
 export const config = {
-  // Skip the CRM (/admin has no language prefix), Next internals and files with an extension.
-  matcher: ["/((?!admin|_next|_vercel|.*\\..*).*)"],
+  // Skip the CRM (/admin has no language prefix), the API forwarding (/backend), Next internals and files.
+  matcher: ["/((?!admin|backend|_next|_vercel|.*\\..*).*)"],
 };

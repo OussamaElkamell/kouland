@@ -58,3 +58,731 @@ model JobApplication {
   @@index([email])
   @@map("job_applications")
 }
+
+// ---------------------------------------------------------------------------------------------------------------
+// CRM (Milestone 2): accounts and permissions, platforms, customers, sales.
+// ---------------------------------------------------------------------------------------------------------------
+
+/// ADMIN: the whole CRM, accounts and platform settings. MANAGER and EMPLOYEE: only the areas and platforms the
+/// administrator grants them. An employee can be given at most EDIT on an area; only managers can be given MANAGE.
+enum UserRole {
+  ADMIN
+  MANAGER
+  EMPLOYEE
+}
+
+/// A part of the CRM that access is granted to. TASKS covers tasks and appointments.
+enum PermissionArea {
+  CUSTOMERS
+  SALES
+  TICKETS
+  TASKS
+}
+
+/// VIEW: read. EDIT: also create and update. MANAGE: also delete.
+enum AccessLevel {
+  VIEW
+  EDIT
+  MANAGE
+}
+
+/// A CRM account. Signs in with email and password; the password is stored as a scrypt hash. Accounts created by an
+/// administrator have no password until the person accepts the emailed invitation and chooses one.
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  name         String
+  passwordHash String?
+  role         UserRole
+  /// Deactivated accounts cannot sign in and their sessions are ended.
+  isActive     Boolean   @default(true)
+  /// When true the account sees every platform, including ones added later. Always true for administrators.
+  allPlatforms Boolean   @default(false)
+  /// CRM language: en, fr or es.
+  locale       String    @default("en")
+  /// Phone in international format (+19185550123): customers' calls ring it, and click-to-call rings it first.
+  phone        String?
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  permissions        UserPermission[]
+  platforms          UserPlatform[]
+  sessions           Session[]
+  tokens             UserToken[]      @relation("TokenUser")
+  issuedTokens       UserToken[]      @relation("TokenIssuer")
+  activities         Activity[]
+  assignedTickets    Ticket[]         @relation("TicketAssignee")
+  createdTickets     Ticket[]         @relation("TicketCreatedBy")
+  ticketUpdates      TicketUpdate[]
+  assignedTasks      Task[]           @relation("TaskAssignee")
+  createdTasks       Task[]           @relation("TaskCreatedBy")
+  assignedAppts      Appointment[]    @relation("AppointmentAssignee")
+  createdAppts       Appointment[]    @relation("AppointmentCreatedBy")
+  notifications      Notification[]
+  ownedOpportunities Opportunity[]    @relation("OpportunityOwner")
+  createdCustomers   Customer[]       @relation("CustomerCreatedBy")
+  createdProposals   Proposal[]       @relation("ProposalCreatedBy")
+  emailConnection    EmailConnection?
+  calls              Call[]
+  smsMessages        SmsMessage[]
+
+  @@map("users")
+}
+
+model UserPermission {
+  userId String
+  area   PermissionArea
+  level  AccessLevel
+  user   User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, area])
+  @@map("user_permissions")
+}
+
+/// The platform sections a manager or employee may work in (unless `allPlatforms`).
+model UserPlatform {
+  userId     String
+  platformId String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  platform   Platform @relation(fields: [platformId], references: [id], onDelete: Cascade)
+
+  @@id([userId, platformId])
+  @@index([platformId])
+  @@map("user_platforms")
+}
+
+/// A signed-in browser. The cookie holds a random token; only its SHA-256 hash is stored.
+model Session {
+  id         String   @id @default(cuid())
+  tokenHash  String   @unique
+  userId     String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  lastSeenAt DateTime @default(now())
+  userAgent  String?
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+enum TokenPurpose {
+  INVITE
+  RESET_PASSWORD
+}
+
+/// A one-time link emailed to a person: accept an invitation (choose a first password) or choose a new password.
+/// The email holds a random token; only its SHA-256 hash is stored. A new link replaces the person's older ones.
+model UserToken {
+  id          String       @id @default(cuid())
+  userId      String
+  purpose     TokenPurpose
+  tokenHash   String       @unique
+  expiresAt   DateTime
+  usedAt      DateTime?
+  createdById String?
+  createdAt   DateTime     @default(now())
+  user        User         @relation("TokenUser", fields: [userId], references: [id], onDelete: Cascade)
+  createdBy   User?        @relation("TokenIssuer", fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@map("user_tokens")
+}
+
+/// A platform section of the CRM, configured by administrators. The CRM never hardcodes platform names: every
+/// filter, section and permission reads these rows. Platforms are deactivated, never deleted, to keep history.
+/// Platforms send customers and events to the CRM through a signed webhook (see PlatformEvent).
+model Platform {
+  id               String    @id @default(cuid())
+  name             String    @unique
+  /// URL-safe key used in CRM addresses, e.g. /admin/workspace/<slug>.
+  slug             String    @unique
+  description      String?
+  websiteUrl       String?
+  /// Accent colour of the platform's chips, as #RRGGBB.
+  color            String    @default("#64748B")
+  isActive         Boolean   @default(true)
+  sortOrder        Int       @default(0)
+  /// Whether the platform's webhook is accepted.
+  webhookEnabled   Boolean   @default(false)
+  /// Secret that signs the platform's webhook calls, encrypted with INTEGRATIONS_KEY.
+  webhookSecretEnc String?
+  lastWebhookAt    DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  users         UserPlatform[]
+  events        PlatformEvent[]
+  customers     CustomerPlatform[]
+  opportunities Opportunity[]
+  tickets       Ticket[]
+  tasks         Task[]
+  appointments  Appointment[]
+
+  @@map("platforms")
+}
+
+enum CustomerType {
+  INDIVIDUAL
+  COMPANY
+}
+
+/// PROSPECT until they buy (an opportunity is won, or staff mark them as a customer).
+enum CustomerStage {
+  PROSPECT
+  CUSTOMER
+}
+
+/// One record per person or company, shared by every platform (linked through CustomerPlatform), so the same
+/// customer is never duplicated per platform.
+model Customer {
+  id          String        @id @default(cuid())
+  type        CustomerType
+  stage       CustomerStage @default(PROSPECT)
+  /// Person's full name or company name, used for lists and search.
+  displayName String
+  firstName   String?
+  lastName    String?
+  companyName String?
+  email       String?
+  phone       String?
+  website     String?
+  addressLine String?
+  city        String?
+  region      String?
+  postalCode  String?
+  country     String?
+  notes       String?
+  createdById String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  createdBy      User?              @relation("CustomerCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  contacts       Contact[]
+  platforms      CustomerPlatform[]
+  opportunities  Opportunity[]
+  activities     Activity[]
+  tickets        Ticket[]
+  tasks          Task[]
+  appointments   Appointment[]
+  calls          Call[]
+  smsMessages    SmsMessage[]
+  platformEvents PlatformEvent[]
+
+  @@index([displayName])
+  @@index([email])
+  @@index([stage])
+  @@map("customers")
+}
+
+/// A person at a company customer.
+model Contact {
+  id         String   @id @default(cuid())
+  customerId String
+  firstName  String
+  lastName   String?
+  jobTitle   String?
+  email      String?
+  phone      String?
+  isPrimary  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([customerId])
+  @@map("contacts")
+}
+
+/// The platforms (services) a customer uses or is interested in.
+model CustomerPlatform {
+  customerId String
+  platformId String
+  /// The customer's id on that platform, sent by its webhook; used first to match the same customer again.
+  externalId String?
+  createdAt  DateTime @default(now())
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  platform   Platform @relation(fields: [platformId], references: [id], onDelete: Restrict)
+
+  @@id([customerId, platformId])
+  @@unique([platformId, externalId])
+  @@index([platformId])
+  @@map("customer_platforms")
+}
+
+enum OpportunityStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  PROPOSAL_SENT
+  NEGOTIATION
+  WON
+  LOST
+}
+
+/// Where a prospect or request came from.
+enum OpportunitySource {
+  WEBSITE
+  PHONE
+  EMAIL
+  REFERRAL
+  PLATFORM
+  WALK_IN
+  OTHER
+}
+
+/// A business opportunity: a prospect's or customer's request, followed until it is won or lost.
+model Opportunity {
+  id                String            @id @default(cuid())
+  title             String
+  customerId        String
+  platformId        String
+  status            OpportunityStatus @default(NEW)
+  source            OpportunitySource @default(OTHER)
+  /// What the prospect or customer asked for.
+  request           String?
+  estimatedValue    Decimal?          @db.Decimal(12, 2)
+  currency          String            @default("USD")
+  /// Calendar date, YYYY-MM-DD.
+  expectedCloseDate String?
+  ownerId           String?
+  lostReason        String?
+  closedAt          DateTime?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  customer   Customer   @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  platform   Platform   @relation(fields: [platformId], references: [id], onDelete: Restrict)
+  owner      User?      @relation("OpportunityOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  proposals  Proposal[]
+  activities Activity[]
+  tasks      Task[]
+
+  @@index([status])
+  @@index([platformId])
+  @@index([customerId])
+  @@map("opportunities")
+}
+
+enum ProposalStatus {
+  DRAFT
+  SENT
+  ACCEPTED
+  REJECTED
+}
+
+/// A commercial proposal (quote) made for an opportunity.
+model Proposal {
+  id            String         @id @default(cuid())
+  opportunityId String
+  title         String
+  amount        Decimal        @db.Decimal(12, 2)
+  currency      String         @default("USD")
+  status        ProposalStatus @default(DRAFT)
+  /// Calendar date, YYYY-MM-DD.
+  validUntil    String?
+  details       String?
+  sentAt        DateTime?
+  respondedAt   DateTime?
+  createdById   String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  opportunity Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  createdBy   User?       @relation("ProposalCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([opportunityId])
+  @@map("proposals")
+}
+
+enum ActivityType {
+  NOTE
+  CUSTOMER_CREATED
+  CUSTOMER_UPDATED
+  STAGE_CHANGED
+  CONTACT_ADDED
+  PLATFORM_LINKED
+  PLATFORM_UNLINKED
+  OPPORTUNITY_CREATED
+  OPPORTUNITY_STATUS
+  PROPOSAL_CREATED
+  PROPOSAL_STATUS
+  TICKET_CREATED
+  TICKET_STATUS
+  TASK_CREATED
+  TASK_COMPLETED
+  APPOINTMENT_SCHEDULED
+  PLATFORM_EVENT
+  EMAIL_SENT
+  CALL
+  SMS_SENT
+  SMS_RECEIVED
+}
+
+/// One event in a customer's history: a note written by staff, or a change recorded by the CRM.
+/// `data` holds the event's details (old and new status, titles…) so the CRM can word it in any language.
+model Activity {
+  id            String       @id @default(cuid())
+  customerId    String
+  opportunityId String?
+  ticketId      String?
+  callId        String?      @unique
+  type          ActivityType
+  body          String?
+  data          Json?
+  userId        String?
+  createdAt     DateTime     @default(now())
+
+  customer    Customer     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  opportunity Opportunity? @relation(fields: [opportunityId], references: [id], onDelete: SetNull)
+  ticket      Ticket?      @relation(fields: [ticketId], references: [id], onDelete: SetNull)
+  call        Call?        @relation(fields: [callId], references: [id], onDelete: SetNull)
+  user        User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([customerId, createdAt])
+  @@map("activities")
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// Milestone 3: support tickets, tasks and appointments, notifications.
+// ---------------------------------------------------------------------------------------------------------------
+
+/// A team a ticket can be assigned to. Managed by administrators; deactivated, never deleted.
+model Department {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  tickets     Ticket[]
+
+  @@map("departments")
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  WAITING_ON_CUSTOMER
+  RESOLVED
+  CLOSED
+}
+
+/// HIGH and URGENT are "high priority" in the requirements.
+enum TicketPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum TicketSource {
+  STAFF
+  WEBSITE
+}
+
+/// A customer support request, followed until it is resolved.
+model Ticket {
+  id             String         @id @default(cuid())
+  /// Short number shown to people, e.g. #1001.
+  number         Int            @unique @default(autoincrement())
+  subject        String
+  description    String
+  status         TicketStatus   @default(OPEN)
+  priority       TicketPriority @default(NORMAL)
+  source         TicketSource   @default(STAFF)
+  customerId     String?
+  /// The affected service.
+  platformId     String?
+  departmentId   String?
+  assigneeId     String?
+  createdById    String?
+  /// Who reported it, when it came from the website form (kept even when it was matched to a customer).
+  requesterName  String?
+  requesterEmail String?
+  requesterPhone String?
+  resolvedAt     DateTime?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  customer   Customer?      @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  platform   Platform?      @relation(fields: [platformId], references: [id], onDelete: Restrict)
+  department Department?    @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  assignee   User?          @relation("TicketAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
+  createdBy  User?          @relation("TicketCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  updates    TicketUpdate[]
+  tasks      Task[]
+  activities Activity[]
+
+  @@index([status])
+  @@index([priority])
+  @@index([platformId])
+  @@index([assigneeId])
+  @@index([customerId])
+  @@map("tickets")
+}
+
+enum TicketUpdateType {
+  COMMENT
+  STATUS
+  PRIORITY
+  ASSIGNED
+  DEPARTMENT
+}
+
+/// The ticket's progress: comments by staff and changes recorded by the CRM. `data` holds old and new values.
+model TicketUpdate {
+  id        String           @id @default(cuid())
+  ticketId  String
+  type      TicketUpdateType
+  body      String?
+  data      Json?
+  userId    String?
+  createdAt DateTime         @default(now())
+  ticket    Ticket           @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  user      User?            @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([ticketId, createdAt])
+  @@map("ticket_updates")
+}
+
+enum TaskStatus {
+  PENDING
+  COMPLETED
+}
+
+enum TaskPriority {
+  NORMAL
+  HIGH
+}
+
+/// Something to do, optionally by a date, for someone, about a customer, opportunity or ticket.
+model Task {
+  id             String       @id @default(cuid())
+  title          String
+  description    String?
+  status         TaskStatus   @default(PENDING)
+  priority       TaskPriority @default(NORMAL)
+  dueAt          DateTime?
+  /// When to remind the assignee (a notification and an email).
+  remindAt       DateTime?
+  reminderSentAt DateTime?
+  completedAt    DateTime?
+  assigneeId     String?
+  createdById    String?
+  customerId     String?
+  opportunityId  String?
+  ticketId       String?
+  platformId     String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  assignee    User?        @relation("TaskAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
+  createdBy   User?        @relation("TaskCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  customer    Customer?    @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  opportunity Opportunity? @relation(fields: [opportunityId], references: [id], onDelete: SetNull)
+  ticket      Ticket?      @relation(fields: [ticketId], references: [id], onDelete: SetNull)
+  platform    Platform?    @relation(fields: [platformId], references: [id], onDelete: Restrict)
+
+  @@index([status, dueAt])
+  @@index([assigneeId])
+  @@index([remindAt])
+  @@map("tasks")
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
+/// A meeting or visit at a set time.
+model Appointment {
+  id             String            @id @default(cuid())
+  title          String
+  description    String?
+  location       String?
+  startsAt       DateTime
+  endsAt         DateTime
+  status         AppointmentStatus @default(SCHEDULED)
+  /// When to remind the assignee.
+  remindAt       DateTime?
+  reminderSentAt DateTime?
+  assigneeId     String?
+  createdById    String?
+  customerId     String?
+  platformId     String?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  assignee  User?     @relation("AppointmentAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
+  createdBy User?     @relation("AppointmentCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  customer  Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  platform  Platform? @relation(fields: [platformId], references: [id], onDelete: Restrict)
+
+  @@index([startsAt])
+  @@index([assigneeId])
+  @@index([remindAt])
+  @@map("appointments")
+}
+
+enum NotificationType {
+  NEW_LEAD
+  NEW_TICKET
+  TICKET_ASSIGNED
+  TICKET_STATUS
+  TASK_ASSIGNED
+  TASK_REMINDER
+  APPOINTMENT_ASSIGNED
+  APPOINTMENT_REMINDER
+  OPPORTUNITY_STATUS
+  MISSED_CALL
+  NEW_SMS
+}
+
+/// A message for one person in the CRM's bell. `data` holds what the screen needs to word it in their language.
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  data      Json
+  /// CRM address to open, e.g. /admin/tickets/<id>.
+  link      String
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readAt, createdAt])
+  @@map("notifications")
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// Milestone 4: platform synchronization, email connection, Twilio calls and SMS.
+// ---------------------------------------------------------------------------------------------------------------
+
+enum PlatformEventStatus {
+  PROCESSED
+  FAILED
+}
+
+/// One webhook call received from a platform: what it sent and what the CRM did with it. The platform's event id is
+/// unique per platform, so an event sent twice (a retry) is applied once.
+model PlatformEvent {
+  id         String              @id @default(cuid())
+  platformId String
+  /// The platform's own id for this event.
+  eventId    String
+  type       String
+  status     PlatformEventStatus
+  /// Why it failed.
+  error      String?
+  customerId String?
+  /// Whether this event created the customer (otherwise it matched an existing one).
+  created    Boolean             @default(false)
+  payload    Json
+  receivedAt DateTime            @default(now())
+  platform   Platform            @relation(fields: [platformId], references: [id], onDelete: Cascade)
+  customer   Customer?           @relation(fields: [customerId], references: [id], onDelete: SetNull)
+
+  @@unique([platformId, eventId])
+  @@index([platformId, receivedAt])
+  @@map("platform_events")
+}
+
+enum EmailProvider {
+  GOOGLE
+  MICROSOFT
+}
+
+/// A person's own mailbox (Google Workspace or Microsoft 365), connected with OAuth. Tokens are encrypted with
+/// INTEGRATIONS_KEY. The CRM reads it live to show emails exchanged with a customer, and sends through it.
+model EmailConnection {
+  id              String        @id @default(cuid())
+  userId          String        @unique
+  provider        EmailProvider
+  email           String
+  accessTokenEnc  String
+  refreshTokenEnc String
+  expiresAt       DateTime
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("email_connections")
+}
+
+enum CallDirection {
+  INBOUND
+  OUTBOUND
+}
+
+/// RINGING until it ends; COMPLETED when someone answered; MISSED when nobody did (no answer, busy).
+enum CallStatus {
+  RINGING
+  COMPLETED
+  MISSED
+  FAILED
+}
+
+/// A phone call through the company's Twilio number. Linked to the customer when the number is known; the employee
+/// who took or made it writes notes. No recording, voicemail or browser calling (not in the first version).
+model Call {
+  id          String        @id @default(cuid())
+  /// Twilio's id of the call.
+  twilioSid   String        @unique
+  direction   CallDirection
+  status      CallStatus    @default(RINGING)
+  fromNumber  String
+  toNumber    String
+  durationSec Int?
+  customerId  String?
+  /// The employee who answered or made the call.
+  userId      String?
+  notes       String?
+  startedAt   DateTime      @default(now())
+  endedAt     DateTime?
+  customer    Customer?     @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  user        User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  activity    Activity?
+
+  @@index([startedAt])
+  @@index([customerId])
+  @@map("calls")
+}
+
+enum SmsDirection {
+  INBOUND
+  OUTBOUND
+}
+
+/// A text message sent or received on the company's Twilio number.
+model SmsMessage {
+  id         String       @id @default(cuid())
+  twilioSid  String       @unique
+  direction  SmsDirection
+  fromNumber String
+  toNumber   String
+  body       String
+  /// Twilio's status: queued, sent, delivered, undelivered, failed, received.
+  status     String
+  customerId String?
+  /// Who sent it (outbound).
+  userId     String?
+  createdAt  DateTime     @default(now())
+  customer   Customer?    @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  user       User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+  @@index([customerId])
+  @@map("sms_messages")
+}
+
+/// Settings administrators change in the CRM (e.g. the phone's default number), one row per key.
+model Setting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+
+  @@map("settings")
+}

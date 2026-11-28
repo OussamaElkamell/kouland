@@ -27,7 +27,8 @@ function trustedProxyHops(): number {
 }
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  // rawBody: platform webhooks are signed over the exact bytes received.
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, { rawBody: true });
   const logger = new Logger("Bootstrap");
 
   const hops = trustedProxyHops();

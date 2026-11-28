@@ -5,7 +5,7 @@ import { LOCALES } from "@/i18n/routing";
 import { languageAlternates, localizedPath } from "@/lib/seo";
 
 const LEGAL_PAGES: string[] = Object.values(LEGAL_DOCUMENTS).map((doc) => doc.path);
-const PAGES = ["", "/platforms", "/services", "/about", "/careers", "/contact", ...LEGAL_PAGES];
+const PAGES = ["", "/platforms", "/services", "/about", "/careers", "/contact", "/support", ...LEGAL_PAGES];
 const absolute = (path: string) => `${COMPANY.siteUrl}${path}`;
 
 /** One entry per page per language, each listing the same page in the other languages. */

@@ -37,7 +37,8 @@
     "closeMenu": "Cerrar el menú",
     "theme": "Cambiar entre el tema oscuro y el claro",
     "language": "Idioma",
-    "careers": "Empleo"
+    "careers": "Empleo",
+    "support": "Reportar un problema"
   },
   "footer": {
     "platforms": "Plataformas",
@@ -505,6 +506,48 @@
       "title": "Política de cancelación",
       "subtitle": "Cómo cancelar o reprogramar una cita y las tarifas que se aplican.",
       "description": "La política de cancelación y reprogramación de citas de Kouland Technology, Inc."
+    }
+  },
+  "supportPage": {
+    "title": "Reportar un problema",
+    "description": "Reporte un problema con un servicio de Kouland Technology. Nuestro equipo de soporte le dará seguimiento.",
+    "eyebrow": "Soporte",
+    "heading": "Reportar un problema",
+    "subtitle": "Cuéntenos qué no funciona. Su solicitud llega directamente a nuestro equipo de soporte.",
+    "whatNextTitle": "¿Qué sigue?",
+    "whatNextBody": "Recibe un número de ticket. Nuestro equipo lo revisa y le contacta por correo o teléfono hasta resolverlo.",
+    "urgentTitle": "¿Es urgente?",
+    "urgentBody": "Si un servicio está caído para su negocio, llámenos también.",
+    "form": {
+      "name": "Su nombre",
+      "email": "Correo electrónico",
+      "emailHint": "Use el correo que nos dio como cliente, para que encontremos su cuenta.",
+      "phone": "Teléfono",
+      "platform": "¿Qué servicio?",
+      "platformUnsure": "No estoy seguro",
+      "subject": "Asunto",
+      "description": "¿Qué está pasando?",
+      "descriptionHint": "Lo que ve, desde cuándo y lo que ya intentó.",
+      "optional": "(opcional)",
+      "send": "Enviar",
+      "sending": "Enviando…",
+      "errors": {
+        "name": "Escriba su nombre (al menos 2 caracteres).",
+        "email": "Escriba un correo electrónico válido.",
+        "phone": "Este número de teléfono es demasiado largo.",
+        "platformId": "Elija un servicio de la lista.",
+        "subject": "Dé un asunto breve a su solicitud.",
+        "description": "Cuéntenos un poco más (al menos 10 caracteres).",
+        "tooMany": "Demasiadas solicitudes. Espere un minuto y vuelva a intentarlo.",
+        "network": "No se pudo conectar con el servidor. Revise su conexión y vuelva a intentarlo.",
+        "generic": "Algo salió mal. Vuelva a intentarlo."
+      },
+      "sent": {
+        "badge": "Ticket n.º {number}",
+        "title": "Gracias. Recibimos su solicitud.",
+        "body": "Su número de ticket es el {number}. Menciónelo si nos contacta sobre este problema.",
+        "again": "Reportar otro problema"
+      }
     }
   }
 }

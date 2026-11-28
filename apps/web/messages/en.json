@@ -37,7 +37,8 @@
     "closeMenu": "Close menu",
     "theme": "Switch between dark and light theme",
     "language": "Language",
-    "careers": "Careers"
+    "careers": "Careers",
+    "support": "Report an issue"
   },
   "footer": {
     "platforms": "Platforms",
@@ -505,6 +506,48 @@
       "title": "Cancellation Policy",
       "subtitle": "How to cancel or reschedule an appointment, and the fees that apply.",
       "description": "The Kouland Technology, Inc. cancellation and rescheduling policy for appointments."
+    }
+  },
+  "supportPage": {
+    "title": "Report an issue",
+    "description": "Report a problem with a Kouland Technology service. Our support team will follow it up.",
+    "eyebrow": "Support",
+    "heading": "Report an issue",
+    "subtitle": "Tell us what is not working. Your request goes straight to our support team.",
+    "whatNextTitle": "What happens next",
+    "whatNextBody": "You get a ticket number. Our team reviews it, and contacts you by email or phone until it is resolved.",
+    "urgentTitle": "Urgent?",
+    "urgentBody": "If a service is down for your business, call us as well.",
+    "form": {
+      "name": "Your name",
+      "email": "Email",
+      "emailHint": "Use the email you gave us as a customer, so we find your account.",
+      "phone": "Phone",
+      "platform": "Which service?",
+      "platformUnsure": "I'm not sure",
+      "subject": "Subject",
+      "description": "What is happening?",
+      "descriptionHint": "What you see, since when, and anything you already tried.",
+      "optional": "(optional)",
+      "send": "Send",
+      "sending": "Sending…",
+      "errors": {
+        "name": "Enter your name (at least 2 characters).",
+        "email": "Enter a valid email address.",
+        "phone": "This phone number is too long.",
+        "platformId": "Choose a service from the list.",
+        "subject": "Give your request a short subject.",
+        "description": "Tell us a little more (at least 10 characters).",
+        "tooMany": "Too many requests. Please wait a minute and try again.",
+        "network": "Could not reach the server. Check your connection and try again.",
+        "generic": "Something went wrong. Please try again."
+      },
+      "sent": {
+        "badge": "Ticket #{number}",
+        "title": "Thank you. We have your request.",
+        "body": "Your ticket number is #{number}. Mention it if you contact us about this issue.",
+        "again": "Report another issue"
+      }
     }
   }
 }
